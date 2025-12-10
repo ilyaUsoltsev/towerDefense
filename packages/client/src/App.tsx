@@ -13,7 +13,7 @@ const App = () => {
           <p>{user.secondName}</p>
         </div>
       ) : (
-        <p>Пользователь не найден!</p>
+        <p data-testid="user-not-found">Пользователь не найден!</p>
       )}
     </div>
   )
