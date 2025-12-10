@@ -1,7 +1,7 @@
+import { Provider } from 'react-redux'
 import App from './App'
 import { render, screen } from '@testing-library/react'
-
-const appContent = 'Вот тут будет жить ваше приложение :)'
+import { store } from './store'
 
 // @ts-ignore
 global.fetch = jest.fn(() =>
@@ -9,6 +9,12 @@ global.fetch = jest.fn(() =>
 )
 
 test('Example test', async () => {
-  render(<App />)
-  expect(screen.getByText(appContent)).toBeDefined()
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
+  expect(screen.getByTestId('user-not-found').textContent).toBe(
+    'Пользователь не найден!'
+  )
 })
