@@ -7,10 +7,12 @@ import { Header } from '../components/Header'
 import { usePage } from '../hooks/usePage'
 import { PageInitArgs } from '../routes'
 import { Button } from '@gravity-ui/uikit'
+import Input from '../components/Input'
+import { useState } from 'react'
 
 export const MainPage = () => {
   const user = useSelector(selectUser)
-
+  const [email, setEmail] = useState('')
   usePage({ initPage: initMainPage })
   return (
     <div>
@@ -30,8 +32,14 @@ export const MainPage = () => {
         <Label>Hovering my parent changes my style!</Label>
       </Link>
       <Button view="action" size="l">
-        Action
+        Act
       </Button>
+      <Input
+        name="email"
+        onChange={setEmail}
+        value={email}
+        autocomplete="email"
+      />
       {user ? (
         <div>
           <p>{user.name}</p>
