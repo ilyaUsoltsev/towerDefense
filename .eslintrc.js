@@ -16,6 +16,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/ban-ts-comment': 1,
+    semi: ['error', 'always'],
   },
-  ignorePatterns: ['jest.config.js'],
+  ignorePatterns: ['jest.config.js','dist/', 'build/', 'node_modules/'],
 }

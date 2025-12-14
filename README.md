@@ -33,6 +33,7 @@
 ### Линтинг
 
 ```yarn lint```
+```yarn lintfix```
 
 ### Форматирование prettier
 
