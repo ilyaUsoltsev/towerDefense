@@ -7,6 +7,7 @@ interface FormLogProps {
   onSubmit: (values: Record<string, unknown>) => void | Promise<void>
   text: string
   children: React.ReactNode
+  validate?: any
   titleLink?: string
   hrefLink?: string
   [key: string]: any
@@ -16,12 +17,13 @@ const FormLog: React.FC<FormLogProps> = ({
   onSubmit,
   text,
   children,
+  validate,
   titleLink,
   hrefLink,
   ...rest
 }) => {
   return (
-    <Form onSubmit={onSubmit} {...rest}>
+    <Form onSubmit={onSubmit} validate={validate} {...rest}>
       {({ handleSubmit }) => (
         <form onSubmit={handleSubmit} className={styles.form}>
           {children}

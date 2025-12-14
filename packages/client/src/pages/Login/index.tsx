@@ -11,21 +11,22 @@ import { Link } from 'react-router-dom'
 
 export const LoginPage = () => {
   const user = useSelector(selectUser)
-  const [formErrors, setFormErrors] = useState<Record<string, string> | null>(
-    null
-  )
   usePage({ initPage: initLoginPage })
-  const handleSubmit = (data: Record<string, unknown>) => {
+  const validate = (values: Record<string, unknown>) => {
     const errors: Record<string, string> = {}
 
-    if (!data.login) errors.login = 'Поле обязательно для заполнения'
-    if (!data.password) errors.password = 'Поле обязательно для заполнения'
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors)
-      return // Не отправляем форму
+    if (!values.login) {
+      errors.login = 'Поле обязательно для заполнения'
     }
 
-    setFormErrors(null)
+    if (!values.password) {
+      errors.password = 'Поле обязательно для заполнения'
+    }
+
+    return errors
+  }
+
+  const handleSubmit = (data: Record<string, unknown>) => {
     console.log('Валидация')
     console.log('Данные формы:', data)
   }
@@ -36,30 +37,38 @@ export const LoginPage = () => {
         alt="tower defence"
         className={styles.logo__big}
       />
-      <FormLog onSubmit={handleSubmit} text="Войти" titleLink="Нет аккаунта ?">
+      <FormLog
+        validate={validate}
+        onSubmit={handleSubmit}
+        text="Войти"
+        titleLink="Нет аккаунта ?">
         <Field name="login">
-          {({ input }) => (
+          {({ input, meta }) => (
             <TextInput
               {...input} // Передаём все пропсы от input (value, onChange и др.)
               size="xl"
               type="text"
               placeholder="Логин"
-              validationState={formErrors?.login ? 'invalid' : undefined}
-              errorMessage={formErrors?.login || ''}
+              validationState={
+                meta.error && meta.touched ? 'invalid' : undefined
+              }
+              errorMessage={meta.touched ? meta.error || '' : ''}
               errorPlacement="outside"
             />
           )}
         </Field>
 
         <Field name="password">
-          {({ input }) => (
+          {({ input, meta }) => (
             <TextInput
               {...input}
               size="xl"
               type="password"
               placeholder="Пароль"
-              validationState={formErrors?.password ? 'invalid' : undefined}
-              errorMessage={formErrors?.password || ''}
+              validationState={
+                meta.error && meta.touched ? 'invalid' : undefined
+              }
+              errorMessage={meta.touched ? meta.error || '' : ''}
               errorPlacement="outside"
             />
           )}

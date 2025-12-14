@@ -4,3 +4,6 @@ node_modules/
 .vscode
 dist
 tmp
+lerna-debug.log
+packages/client/server/index.d.ts
+packages/client/server/index.js
