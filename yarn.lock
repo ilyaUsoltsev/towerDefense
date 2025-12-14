@@ -297,7 +297,7 @@
     "@babel/plugin-syntax-jsx" "^7.18.6"
     "@babel/types" "^7.18.10"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.1", "@babel/runtime@^7.18.3", "@babel/runtime@^7.26.7", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.0", "@babel/runtime@^7.10.1", "@babel/runtime@^7.15.4", "@babel/runtime@^7.18.3", "@babel/runtime@^7.26.7", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7":
   version "7.28.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.28.4.tgz#a70226016fabe25c5783b2f22d3e1c9bc5ca3326"
   integrity sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==
@@ -355,7 +355,7 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bem-react/classname@^1.7.0":
+"@bem-react/classname@^1.6.0", "@bem-react/classname@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@bem-react/classname/-/classname-1.7.0.tgz#aca4e6f5faaedb5a51f6200201e1181c4e9f3d9c"
   integrity sha512-WNZAJEVNHFpQ1eyR3SKxXUDHaXbTyMieFfC65tqEGvGxx9pMcaKf65v/IINdDBe6xIt6WgGu0EHgFQ5KH4lwZQ==
@@ -555,12 +555,41 @@
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@gravity-ui/i18n@^1.8.0":
+"@gravity-ui/date-components@^3.0.0":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@gravity-ui/date-components/-/date-components-3.4.1.tgz#1efb7f2a1db47964ba92fc4696c534c92998b852"
+  integrity sha512-Ao93u1mIfR6Zd4c3VziQnsRcXu1sx9lmKS7lodLCbjAxnLIxGeclYg0y6X6b8DbalZWqq/D539BgmhvqxC/C1Q==
+  dependencies:
+    "@bem-react/classname" "^1.6.0"
+    "@gravity-ui/icons" "^2.2.0"
+    tslib "^2.6.2"
+
+"@gravity-ui/date-utils@^2.5.5":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@gravity-ui/date-utils/-/date-utils-2.6.0.tgz#2f0de931a3dff0d9947b8df8edd3cf9438df581a"
+  integrity sha512-bkvpKVx5mLqHOGO7XyPIw/E+EtNb9vydrz/Zmm3exB/+CLJUFawJg5RiqOSlGnxvuJML4b5fUd8lU2yu9rvNxA==
+  dependencies:
+    dayjs "1.11.10"
+    lodash "^4.17.0"
+
+"@gravity-ui/dynamic-forms@^5.10.0":
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/@gravity-ui/dynamic-forms/-/dynamic-forms-5.10.0.tgz#c87767bcab46d9259cfcd8de449b78a473051742"
+  integrity sha512-O6tQX7XHgDvfuKxhPI/NHKFfWEPKmNvN53fXNU1KMTQCx/osYciECI07eyp78cxOcMhAKDvplLgOpywsrGV25A==
+  dependencies:
+    "@bem-react/classname" "^1.6.0"
+    "@gravity-ui/date-components" "^3.0.0"
+    "@gravity-ui/date-utils" "^2.5.5"
+    "@gravity-ui/i18n" "^1.2.0"
+    "@gravity-ui/icons" "^2.12.0"
+    lodash "^4.17.20"
+
+"@gravity-ui/i18n@^1.2.0", "@gravity-ui/i18n@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@gravity-ui/i18n/-/i18n-1.8.0.tgz#19353e2eb7ccd4506fa061cd01aae5f71d11eb4b"
   integrity sha512-bVt/UGjL96Naw0h03QW+3z2tf6t4zvLh1j+eFzpdLlAIMeNu0dRjxn4X6EGtwhwKrfMyIfrlOqmLSroXtCNQAw==
 
-"@gravity-ui/icons@^2.16.0":
+"@gravity-ui/icons@^2.12.0", "@gravity-ui/icons@^2.16.0", "@gravity-ui/icons@^2.2.0":
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/@gravity-ui/icons/-/icons-2.16.0.tgz#6e32fe01ad604f9800a6d3f04ab55cbede38fcbf"
   integrity sha512-AMjPSO+7yPpvcCa9k+ZFNOZ+8cmIauLyRMswhoyfQ7SeoJOVzsAa2OP/B+Dd+AZRvzTaeJha4m2iEk93JvAklA==
@@ -3602,6 +3631,11 @@ dateformat@^3.0.0:
   resolved "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
+dayjs@1.11.10:
+  version "1.11.10"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
+  integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
+
 debug@2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -4258,6 +4292,13 @@ fill-range@^7.0.1:
   integrity sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==
   dependencies:
     to-regex-range "^5.0.1"
+
+final-form@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/final-form/-/final-form-5.0.0.tgz#3b00dc957bf2fa809e738be557a34b7c32a1f654"
+  integrity sha512-HByosvP7x3N4bWTCPoBeUeoMatadewRifxaH3qhCQI2DBwFNO0m5wxETLVUXNGWz2yokdSCMdJEvtjfZoXnqDA==
+  dependencies:
+    "@babel/runtime" "^7.10.0"
 
 finalhandler@1.2.0:
   version "1.2.0"
@@ -5796,7 +5837,7 @@ lodash.merge@^4.6.2:
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
-lodash@^4.17.15, lodash@^4.17.21, lodash@^4.7.0:
+lodash@^4.17.0, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -7086,6 +7127,13 @@ react-fast-compare@^3.1.1:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.2.tgz#929a97a532304ce9fee4bcae44234f1ce2c21d49"
   integrity sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==
 
+react-final-form@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-final-form/-/react-final-form-7.0.0.tgz#8cc6287d1e6863e4b9bba29b3abe99732aeaca18"
+  integrity sha512-aEeAWbSsCLVXa4GBkJtjjyhPyX4L/Pgp5P/jXZwdz0YYcK6Zs/0PkgB+qWMSyIsbbGGE7m9yYlSpui5E5Gx26A==
+  dependencies:
+    "@babel/runtime" "^7.15.4"
+
 react-helmet@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-6.1.0.tgz#a750d5165cb13cf213e44747502652e794468726"
@@ -8078,7 +8126,7 @@ tslib@^2.5.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
-tslib@^2.8.1:
+tslib@^2.6.2, tslib@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==

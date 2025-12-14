@@ -7,7 +7,6 @@ import { Header } from '../components/Header'
 import { usePage } from '../hooks/usePage'
 import { PageInitArgs } from '../routes'
 import { Button } from '@gravity-ui/uikit'
-import Input from '../components/Input'
 import { useState } from 'react'
 
 export const MainPage = () => {
@@ -34,12 +33,7 @@ export const MainPage = () => {
       <Button view="action" size="l">
         Act
       </Button>
-      <Input
-        name="email"
-        onChange={setEmail}
-        value={email}
-        autocomplete="email"
-      />
+
       {user ? (
         <div>
           <p>{user.name}</p>

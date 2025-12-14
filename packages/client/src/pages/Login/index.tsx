@@ -2,9 +2,7 @@ import { useSelector } from '../../store'
 import { fetchUserThunk, selectUser } from '../../slices/userSlice'
 import { usePage } from '../../hooks/usePage'
 import { PageInitArgs } from '../../routes'
-import Input from '../../components/Input'
-import { Form } from '../../components/Form'
-import ButtonLog from '../../components/ButtonLog'
+import FormLog from '../../components/FormLog'
 import styles from './Login.module.css'
 
 export const LoginPage = () => {
@@ -14,6 +12,47 @@ export const LoginPage = () => {
     console.log('Валидация')
     console.log('Данные формы:', data)
   }
+  const loginSpec = {
+    type: 'object',
+    properties: {
+      username: {
+        type: 'string',
+        viewSpec: {
+          type: 'base',
+          layout: 'row',
+          layoutTitle: 'Логин',
+        },
+      },
+      password: {
+        type: 'string',
+        viewSpec: {
+          type: 'base',
+          layout: 'row',
+          layoutTitle: 'Пароль',
+        },
+      },
+    },
+  }
+
+  // Конфигурация полей (config)
+  const loginConfig = {
+    fields: {
+      username: {
+        component: 'input',
+        props: {
+          type: 'text',
+          placeholder: 'Введите логин',
+        },
+      },
+      password: {
+        component: 'input',
+        props: {
+          type: 'password',
+          placeholder: 'Введите пароль',
+        },
+      },
+    },
+  }
   return (
     <section className={styles.login__page}>
       <img
@@ -21,23 +60,12 @@ export const LoginPage = () => {
         alt="tower defence"
         className={styles.logo__big}
       />
-      <Form onSubmit={handleSubmit}>
-        <Input
-          name="login"
-          autocomplete="login"
-          value=""
-          placeholder="Логин"
-          type="login"
-        />
-        <Input
-          name="password"
-          autocomplete="password"
-          value=""
-          placeholder="Пароль"
-          type="password"
-        />
-        <ButtonLog text="Отправить" />
-      </Form>
+      <FormLog
+        onSubmit={handleSubmit}
+        spec={loginSpec}
+        config={loginConfig}
+        text="Войти"
+      />
     </section>
   )
 }
