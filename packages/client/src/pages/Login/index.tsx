@@ -1,35 +1,33 @@
-import { useSelector } from '../../store'
-import { fetchUserThunk, selectUser } from '../../slices/userSlice'
-import { TextInput } from '@gravity-ui/uikit'
-import { usePage } from '../../hooks/usePage'
-import { PageInitArgs } from '../../routes'
-import FormLog from '../../components/FormLog'
-import styles from './Login.module.css'
-import { Field } from 'react-final-form'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useSelector } from '../../store';
+import { fetchUserThunk, selectUser } from '../../slices/userSlice';
+import { TextInput } from '@gravity-ui/uikit';
+import { usePage } from '../../hooks/usePage';
+import { PageInitArgs } from '../../routes';
+import FormLog from '../../components/FormLog';
+import styles from './Login.module.css';
+import { Field } from 'react-final-form';
 
 export const LoginPage = () => {
-  const user = useSelector(selectUser)
-  usePage({ initPage: initLoginPage })
+  const user = useSelector(selectUser);
+  usePage({ initPage: initLoginPage });
   const validate = (values: Record<string, unknown>) => {
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
 
     if (!values.login) {
-      errors.login = 'Поле обязательно для заполнения'
+      errors.login = 'Поле обязательно для заполнения';
     }
 
     if (!values.password) {
-      errors.password = 'Поле обязательно для заполнения'
+      errors.password = 'Поле обязательно для заполнения';
     }
 
-    return errors
-  }
+    return errors;
+  };
 
   const handleSubmit = (data: Record<string, unknown>) => {
-    console.log('Валидация')
-    console.log('Данные формы:', data)
-  }
+    console.log('Валидация');
+    console.log('Данные формы:', data);
+  };
   return (
     <section className={styles.login__page}>
       <img
@@ -75,11 +73,11 @@ export const LoginPage = () => {
         </Field>
       </FormLog>
     </section>
-  )
-}
+  );
+};
 
 export const initLoginPage = async ({ dispatch, state }: PageInitArgs) => {
   if (!selectUser(state)) {
-    return dispatch(fetchUserThunk())
+    return dispatch(fetchUserThunk());
   }
-}
+};
