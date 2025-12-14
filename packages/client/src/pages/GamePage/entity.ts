@@ -8,20 +8,26 @@ class Entity {
   speed = 1;
   currentIndex: number;
   pathManager: PathManager;
+  health: number;
+  maxHealth: number;
+  isDestroyed: boolean;
 
-  constructor(start: Tile, pathManager: PathManager) {
+  constructor(start: Tile, pathManager: PathManager, health = 100) {
     this.pathManager = pathManager;
     this.currentPosition = {
       x: start.x * 32 + 16,
       y: start.y * 32 + 16,
     };
     this.currentIndex = 0;
+    this.health = health;
+    this.maxHealth = health;
+    this.isDestroyed = false;
     this.addEventListeners();
+    this.path = this.pathManager.getStartFinishPath();
   }
 
   setPath(path: Tile[]) {
     this.path = path;
-    // this.currentIndex = 0
   }
 
   moveAlongPath() {
@@ -63,8 +69,32 @@ class Entity {
     return this.currentIndex >= this.path.length - 1;
   }
 
+  takeHit(damage: number): void {
+    if (this.isDestroyed) return;
+
+    this.health -= damage;
+    if (this.health <= 0) {
+      this.health = 0;
+      this.isDestroyed = true;
+    }
+  }
+
+  getHealth(): number {
+    return this.health;
+  }
+
+  getMaxHealth(): number {
+    return this.maxHealth;
+  }
+
+  destroyed(): boolean {
+    return this.isDestroyed;
+  }
+
   render(context: CanvasRenderingContext2D) {
     this.moveAlongPath();
+
+    // Render entity circle
     context.fillStyle = 'red';
     context.beginPath();
     context.arc(
@@ -75,6 +105,31 @@ class Entity {
       2 * Math.PI
     );
     context.fill();
+
+    // Render health bar
+    const healthBarWidth = 30;
+    const healthBarHeight = 4;
+    const healthBarX = this.currentPosition.x - healthBarWidth / 2;
+    const healthBarY = this.currentPosition.y - 18;
+    const healthPercentage = this.health / this.maxHealth;
+
+    // Background
+    context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    context.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+    // Health
+    context.fillStyle =
+      healthPercentage > 0.5
+        ? 'green'
+        : healthPercentage > 0.25
+        ? 'yellow'
+        : 'red';
+    context.fillRect(
+      healthBarX,
+      healthBarY,
+      healthBarWidth * healthPercentage,
+      healthBarHeight
+    );
   }
 
   private addEventListeners() {
