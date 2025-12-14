@@ -1,10 +1,10 @@
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet';
 
-import { Header } from '../components/Header'
-import { usePage } from '../hooks/usePage'
+import { Header } from '../components/Header';
+import { usePage } from '../hooks/usePage';
 
 export const NotFoundPage = () => {
-  usePage({ initPage: initNotFoundPage })
+  usePage({ initPage: initNotFoundPage });
 
   return (
     <div className="App">
@@ -16,7 +16,7 @@ export const NotFoundPage = () => {
       <Header />
       Страница не найдена!
     </div>
-  )
-}
+  );
+};
 
-export const initNotFoundPage = () => Promise.resolve()
+export const initNotFoundPage = () => Promise.resolve();

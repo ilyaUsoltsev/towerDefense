@@ -1,18 +1,18 @@
-import styled from 'styled-components'
-import { Helmet } from 'react-helmet'
+import styled from 'styled-components';
+import { Helmet } from 'react-helmet';
 
-import { useSelector } from '../store'
-import { fetchUserThunk, selectUser } from '../slices/userSlice'
-import { Header } from '../components/Header'
-import { usePage } from '../hooks/usePage'
-import { PageInitArgs } from '../routes'
-import { Button } from '@gravity-ui/uikit'
-import { useState } from 'react'
+import { useSelector } from '../store';
+import { fetchUserThunk, selectUser } from '../slices/userSlice';
+import { Header } from '../components/Header';
+import { usePage } from '../hooks/usePage';
+import { PageInitArgs } from '../routes';
+import { Button } from '@gravity-ui/uikit';
+import { useState } from 'react';
 
 export const MainPage = () => {
-  const user = useSelector(selectUser)
-  const [email, setEmail] = useState('')
-  usePage({ initPage: initMainPage })
+  const user = useSelector(selectUser);
+  const [email, setEmail] = useState('');
+  usePage({ initPage: initMainPage });
   return (
     <div>
       <Helmet>
@@ -43,8 +43,8 @@ export const MainPage = () => {
         <p>Пользователь не найден!</p>
       )}
     </div>
-  )
-}
+  );
+};
 
 const Link = styled.a`
   display: flex;
@@ -52,7 +52,7 @@ const Link = styled.a`
   padding: 5px 10px;
   background: papayawhip;
   color: #bf4f74;
-`
+`;
 
 const Icon = styled.svg`
   flex: none;
@@ -63,7 +63,7 @@ const Icon = styled.svg`
   ${Link}:hover & {
     fill: rebeccapurple;
   }
-`
+`;
 
 const Label = styled.span`
   display: flex;
@@ -74,10 +74,10 @@ const Label = styled.span`
     content: '◀';
     margin: 0 10px;
   }
-`
+`;
 
 export const initMainPage = async ({ dispatch, state }: PageInitArgs) => {
   if (!selectUser(state)) {
-    return dispatch(fetchUserThunk())
+    return dispatch(fetchUserThunk());
   }
-}
+};
