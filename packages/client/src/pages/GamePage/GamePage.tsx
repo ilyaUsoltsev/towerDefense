@@ -1,8 +1,8 @@
 import React from 'react';
 import MapManager from './mapManager';
-import Entity from './entity';
 import PathManager from './pathManager';
 import CannonManager from './cannonManager';
+import EntityManager from './entityManager';
 
 const GamePage = () => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -29,15 +29,26 @@ const GamePage = () => {
         mapManager.getFinishTile()
       );
       const path = await pathManager.setCollisionMap(mapManager.collisionMap);
-      const entity = new Entity(mapManager.getTiles('Start')[0], pathManager);
-      entity.setPath(path);
 
-      const entities = [entity];
+      const entityManager = new EntityManager(
+        context,
+        pathManager,
+        mapManager.getTiles('Start')[0],
+        2000
+      );
+
+      // Generate initial entities
+      entityManager.generateEntities(3, 100);
+      // entityManager.getEntities().forEach(entity => entity.setPath(path));
+
+      // Start auto-spawning
+      entityManager.startSpawning();
 
       canvas.width = mapManager.mapWidth * mapManager.tileSize;
       canvas.height = mapManager.mapHeight * mapManager.tileSize;
 
       const animate = () => {
+        const currentTime = Date.now();
         context.clearRect(0, 0, canvas.width, canvas.height);
         mapManager.renderGameField();
         mapManager.renderWalls();
@@ -45,10 +56,11 @@ const GamePage = () => {
         mapManager.renderFinish();
         pathManager.renderPathStartFinish();
 
-        cannonManager.update(entities);
+        entityManager.update(currentTime, path);
+        cannonManager.update(entityManager.getAliveEntities());
         cannonManager.render();
 
-        entity.render(context);
+        entityManager.render();
         requestAnimationFrame(animate);
       };
 

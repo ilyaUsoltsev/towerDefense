@@ -50,7 +50,6 @@ class MapManager {
     this.renderTiles(finishTiles, 'red');
   }
 
-
   private addEventListeners() {
     this.context.canvas.addEventListener('click', this.clickOnMap.bind(this));
   }

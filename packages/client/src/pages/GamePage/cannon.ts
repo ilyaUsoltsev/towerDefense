@@ -11,6 +11,7 @@ class Cannon {
   fireRate = 1000;
   lastFireTime = 0;
   projectileSpeed = 5;
+  damage = 25;
 
   constructor(position: Tile, range = 64, tileSize = 32) {
     this.position = position;
@@ -79,12 +80,14 @@ class Cannon {
 
       // Check collision with entities
       for (const entity of entities) {
+        if (entity.destroyed()) continue;
+
         const entityPos = entity.getPosition();
         const distToEntity = Math.sqrt(
           (projectile.x - entityPos.x) ** 2 + (projectile.y - entityPos.y) ** 2
         );
         if (distToEntity < sizeOfSprite / 2) {
-          console.log('Hit entity!');
+          entity.takeHit(this.damage);
           return false;
         }
       }

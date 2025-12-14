@@ -27,6 +27,10 @@ class PathManager {
     return path;
   }
 
+  public getStartFinishPath(): Tile[] {
+    return this.statFinishPath;
+  }
+
   public async getPath(start?: Tile, end?: Tile): Promise<Tile[]> {
     return await this.findPath(start ?? this.startTile, end ?? this.endTile);
   }
