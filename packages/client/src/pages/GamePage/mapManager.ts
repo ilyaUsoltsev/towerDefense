@@ -9,7 +9,6 @@ class MapManager {
   mapWidth: number;
   mapHeight: number;
   collisionMap: (0 | 1)[][];
-  cannons: Tile[] = [];
 
   constructor(context: CanvasRenderingContext2D) {
     this.mapData = mapData;
@@ -51,9 +50,6 @@ class MapManager {
     this.renderTiles(finishTiles, 'red');
   }
 
-  public renderCannons() {
-    this.renderTiles(this.cannons, 'black');
-  }
 
   private addEventListeners() {
     this.context.canvas.addEventListener('click', this.clickOnMap.bind(this));
@@ -68,11 +64,12 @@ class MapManager {
     const tileY = Math.floor(y / this.tileSize);
 
     if (this.collisionMap[tileY][tileX] === 0) {
-      this.cannons.push({ x: tileX, y: tileY, id: 'cannon' });
+      const cannonTile = { x: tileX, y: tileY, id: 'cannon' };
       this.collisionMap[tileY][tileX] = 1;
-    }
 
-    eventBus.emit('mapManager:collisionMap', this.collisionMap);
+      eventBus.emit('mapManager:cannonPlaced', cannonTile);
+      eventBus.emit('mapManager:collisionMap', this.collisionMap);
+    }
   }
 
   public getTiles(tileName: string): Tile[] {
