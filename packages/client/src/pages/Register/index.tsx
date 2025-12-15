@@ -4,8 +4,8 @@ import { TextInput } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
 import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
-import styles from './Register.module.css';
 import { Field } from 'react-final-form';
+import SectionLog from '../../components/SectionLog';
 
 export const RegisterPage = () => {
   const user = useSelector(selectUser);
@@ -42,12 +42,7 @@ export const RegisterPage = () => {
     console.log('Данные формы:', data);
   };
   return (
-    <section className={styles.login__page}>
-      <img
-        src="/logoBig.png"
-        alt="tower defence"
-        className={styles.logo__big}
-      />
+    <SectionLog>
       <FormLog
         validate={validate}
         onSubmit={handleSubmit}
@@ -148,7 +143,7 @@ export const RegisterPage = () => {
           )}
         </Field>
       </FormLog>
-    </section>
+    </SectionLog>
   );
 };
 
