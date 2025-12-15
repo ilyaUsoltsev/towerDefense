@@ -4,6 +4,7 @@ import { initMainPage, MainPage } from './pages/Main';
 import { initFriendsPage, FriendsPage } from './pages/FriendsPage';
 import { initNotFoundPage, NotFoundPage } from './pages/NotFound';
 import { initLoginPage, LoginPage } from './pages/Login';
+import { initRegisterPage, RegisterPage } from './pages/Register';
 
 export type PageInitContext = {
   clientToken?: string;
@@ -25,6 +26,11 @@ export const routes = [
     path: '/login',
     Component: LoginPage,
     fetchData: initLoginPage,
+  },
+  {
+    path: '/register',
+    Component: RegisterPage,
+    fetchData: initRegisterPage,
   },
   {
     path: '/friends',
