@@ -1,11 +1,7 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import styles from './SectionLog.module.css';
 
-interface SectionLogProps {
-  children: React.ReactNode;
-}
-
-const SectionLog: React.FC<SectionLogProps> = ({ children }) => {
+const SectionLog: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <section className={styles.login__page}>
       <img
