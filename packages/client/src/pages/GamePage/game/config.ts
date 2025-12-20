@@ -9,7 +9,7 @@ export const GameConfig = {
     defaultRange: 64,
     fireRate: 1000,
     projectileSpeed: 5,
-    damage: 2,
+    damage: 5,
   },
   spawn: {
     interval: 2000,

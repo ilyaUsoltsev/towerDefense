@@ -2,15 +2,14 @@ import { eventBus } from './eventBus';
 import { Tile } from './types';
 import Cannon from './cannon';
 import Enemy from './enemy';
+import { GameConfig } from './game/config';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
   cannons: Cannon[] = [];
-  tileSize: number;
 
-  constructor(context: CanvasRenderingContext2D, tileSize: number) {
+  constructor(context: CanvasRenderingContext2D) {
     this.context = context;
-    this.tileSize = tileSize;
     this.addEventListeners();
   }
 
@@ -21,7 +20,11 @@ class CannonManager {
   }
 
   addCannon(position: Tile): void {
-    const cannon = new Cannon(position, 64, this.tileSize);
+    const cannon = new Cannon(
+      position,
+      GameConfig.cannon.defaultRange,
+      GameConfig.tileSize
+    );
     this.cannons.push(cannon);
   }
 

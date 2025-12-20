@@ -1,4 +1,5 @@
 import Enemy from './enemy';
+import { GameConfig } from './game/config';
 import PathManager from './pathManager';
 import { Tile } from './types';
 
@@ -25,7 +26,7 @@ class EnemyManager {
     this.isSpawning = false;
   }
 
-  addEnemy(health = 100): Enemy {
+  addEnemy(health: number): Enemy {
     const enemy = new Enemy(this.startTile, this.pathManager, health);
     this.enemies.push(enemy);
     return enemy;
@@ -38,7 +39,7 @@ class EnemyManager {
     }
   }
 
-  generateEnemies(count: number, health = 100): void {
+  generateEnemies(count: number, health: number): void {
     for (let i = 0; i < count; i++) {
       this.addEnemy(health);
     }
@@ -62,7 +63,7 @@ class EnemyManager {
       this.isSpawning &&
       currentTime - this.lastSpawnTime >= this.spawnInterval
     ) {
-      this.addEnemy();
+      this.addEnemy(GameConfig.enemy.defaultHealth);
       this.lastSpawnTime = currentTime;
     }
 

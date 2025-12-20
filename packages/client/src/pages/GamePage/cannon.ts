@@ -8,15 +8,11 @@ class Cannon {
   tileSize: number;
   projectiles: Projectile[] = [];
   fireRate = GameConfig.cannon.fireRate;
-  lastFireTime = 0;
   projectileSpeed = GameConfig.cannon.projectileSpeed;
   damage = GameConfig.cannon.damage;
+  lastFireTime = 0;
 
-  constructor(
-    position: Tile,
-    range = GameConfig.cannon.defaultRange,
-    tileSize = GameConfig.tileSize
-  ) {
+  constructor(position: Tile, range: number, tileSize: number) {
     this.position = position;
     this.range = range;
     this.tileSize = tileSize;

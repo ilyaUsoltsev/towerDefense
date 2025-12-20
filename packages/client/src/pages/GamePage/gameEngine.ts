@@ -3,6 +3,7 @@ import MapManager from './mapManager';
 import PathManager from './pathManager';
 import { eventBus } from './eventBus';
 import EnemyManager from './EnemyManager';
+import { GameConfig } from './game/config';
 
 class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -20,10 +21,7 @@ class GameEngine {
 
   async initialize() {
     this.mapManager = new MapManager(this.context);
-    this.cannonManager = new CannonManager(
-      this.context,
-      this.mapManager.tileSize
-    );
+    this.cannonManager = new CannonManager(this.context);
     this.pathManager = new PathManager(
       this.context,
       this.mapManager.getStartTile(),
@@ -40,7 +38,7 @@ class GameEngine {
     );
 
     // Generate initial enemies
-    this.enemyManager.generateEnemies(3, 100);
+    // this.enemyManager.generateEnemies(0, GameConfig.enemy.defaultHealth);
 
     // Start auto-spawning
     this.enemyManager.startSpawning();
