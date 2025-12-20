@@ -27,6 +27,22 @@ class PathManager {
     return path;
   }
 
+  private async trySetCollisionMap(tile: Tile, collisionMap: (0 | 1)[][]) {
+    collisionMap[tile.y][tile.x] = 1;
+    this.easyStar.setGrid(collisionMap);
+    try {
+      await this.getPath(this.startTile, this.endTile);
+      this.setCollisionMap(collisionMap);
+      eventBus.emit('mapManager:cannonPlaced', tile);
+      return true;
+    } catch {
+      // No path exists, revert the change
+      alert('Cannot place cannon here! It would block all paths.');
+      collisionMap[tile.y][tile.x] = 0;
+      return false;
+    }
+  }
+
   public getStartFinishPath(): Tile[] {
     return this.statFinishPath;
   }
@@ -36,8 +52,8 @@ class PathManager {
   }
 
   private addEventListeners() {
-    eventBus.on('mapManager:collisionMap', collisionMap => {
-      this.setCollisionMap(collisionMap);
+    eventBus.on('mapManager:tryAddCannon', payload => {
+      this.trySetCollisionMap(payload.cannonTile, payload.collisionMap);
     });
   }
 

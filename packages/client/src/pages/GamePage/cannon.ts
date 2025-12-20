@@ -11,7 +11,7 @@ class Cannon {
   fireRate = 1000;
   lastFireTime = 0;
   projectileSpeed = 5;
-  damage = 25;
+  damage = 2;
 
   constructor(position: Tile, range = 64, tileSize = 32) {
     this.position = position;

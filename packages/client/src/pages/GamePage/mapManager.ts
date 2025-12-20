@@ -9,6 +9,7 @@ class MapManager {
   mapWidth: number;
   mapHeight: number;
   collisionMap: (0 | 1)[][];
+  private boundClickOnMap: (event: MouseEvent) => void;
 
   constructor(context: CanvasRenderingContext2D) {
     this.mapData = mapData;
@@ -17,6 +18,7 @@ class MapManager {
     this.mapHeight = mapData.mapHeight;
     this.context = context;
     this.collisionMap = this.createCollisionGrid();
+    this.boundClickOnMap = this.clickOnMap.bind(this);
     this.addEventListeners();
   }
 
@@ -51,7 +53,11 @@ class MapManager {
   }
 
   private addEventListeners() {
-    this.context.canvas.addEventListener('click', this.clickOnMap.bind(this));
+    this.context.canvas.addEventListener('click', this.boundClickOnMap);
+  }
+
+  public removeEventListeners() {
+    this.context.canvas.removeEventListener('click', this.boundClickOnMap);
   }
 
   private clickOnMap(event: MouseEvent): void {
@@ -62,12 +68,19 @@ class MapManager {
     const tileX = Math.floor(x / this.tileSize);
     const tileY = Math.floor(y / this.tileSize);
 
+    const startTile = this.getStartTile();
+
+    if (tileX === startTile.x && tileY === startTile.y) {
+      return; // Prevent placing cannon on start tile, a* will fail
+    }
+
     if (this.collisionMap[tileY][tileX] === 0) {
       const cannonTile = { x: tileX, y: tileY, id: 'cannon' };
       this.collisionMap[tileY][tileX] = 1;
-
-      eventBus.emit('mapManager:cannonPlaced', cannonTile);
-      eventBus.emit('mapManager:collisionMap', this.collisionMap);
+      eventBus.emit('mapManager:tryAddCannon', {
+        cannonTile,
+        collisionMap: this.collisionMap,
+      });
     }
   }
 
