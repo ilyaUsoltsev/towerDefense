@@ -1,7 +1,7 @@
 import { eventBus } from './eventBus';
 import { Tile } from './types';
 import Cannon from './cannon';
-import Entity from './entity';
+import Enemy from './enemy';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
@@ -32,10 +32,10 @@ class CannonManager {
     );
   }
 
-  update(entities: Entity[]): void {
+  update(enemies: Enemy[]): void {
     const currentTime = Date.now();
     this.cannons.forEach(cannon => {
-      cannon.update(entities, currentTime);
+      cannon.update(enemies, currentTime);
     });
   }
 

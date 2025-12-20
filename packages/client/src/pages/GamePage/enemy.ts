@@ -2,7 +2,7 @@ import { eventBus } from './eventBus';
 import PathManager from './pathManager';
 import { Point, Tile } from './types';
 
-class Entity {
+class Enemy {
   path: Tile[] = [];
   currentPosition: Point;
   speed = 1;
@@ -94,7 +94,7 @@ class Entity {
   render(context: CanvasRenderingContext2D) {
     this.moveAlongPath();
 
-    // Render entity circle
+    // Render enemy circle
     context.fillStyle = 'red';
     context.beginPath();
     context.arc(
@@ -141,12 +141,12 @@ class Entity {
       };
       this.pathManager
         .getPath(currentPositionTile)
-        .then((newPathForEntity: Tile[]) => {
-          this.setPath(newPathForEntity);
+        .then((newPathForEnemy: Tile[]) => {
+          this.setPath(newPathForEnemy);
           this.currentIndex = 0;
         });
     });
   }
 }
 
-export default Entity;
+export default Enemy;

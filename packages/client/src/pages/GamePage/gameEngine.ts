@@ -1,8 +1,8 @@
 import CannonManager from './cannonManager';
-import EntityManager from './entityManager';
 import MapManager from './mapManager';
 import PathManager from './pathManager';
 import { eventBus } from './eventBus';
+import EnemyManager from './EnemyManager';
 
 class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -10,7 +10,7 @@ class GameEngine {
   private animationFrameId: number | null = null;
   private mapManager!: MapManager;
   private cannonManager!: CannonManager;
-  private entityManager!: EntityManager;
+  private enemyManager!: EnemyManager;
   private pathManager!: PathManager;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -32,18 +32,18 @@ class GameEngine {
 
     await this.pathManager.setCollisionMap(this.mapManager.collisionMap);
 
-    this.entityManager = new EntityManager(
+    this.enemyManager = new EnemyManager(
       this.context,
       this.pathManager,
       this.mapManager.getTiles('Start')[0],
       2000
     );
 
-    // Generate initial entities
-    this.entityManager.generateEntities(3, 100);
+    // Generate initial enemies
+    this.enemyManager.generateEnemies(3, 100);
 
     // Start auto-spawning
-    this.entityManager.startSpawning();
+    this.enemyManager.startSpawning();
 
     this.canvas.width = this.mapManager.mapWidth * this.mapManager.tileSize;
     this.canvas.height = this.mapManager.mapHeight * this.mapManager.tileSize;
@@ -75,10 +75,10 @@ class GameEngine {
     this.mapManager.renderStart();
     this.mapManager.renderFinish();
     this.pathManager.renderPathStartFinish();
-    this.entityManager.update(currentTime);
-    this.cannonManager.update(this.entityManager.getAliveEntities());
+    this.enemyManager.update(currentTime);
+    this.cannonManager.update(this.enemyManager.getAliveEnemies());
     this.cannonManager.render();
-    this.entityManager.render();
+    this.enemyManager.render();
   }
 }
 
