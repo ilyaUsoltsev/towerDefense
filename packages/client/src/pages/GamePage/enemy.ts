@@ -13,11 +13,7 @@ class Enemy {
   maxHealth: number;
   isDestroyed: boolean;
 
-  constructor(
-    start: Tile,
-    pathManager: PathManager,
-    health = GameConfig.enemy.defaultHealth
-  ) {
+  constructor(start: Tile, pathManager: PathManager, health: number) {
     this.pathManager = pathManager;
     this.currentPosition = {
       x: start.x * GameConfig.tileSize + GameConfig.tileSize / 2,
