@@ -2,7 +2,7 @@ import { eventBus } from './eventBus';
 import { Tile } from './types';
 import Cannon from './cannon';
 import Enemy from './enemy';
-import { GameConfig } from './game/config';
+import { GameConfig } from './config';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
