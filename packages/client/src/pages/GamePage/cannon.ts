@@ -1,19 +1,22 @@
 import { Point, Projectile, Tile } from './types';
 import Enemy from './enemy';
-
-const sizeOfSprite = 32;
+import { GameConfig } from './game/config';
 
 class Cannon {
   position: Tile;
   range: number;
   tileSize: number;
   projectiles: Projectile[] = [];
-  fireRate = 1000;
+  fireRate = GameConfig.cannon.fireRate;
   lastFireTime = 0;
-  projectileSpeed = 5;
-  damage = 2;
+  projectileSpeed = GameConfig.cannon.projectileSpeed;
+  damage = GameConfig.cannon.damage;
 
-  constructor(position: Tile, range = 64, tileSize = 32) {
+  constructor(
+    position: Tile,
+    range = GameConfig.cannon.defaultRange,
+    tileSize = GameConfig.tileSize
+  ) {
     this.position = position;
     this.range = range;
     this.tileSize = tileSize;
@@ -86,7 +89,7 @@ class Cannon {
         const distToEnemy = Math.sqrt(
           (projectile.x - enemyPos.x) ** 2 + (projectile.y - enemyPos.y) ** 2
         );
-        if (distToEnemy < sizeOfSprite / 2) {
+        if (distToEnemy < GameConfig.enemy.radius) {
           enemy.takeHit(this.damage);
           return false;
         }

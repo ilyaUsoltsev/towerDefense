@@ -1,6 +1,7 @@
 import EasyStar from 'easystarjs';
 import { Tile } from './types';
 import { eventBus } from './eventBus';
+import { GameConfig } from './game/config';
 
 class PathManager {
   context: CanvasRenderingContext2D;
@@ -85,7 +86,12 @@ class PathManager {
   public renderPathStartFinish() {
     this.context.fillStyle = 'yellow';
     this.statFinishPath.forEach(tile => {
-      this.context.fillRect(tile.x * 32, tile.y * 32, 32, 32);
+      this.context.fillRect(
+        tile.x * GameConfig.tileSize,
+        tile.y * GameConfig.tileSize,
+        GameConfig.tileSize,
+        GameConfig.tileSize
+      );
     });
   }
 }
