@@ -1,5 +1,5 @@
 import { Point, Projectile, Tile } from './types';
-import Entity from './entity';
+import Enemy from './enemy';
 
 const sizeOfSprite = 32;
 
@@ -26,11 +26,11 @@ class Cannon {
     };
   }
 
-  isEntityInRange(entity: Entity): boolean {
-    const entityPos = entity.getPosition();
+  isEnemyInRange(enemy: Enemy): boolean {
+    const enemyPos = enemy.getPosition();
     const cannonCenter = this.getCenter();
-    const dx = entityPos.x - cannonCenter.x;
-    const dy = entityPos.y - cannonCenter.y;
+    const dx = enemyPos.x - cannonCenter.x;
+    const dy = enemyPos.y - cannonCenter.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     return distance <= this.range;
   }
@@ -55,20 +55,20 @@ class Cannon {
     this.lastFireTime = currentTime;
   }
 
-  update(entities: Entity[], currentTime: number): void {
-    const entitiesInRange = entities.filter(
-      entity => this.isEntityInRange(entity) && !entity.hasReachedEnd()
+  update(enemies: Enemy[], currentTime: number): void {
+    const enemiesInRange = enemies.filter(
+      enemy => this.isEnemyInRange(enemy) && !enemy.hasReachedEnd()
     );
 
-    if (entitiesInRange.length > 0 && this.canFire(currentTime)) {
-      const target = entitiesInRange[0].getPosition();
+    if (enemiesInRange.length > 0 && this.canFire(currentTime)) {
+      const target = enemiesInRange[0].getPosition();
       this.shootAt(target, currentTime);
     }
 
-    this.updateProjectiles(entities);
+    this.updateProjectiles(enemies);
   }
 
-  private updateProjectiles(entities: Entity[]): void {
+  private updateProjectiles(enemies: Enemy[]): void {
     this.projectiles = this.projectiles.filter(projectile => {
       const dx = projectile.targetX - projectile.x;
       const dy = projectile.targetY - projectile.y;
@@ -79,15 +79,15 @@ class Cannon {
       }
 
       // Check collision with entities
-      for (const entity of entities) {
-        if (entity.destroyed()) continue;
+      for (const enemy of enemies) {
+        if (enemy.destroyed()) continue;
 
-        const entityPos = entity.getPosition();
-        const distToEntity = Math.sqrt(
-          (projectile.x - entityPos.x) ** 2 + (projectile.y - entityPos.y) ** 2
+        const enemyPos = enemy.getPosition();
+        const distToEnemy = Math.sqrt(
+          (projectile.x - enemyPos.x) ** 2 + (projectile.y - enemyPos.y) ** 2
         );
-        if (distToEntity < sizeOfSprite / 2) {
-          entity.takeHit(this.damage);
+        if (distToEnemy < sizeOfSprite / 2) {
+          enemy.takeHit(this.damage);
           return false;
         }
       }

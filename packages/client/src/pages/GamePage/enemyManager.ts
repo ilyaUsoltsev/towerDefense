@@ -1,9 +1,9 @@
-import Entity from './entity';
+import Enemy from './enemy';
 import PathManager from './pathManager';
 import { Tile } from './types';
 
-class EntityManager {
-  entities: Entity[] = [];
+class EnemyManager {
+  enemies: Enemy[] = [];
   pathManager: PathManager;
   startTile: Tile;
   context: CanvasRenderingContext2D;
@@ -25,22 +25,22 @@ class EntityManager {
     this.isSpawning = false;
   }
 
-  addEntity(health = 100): Entity {
-    const entity = new Entity(this.startTile, this.pathManager, health);
-    this.entities.push(entity);
-    return entity;
+  addEnemy(health = 100): Enemy {
+    const enemy = new Enemy(this.startTile, this.pathManager, health);
+    this.enemies.push(enemy);
+    return enemy;
   }
 
-  removeEntity(entity: Entity): void {
-    const index = this.entities.indexOf(entity);
+  removeEnemy(enemy: Enemy): void {
+    const index = this.enemies.indexOf(enemy);
     if (index > -1) {
-      this.entities.splice(index, 1);
+      this.enemies.splice(index, 1);
     }
   }
 
-  generateEntities(count: number, health = 100): void {
+  generateEnemies(count: number, health = 100): void {
     for (let i = 0; i < count; i++) {
-      this.addEntity(health);
+      this.addEnemy(health);
     }
   }
 
@@ -62,37 +62,37 @@ class EntityManager {
       this.isSpawning &&
       currentTime - this.lastSpawnTime >= this.spawnInterval
     ) {
-      this.addEntity();
+      this.addEnemy();
       this.lastSpawnTime = currentTime;
     }
 
     // Remove destroyed or finished entities
-    this.entities = this.entities.filter(
-      entity => !entity.destroyed() && !entity.hasReachedEnd()
+    this.enemies = this.enemies.filter(
+      enemy => !enemy.destroyed() && !enemy.hasReachedEnd()
     );
   }
 
   render(): void {
-    this.entities.forEach(entity => {
-      entity.render(this.context);
+    this.enemies.forEach(enemy => {
+      enemy.render(this.context);
     });
   }
 
-  getEntities(): Entity[] {
-    return this.entities;
+  getEnemies(): Enemy[] {
+    return this.enemies;
   }
 
-  getAliveEntities(): Entity[] {
-    return this.entities.filter(entity => !entity.destroyed());
+  getAliveEnemies(): Enemy[] {
+    return this.enemies.filter(enemy => !enemy.destroyed());
   }
 
-  getEntityCount(): number {
-    return this.entities.length;
+  getEnemyCount(): number {
+    return this.enemies.length;
   }
 
   clearAll(): void {
-    this.entities = [];
+    this.enemies = [];
   }
 }
 
-export default EntityManager;
+export default EnemyManager;
