@@ -56,7 +56,7 @@ class EntityManager {
     this.spawnInterval = interval;
   }
 
-  update(currentTime: number, initialPath: Tile[]): void {
+  update(currentTime: number): void {
     // Auto-spawn entities if spawning is enabled
     if (
       this.isSpawning &&
