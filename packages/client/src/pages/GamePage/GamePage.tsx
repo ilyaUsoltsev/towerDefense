@@ -9,6 +9,7 @@ const GamePage = () => {
 
   React.useEffect(() => {
     let animationFrameId: number;
+    let mapManager: MapManager;
     const asyncWrapper = async () => {
       const canvas = canvasRef.current;
       const context = canvas?.getContext('2d');
@@ -17,12 +18,8 @@ const GamePage = () => {
         return;
       }
 
-      const mapManager = new MapManager(context);
-      const cannonManager = new CannonManager(
-        context,
-        mapManager.tileSize,
-        mapManager.collisionMap
-      );
+      mapManager = new MapManager(context);
+      const cannonManager = new CannonManager(context, mapManager.tileSize);
       const pathManager = new PathManager(
         context,
         mapManager.getStartTile(),
@@ -71,6 +68,7 @@ const GamePage = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      mapManager.removeEventListeners();
     };
   }, []);
 

@@ -26,9 +26,9 @@ export interface Projectile {
  * Central event definitions for game-wide communication
  */
 export interface GameEvents {
-  'mapManager:collisionMap': (0 | 1)[][];
   'pathManager:pathUpdated': Tile[];
   'mapManager:cannonPlaced': Tile;
+  'mapManager:tryAddCannon': { cannonTile: Tile; collisionMap: (0 | 1)[][] };
 }
 
 export type GameEventName = keyof GameEvents;

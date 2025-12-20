@@ -7,26 +7,16 @@ class CannonManager {
   context: CanvasRenderingContext2D;
   cannons: Cannon[] = [];
   tileSize: number;
-  collisionMap: (0 | 1)[][];
 
-  constructor(
-    context: CanvasRenderingContext2D,
-    tileSize: number,
-    collisionMap: (0 | 1)[][]
-  ) {
+  constructor(context: CanvasRenderingContext2D, tileSize: number) {
     this.context = context;
     this.tileSize = tileSize;
-    this.collisionMap = collisionMap;
     this.addEventListeners();
   }
 
   private addEventListeners(): void {
     eventBus.on('mapManager:cannonPlaced', (tile: Tile) => {
       this.addCannon(tile);
-    });
-
-    eventBus.on('mapManager:collisionMap', (collisionMap: (0 | 1)[][]) => {
-      this.collisionMap = collisionMap;
     });
   }
 
