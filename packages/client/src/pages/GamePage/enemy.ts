@@ -1,22 +1,27 @@
 import { eventBus } from './eventBus';
+import { GameConfig } from './game/config';
 import PathManager from './pathManager';
 import { Point, Tile } from './types';
 
 class Enemy {
   path: Tile[] = [];
   currentPosition: Point;
-  speed = 1;
+  speed = GameConfig.enemy.defaultSpeed;
   currentIndex: number;
   pathManager: PathManager;
   health: number;
   maxHealth: number;
   isDestroyed: boolean;
 
-  constructor(start: Tile, pathManager: PathManager, health = 100) {
+  constructor(
+    start: Tile,
+    pathManager: PathManager,
+    health = GameConfig.enemy.defaultHealth
+  ) {
     this.pathManager = pathManager;
     this.currentPosition = {
-      x: start.x * 32 + 16,
-      y: start.y * 32 + 16,
+      x: start.x * GameConfig.tileSize + GameConfig.tileSize / 2,
+      y: start.y * GameConfig.tileSize + GameConfig.tileSize / 2,
     };
     this.currentIndex = 0;
     this.health = health;
@@ -44,8 +49,8 @@ class Enemy {
     if (!nextTile) return;
 
     const targetPosition = {
-      x: nextTile.x * 32 + 16,
-      y: nextTile.y * 32 + 16,
+      x: nextTile.x * GameConfig.tileSize + GameConfig.tileSize / 2,
+      y: nextTile.y * GameConfig.tileSize + GameConfig.tileSize / 2,
     };
 
     const dx = targetPosition.x - this.currentPosition.x;
@@ -100,17 +105,17 @@ class Enemy {
     context.arc(
       this.currentPosition.x,
       this.currentPosition.y,
-      10,
+      GameConfig.enemy.radius,
       0,
       2 * Math.PI
     );
     context.fill();
 
     // Render health bar
-    const healthBarWidth = 30;
-    const healthBarHeight = 4;
+    const healthBarWidth = GameConfig.healthBar.width;
+    const healthBarHeight = GameConfig.healthBar.height;
     const healthBarX = this.currentPosition.x - healthBarWidth / 2;
-    const healthBarY = this.currentPosition.y - 18;
+    const healthBarY = this.currentPosition.y - GameConfig.healthBar.offset;
     const healthPercentage = this.health / this.maxHealth;
 
     // Background
@@ -135,8 +140,8 @@ class Enemy {
   private addEventListeners() {
     eventBus.on('pathManager:pathUpdated', () => {
       const currentPositionTile: Tile = {
-        x: Math.floor(this.currentPosition.x / 32),
-        y: Math.floor(this.currentPosition.y / 32),
+        x: Math.floor(this.currentPosition.x / GameConfig.tileSize),
+        y: Math.floor(this.currentPosition.y / GameConfig.tileSize),
         id: 'current',
       };
       this.pathManager

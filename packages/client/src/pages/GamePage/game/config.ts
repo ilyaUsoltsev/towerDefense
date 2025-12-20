@@ -1,7 +1,5 @@
 export const GameConfig = {
-  tile: {
-    size: 32,
-  },
+  tileSize: 32,
   enemy: {
     defaultSpeed: 1,
     defaultHealth: 100,
