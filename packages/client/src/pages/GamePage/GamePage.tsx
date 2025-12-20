@@ -3,6 +3,7 @@ import MapManager from './mapManager';
 import PathManager from './pathManager';
 import CannonManager from './cannonManager';
 import EntityManager from './entityManager';
+import { eventBus } from './eventBus';
 
 const GamePage = () => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -68,7 +69,8 @@ const GamePage = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      mapManager.removeEventListeners();
+      mapManager?.removeEventListeners();
+      eventBus.clear();
     };
   }, []);
 
