@@ -1,5 +1,5 @@
 import Enemy from './enemy';
-import { GameConfig } from './game/config';
+import { GameConfig } from './config';
 import PathManager from './pathManager';
 import { Tile } from './types';
 

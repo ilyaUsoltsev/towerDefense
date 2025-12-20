@@ -1,6 +1,6 @@
 import { Point, Projectile, Tile } from './types';
 import Enemy from './enemy';
-import { GameConfig } from './game/config';
+import { GameConfig } from './config';
 
 class Cannon {
   position: Tile;

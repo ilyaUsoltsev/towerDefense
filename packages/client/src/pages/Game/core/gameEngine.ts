@@ -2,8 +2,7 @@ import CannonManager from './cannonManager';
 import MapManager from './mapManager';
 import PathManager from './pathManager';
 import { eventBus } from './eventBus';
-import EnemyManager from './EnemyManager';
-import { GameConfig } from './game/config';
+import EnemyManager from './enemyManager';
 
 class GameEngine {
   private canvas: HTMLCanvasElement;

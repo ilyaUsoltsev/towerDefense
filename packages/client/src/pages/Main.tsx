@@ -8,7 +8,7 @@ import { PageInitArgs } from '../routes';
 import { Button } from '@gravity-ui/uikit';
 import { useAuth } from '../hooks/useAuth';
 import { useState } from 'react';
-import { GamePage } from './GamePage';
+import { Game } from './Game';
 
 export const MainPage = () => {
   const user = useSelector(selectUser);
@@ -36,8 +36,11 @@ export const MainPage = () => {
       </Button>
       <Button onClick={logout}>Выйти</Button>
 
-      <GamePage />
+      <Game />
 
+      <div>
+        <Game />
+      </div>
       {user ? (
         <div>
           <p>{user.first_name}</p>

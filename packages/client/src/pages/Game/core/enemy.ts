@@ -1,5 +1,5 @@
 import { eventBus } from './eventBus';
-import { GameConfig } from './game/config';
+import { GameConfig } from './config';
 import PathManager from './pathManager';
 import { Point, Tile } from './types';
 

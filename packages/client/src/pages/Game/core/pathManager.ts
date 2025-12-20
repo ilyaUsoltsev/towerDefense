@@ -1,7 +1,7 @@
 import EasyStar from 'easystarjs';
 import { Tile } from './types';
 import { eventBus } from './eventBus';
-import { GameConfig } from './game/config';
+import { GameConfig } from './config';
 
 class PathManager {
   context: CanvasRenderingContext2D;

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import GameEngine from './gameEngine';
+import GameEngine from './core/gameEngine';
 
-const GamePage = () => {
+const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<GameEngine | null>(null);
 
@@ -19,4 +19,4 @@ const GamePage = () => {
   return <canvas ref={canvasRef} />;
 };
 
-export default GamePage;
+export default Game;
