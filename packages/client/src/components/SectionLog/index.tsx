@@ -3,7 +3,7 @@ import styles from './SectionLog.module.css';
 
 const SectionLog: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <section className={styles.login__page}>
+    <section className={styles.page}>
       <img
         src="/logoBig.png"
         alt="tower defence"
