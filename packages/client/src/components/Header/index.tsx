@@ -8,7 +8,7 @@ import { useSelector } from '../../store';
 
 import { ROUTE } from '../../constants/ROUTE';
 
-import { AvatarWrapper, HeaderWrapper, IconButton } from './styles';
+import styles from './Header.module.css';
 
 const Header: FC = () => {
   const user = useSelector(selectUser);
@@ -18,20 +18,20 @@ const Header: FC = () => {
   };
 
   return (
-    <HeaderWrapper>
+    <div className={styles.headerWrapper}>
       <Link
         to={ROUTE.USER}
         style={{ textDecoration: 'none', color: 'var(--g-color-text-brand)' }}>
-        <AvatarWrapper>
+        <div className={styles.avatarWrapper}>
           <Avatar icon={Person} aria-label="avatar" size="l" theme="brand" />
           <p>{user?.name}</p>
-        </AvatarWrapper>
+        </div>
       </Link>
 
-      <IconButton onClick={onLogout}>
+      <button className={styles.iconButton} onClick={onLogout}>
         <ArrowRightFromSquare />
-      </IconButton>
-    </HeaderWrapper>
+      </button>
+    </div>
   );
 };
 

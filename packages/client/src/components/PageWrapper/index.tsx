@@ -1,20 +1,14 @@
 import { FC, PropsWithChildren } from 'react';
-import styled from 'styled-components';
-
-import Header from '../Header';
 import { Helmet } from 'react-helmet';
 
-const Page = styled.div`
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
+import Header from '../Header';
+
+import styles from './PageWrapper.module.css';
 
 const PageWrapper: FC<
   PropsWithChildren & { description: string; withHeader?: boolean }
 > = ({ description, withHeader = true, children }) => (
-  <Page>
+  <div className={styles.page}>
     <Helmet>
       <meta charSet="utf-8" />
       <title>Tower Defense</title>
@@ -22,7 +16,7 @@ const PageWrapper: FC<
     </Helmet>
     {withHeader && <Header />}
     {children}
-  </Page>
+  </div>
 );
 
 export default PageWrapper;
