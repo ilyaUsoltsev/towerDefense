@@ -11,9 +11,6 @@ export interface User {
   avatar?: string;
   email?: string;
   phone?: string;
-  // Старые поля для обратной совместимости
-  name?: string;
-  secondName?: string;
 }
 
 export interface UserState {
