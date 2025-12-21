@@ -1,11 +1,12 @@
 import { AppDispatch, RootState } from './store';
 
 import { initMainPage, MainPage } from './pages/Main';
-import { initFriendsPage, FriendsPage } from './pages/FriendsPage';
 import { initNotFoundPage, NotFoundPage } from './pages/NotFound';
 import { initLoginPage, LoginPage } from './pages/Login';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
+
+import { ROUTE } from './constants/ROUTE';
 
 export type PageInitContext = {
   clientToken?: string;
@@ -19,32 +20,28 @@ export type PageInitArgs = {
 
 export const routes = [
   {
-    path: '/',
+    path: ROUTE.ROOT,
     Component: MainPage,
     fetchData: initMainPage,
   },
   {
-    path: '/login',
+    path: ROUTE.LOGIN,
     Component: LoginPage,
     fetchData: initLoginPage,
   },
   {
-    path: '/register',
+    path: ROUTE.REGISTER,
     Component: RegisterPage,
     fetchData: initRegisterPage,
   },
   {
-    path: '/friends',
-    Component: FriendsPage,
-    fetchData: initFriendsPage,
-  },
-  {
-    path: '/leaderboard',
+    path: ROUTE.LEADERBOARD,
     Component: LeaderboardPage,
     fetchData: initLeaderboardPage,
   },
   {
     path: '*',
+    path: ROUTE.ANY,
     Component: NotFoundPage,
     fetchData: initNotFoundPage,
   },
