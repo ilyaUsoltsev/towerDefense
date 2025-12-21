@@ -22,6 +22,7 @@ export const IconButton = styled.button`
   border: 1px solid var(--g-color-base-brand);
   border-radius: 50%;
   background: transparent;
+  cursor: pointer;
 
   & svg path {
     fill: var(--g-color-base-brand);
