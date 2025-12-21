@@ -2,9 +2,18 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { SERVER_HOST } from '../constants';
 
-interface User {
-  name: string;
-  secondName: string;
+export interface User {
+  id?: number;
+  first_name?: string;
+  second_name?: string;
+  display_name?: string;
+  login?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+  // Старые поля для обратной совместимости
+  name?: string;
+  secondName?: string;
 }
 
 export interface UserState {
