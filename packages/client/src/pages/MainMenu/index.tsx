@@ -49,12 +49,7 @@ export const MainPage: FC = () => {
       </SectionLog>
 
       <Modal open={openRules} onClose={() => setOpenRules(false)}>
-        <div
-          style={{
-            padding: '100px',
-          }}>
-          Будет позже
-        </div>
+        <div className={styles.modalContent}>Будет позже</div>
       </Modal>
     </PageWrapper>
   );

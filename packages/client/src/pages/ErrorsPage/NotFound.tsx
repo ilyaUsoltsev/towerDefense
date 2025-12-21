@@ -8,6 +8,7 @@ import PageWrapper from '../../components/PageWrapper';
 import SectionLog from '../../components/SectionLog';
 
 import styles from './ErrorsPage.module.css';
+import { ROUTE } from '../../constants/ROUTE';
 
 export const NotFoundPage: FC = () => {
   usePage({ initPage: initNotFoundPage });
@@ -18,7 +19,7 @@ export const NotFoundPage: FC = () => {
         <div className={styles.error__container}>
           <h1 className={styles.error__code}>404</h1>
           <h2 className={styles.error__title}>Страница не найдена!</h2>
-          <Link to="/">
+          <Link to={ROUTE.ROOT}>
             <Button view="action" size="xl" width="max">
               Вернуться на главную
             </Button>

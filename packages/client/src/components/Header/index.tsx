@@ -19,9 +19,7 @@ const Header: FC = () => {
 
   return (
     <div className={styles.headerWrapper}>
-      <Link
-        to={ROUTE.USER}
-        style={{ textDecoration: 'none', color: 'var(--g-color-text-brand)' }}>
+      <Link to={ROUTE.USER} className={styles.userLink}>
         <div className={styles.avatarWrapper}>
           <Avatar icon={Person} aria-label="avatar" size="l" theme="brand" />
           <p>{user?.name}</p>
