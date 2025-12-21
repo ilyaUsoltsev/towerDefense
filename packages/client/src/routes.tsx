@@ -7,6 +7,8 @@ import { initLoginPage, LoginPage } from './pages/Login';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 import { initError400Page, Error400Page } from './pages/Error400';
 
+import { ROUTE } from './constants/ROUTE';
+
 export type PageInitContext = {
   clientToken?: string;
 };
@@ -19,32 +21,32 @@ export type PageInitArgs = {
 
 export const routes = [
   {
-    path: '/',
+    path: ROUTE.ROOT,
     Component: MainPage,
     fetchData: initMainPage,
   },
   {
-    path: '/login',
+    path: ROUTE.LOGIN,
     Component: LoginPage,
     fetchData: initLoginPage,
   },
   {
-    path: '/register',
+    path: ROUTE.REGISTER,
     Component: RegisterPage,
     fetchData: initRegisterPage,
   },
   {
-    path: '/friends',
+    path: ROUTE.FRIENDS,
     Component: FriendsPage,
     fetchData: initFriendsPage,
   },
   {
-    path: '/400',
+    path: ROUTE.ERROR_400,
     Component: Error400Page,
     fetchData: initError400Page,
   },
   {
-    path: '*',
+    path: ROUTE.ANY,
     Component: NotFoundPage,
     fetchData: initNotFoundPage,
   },
