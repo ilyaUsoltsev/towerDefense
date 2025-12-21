@@ -1,11 +1,12 @@
 import { AppDispatch, RootState } from './store';
 
 import { initMainPage, MainPage } from './pages/Main';
-import { initFriendsPage, FriendsPage } from './pages/FriendsPage';
 import { initNotFoundPage, NotFoundPage } from './pages/NotFound';
 import { initLoginPage, LoginPage } from './pages/Login';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 import { initError400Page, Error400Page } from './pages/Error400';
+
+import { ROUTE } from './constants/ROUTE';
 
 import { ROUTE } from './constants/ROUTE';
 
@@ -34,11 +35,6 @@ export const routes = [
     path: ROUTE.REGISTER,
     Component: RegisterPage,
     fetchData: initRegisterPage,
-  },
-  {
-    path: ROUTE.FRIENDS,
-    Component: FriendsPage,
-    fetchData: initFriendsPage,
   },
   {
     path: ROUTE.ERROR_400,
