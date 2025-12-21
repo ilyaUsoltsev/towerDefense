@@ -19,4 +19,4 @@ module.exports = {
     semi: ['error', 'always'],
   },
   ignorePatterns: ['jest.config.js','dist/', 'build/', 'node_modules/'],
-}
+};
