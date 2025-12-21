@@ -1,16 +1,20 @@
-import { useSelector } from '../../store';
 import { fetchUserThunk, selectUser } from '../../slices/userSlice';
-import { TextInput } from '@gravity-ui/uikit';
+import { TextInput, Spin } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
 import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
 import { Field } from 'react-final-form';
 import SectionLog from '../../components/SectionLog';
+import { useAuth } from '../../services/auth';
+import { LoginRequestData } from '../../api/type';
+import Loader from '../../components/Loader';
+import ErrorText from '../../components/ErrorText';
+import { ROUTE } from '../../constants/ROUTE';
 
 export const LoginPage = () => {
-  const user = useSelector(selectUser);
+  const { login, isLoading, error } = useAuth();
   usePage({ initPage: initLoginPage });
-  const validate = (values: Record<string, unknown>) => {
+  const validate = (values: LoginRequestData) => {
     const errors: Record<string, string> = {};
 
     if (!values.login) {
@@ -25,16 +29,19 @@ export const LoginPage = () => {
   };
 
   const handleSubmit = (data: Record<string, unknown>) => {
+    login(data as LoginRequestData);
     console.log('Валидация');
     console.log('Данные формы:', data);
   };
   return (
     <SectionLog>
+      <Loader isLoading={isLoading}></Loader>
       <FormLog
         validate={validate}
         onSubmit={handleSubmit}
         text="Войти"
-        titleLink="Нет аккаунта ?">
+        titleLink="Нет аккаунта ?"
+        hrefLink={ROUTE.REGISTER}>
         <Field name="login">
           {({ input, meta }) => (
             <TextInput
@@ -66,6 +73,7 @@ export const LoginPage = () => {
             />
           )}
         </Field>
+        <ErrorText>{error}</ErrorText>
       </FormLog>
     </SectionLog>
   );
