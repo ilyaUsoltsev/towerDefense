@@ -6,7 +6,7 @@ const SectionLog: React.FC<PropsWithChildren> = ({ children }) => {
     <section className={styles.page}>
       <img
         src="/logoBig.png"
-        alt="tower defence"
+        alt="tower defense"
         className={styles.logo__big}
       />
       {children}
