@@ -1,37 +1,39 @@
-import { useEffect } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../services/auth';
+import { useAuth } from '../../hooks/useAuth';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../../slices/userSlice'; // Путь к селектору
+import { selectUser } from '../../slices/userSlice';
+import { ROUTE } from '../../constants/ROUTE';
+import Loader from '../Loader';
 
-export interface ProtectedRouteProps {
-  children: JSX.Element;
-}
-
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const { checkLoginUser, isLoading } = useAuth();
 
   // Читаем данные пользователя из глобального state
   const userData = useSelector(selectUser);
 
-  // Автоматически проверяем авторизацию при mount или если userData отсутствует
+  // Флаг: была ли попытка проверки
+  const [hasAttemptedAuthCheck, setHasAttemptedAuthCheck] = useState(false);
+
   useEffect(() => {
-    if (userData === null && !isLoading) {
+    // Если ещё не проверяли и нет загрузки — запускаем проверку
+    if (!hasAttemptedAuthCheck && !isLoading) {
+      setHasAttemptedAuthCheck(true);
       checkLoginUser();
     }
-  }, [userData, isLoading, checkLoginUser]);
+  }, [hasAttemptedAuthCheck, isLoading, checkLoginUser]);
 
-  // Пока идёт загрузка — показываем спиннер (или null)
-  if (isLoading) {
-    return <div>Загрузка...</div>; // Или спиннер
+  // Пока идёт загрузка или ещё не было проверки — показываем Loader
+  if (isLoading || !hasAttemptedAuthCheck) {
+    return <Loader isLoading={true} />;
   }
 
-  // Если пользователь не авторизован — редирект на логин
+  // Если проверка завершена, но userData отсутствует — редирект
   if (!userData) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to={ROUTE.LOGIN} state={{ from: location }} replace />;
   }
 
   // Всё ок — отдаём дочерние компоненты
-  return children;
+  return children as JSX.Element;
 };

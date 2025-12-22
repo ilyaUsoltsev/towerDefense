@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { SERVER_HOST } from '../constants';
-import { UserDTO } from '../api/type';
+import { User } from '../api/type';
 
 export interface UserState {
-  data: UserDTO | null;
+  data: User | null;
   isLoading: boolean;
 }
 
@@ -25,7 +25,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserDTO | null>) => {
+    setUser: (state, action: PayloadAction<User | null>) => {
       state.data = action.payload;
     },
     // Опционально: очистка данных
@@ -41,7 +41,7 @@ export const userSlice = createSlice({
       })
       .addCase(
         fetchUserThunk.fulfilled.type,
-        (state, { payload }: PayloadAction<UserDTO>) => {
+        (state, { payload }: PayloadAction<User>) => {
           state.data = payload;
           state.isLoading = false;
         }

@@ -6,7 +6,7 @@ import { Header } from '../components/Header';
 import { usePage } from '../hooks/usePage';
 import { PageInitArgs } from '../routes';
 import { Button } from '@gravity-ui/uikit';
-import { useAuth } from '../services/auth';
+import { useAuth } from '../hooks/useAuth';
 
 export const MainPage = () => {
   const user = useSelector(selectUser);

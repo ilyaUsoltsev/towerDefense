@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import AuthApi from '../api/auth';
-import { CreateUser, LoginRequestData, UserDTO, APIError } from '../api/type';
+import { CreateUser, LoginRequestData, User, APIError } from '../api/type';
 import { ROUTE } from '../constants/ROUTE';
-import { isApiError } from '../utils/isApiError';
+import { isApiError } from '../api/isApiError';
 import { useDispatch } from '../store';
 import { setUser } from '../slices/userSlice';
 
@@ -24,7 +24,7 @@ export const useAuth = () => {
   };
 
   // Обновление глобального состояния и локального state
-  const updateUserState = (user: UserDTO | null) => {
+  const updateUserState = (user: User | null) => {
     dispatch(setUser(user));
   };
 
@@ -48,7 +48,7 @@ export const useAuth = () => {
         return false;
       }
 
-      updateUserState(result as UserDTO);
+      updateUserState(result as User);
       return true;
     } catch (err) {
       if (throwOnError) throw err;
@@ -71,15 +71,12 @@ export const useAuth = () => {
       if (isApiError(result)) {
         const errorMsg = handleApiError(result as APIError);
         if (result.status === 400) {
-          await checkLoginUser();
           navigate(ROUTE.ROOT, { replace: true });
           return;
         }
         setError(errorMsg);
         return;
       }
-
-      await checkLoginUser(true);
       navigate(ROUTE.ROOT, { replace: true });
     } catch (err) {
       setError('Произошла ошибка');
@@ -101,7 +98,6 @@ export const useAuth = () => {
         return;
       }
 
-      await checkLoginUser(true);
       navigate(ROUTE.ROOT, { replace: true });
     } catch {
       setError('Произошла ошибка');

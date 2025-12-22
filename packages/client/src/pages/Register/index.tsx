@@ -5,7 +5,7 @@ import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
 import { Field } from 'react-final-form';
 import SectionLog from '../../components/SectionLog';
-import { useAuth } from '../../services/auth';
+import { useAuth } from '../../hooks/useAuth';
 import { CreateUser } from '../../api/type';
 import Loader from '../../components/Loader';
 import ErrorText from '../../components/ErrorText';

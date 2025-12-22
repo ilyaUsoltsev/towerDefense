@@ -4,7 +4,7 @@ import {
   CreateUser,
   LoginRequestData,
   SignUpResponse,
-  UserDTO,
+  User,
 } from './type';
 
 export default class AuthApi {
@@ -24,8 +24,8 @@ export default class AuthApi {
     return this.httpClient.post<void>('/signin', data);
   }
 
-  async me(): Promise<UserDTO | APIError> {
-    return this.httpClient.get<UserDTO>('/user');
+  async me(): Promise<User | APIError> {
+    return this.httpClient.get<User>('/user');
   }
 
   async logout(): Promise<void | APIError> {

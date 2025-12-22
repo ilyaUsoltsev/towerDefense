@@ -1,11 +1,11 @@
 import { fetchUserThunk, selectUser } from '../../slices/userSlice';
-import { TextInput, Spin } from '@gravity-ui/uikit';
+import { TextInput } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
 import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
 import { Field } from 'react-final-form';
 import SectionLog from '../../components/SectionLog';
-import { useAuth } from '../../services/auth';
+import { useAuth } from '../../hooks/useAuth';
 import { LoginRequestData } from '../../api/type';
 import Loader from '../../components/Loader';
 import ErrorText from '../../components/ErrorText';
@@ -13,7 +13,10 @@ import { ROUTE } from '../../constants/ROUTE';
 
 export const LoginPage = () => {
   const { login, isLoading, error } = useAuth();
+
+  // Читаем данные пользователя из глобального state
   usePage({ initPage: initLoginPage });
+
   const validate = (values: LoginRequestData) => {
     const errors: Record<string, string> = {};
 

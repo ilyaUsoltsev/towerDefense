@@ -8,7 +8,7 @@ export type SignUpResponse = {
   id: number;
 };
 
-export type UserDTO = {
+export type User = {
   id: number;
   login: string;
   first_name: string;
@@ -19,7 +19,7 @@ export type UserDTO = {
   email: string;
 };
 
-export type CreateUser = Omit<UserDTO, 'avatar' | 'display_name' | 'id'> & {
+export type CreateUser = Omit<User, 'avatar' | 'display_name' | 'id'> & {
   password: string;
 };
 
