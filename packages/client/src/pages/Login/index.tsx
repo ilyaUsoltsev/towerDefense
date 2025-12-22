@@ -10,12 +10,37 @@ import { LoginRequestData } from '../../api/type';
 import Loader from '../../components/Loader';
 import ErrorText from '../../components/ErrorText';
 import { ROUTE } from '../../constants/ROUTE';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useSelector } from '../../store';
 
 export const LoginPage = () => {
-  const { login, isLoading, error } = useAuth();
+  const { checkLoginUser, login, isLoading, error } = useAuth();
+  const userData = useSelector(selectUser);
+  const [hasAttemptedAuthCheck, setHasAttemptedAuthCheck] = useState(false);
+  // Читаем данные пользователя из глобального state
+
+  const navigate = useNavigate(); // Hook для навигации
 
   // Читаем данные пользователя из глобального state
   usePage({ initPage: initLoginPage });
+
+  useEffect(() => {
+    if (!hasAttemptedAuthCheck) {
+      checkLoginUser(); // Инициируем проверку
+      setHasAttemptedAuthCheck(true);
+    }
+  }, [checkLoginUser, hasAttemptedAuthCheck]);
+
+  useEffect(() => {
+    if (!isLoading && hasAttemptedAuthCheck && userData) {
+      navigate(ROUTE.ROOT, { replace: true });
+    }
+  }, [isLoading, hasAttemptedAuthCheck, userData, navigate]);
+
+  if (isLoading || !hasAttemptedAuthCheck) {
+    return <Loader isLoading={isLoading} />;
+  }
 
   const validate = (values: LoginRequestData) => {
     const errors: Record<string, string> = {};

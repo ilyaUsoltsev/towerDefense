@@ -17,21 +17,22 @@ export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
   const [hasAttemptedAuthCheck, setHasAttemptedAuthCheck] = useState(false);
 
   useEffect(() => {
-    // Если ещё не проверяли и нет загрузки — запускаем проверку
-    if (!hasAttemptedAuthCheck && !isLoading) {
+    if (!hasAttemptedAuthCheck) {
+      checkLoginUser(); // Инициируем проверку
       setHasAttemptedAuthCheck(true);
-      checkLoginUser();
     }
-  }, [hasAttemptedAuthCheck, isLoading, checkLoginUser]);
+  }, [checkLoginUser, hasAttemptedAuthCheck]);
 
-  // Пока идёт загрузка или ещё не было проверки — показываем Loader
+  // Пока идёт проверка — показываем загрузчик
   if (isLoading || !hasAttemptedAuthCheck) {
-    return <Loader isLoading={true} />;
+    return <Loader isLoading={isLoading} />;
   }
 
   // Если проверка завершена, но userData отсутствует — редирект
   if (!userData) {
-    return <Navigate to={ROUTE.LOGIN} state={{ from: location }} replace />;
+    return (
+      <Navigate to={ROUTE.LOGIN} state={{ from: location.pathname }} replace />
+    );
   }
 
   // Всё ок — отдаём дочерние компоненты

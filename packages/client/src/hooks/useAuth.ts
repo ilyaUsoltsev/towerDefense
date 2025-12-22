@@ -71,12 +71,14 @@ export const useAuth = () => {
       if (isApiError(result)) {
         const errorMsg = handleApiError(result as APIError);
         if (result.status === 400) {
+          await checkLoginUser();
           navigate(ROUTE.ROOT, { replace: true });
           return;
         }
         setError(errorMsg);
         return;
       }
+      await checkLoginUser(true);
       navigate(ROUTE.ROOT, { replace: true });
     } catch (err) {
       setError('Произошла ошибка');
