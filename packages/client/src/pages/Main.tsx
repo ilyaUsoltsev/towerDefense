@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 import { Helmet } from 'react-helmet';
-
 import { useSelector } from '../store';
 import { fetchUserThunk, selectUser } from '../slices/userSlice';
 import { Header } from '../components/Header';
 import { usePage } from '../hooks/usePage';
 import { PageInitArgs } from '../routes';
 import { Button } from '@gravity-ui/uikit';
-import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 export const MainPage = () => {
   const user = useSelector(selectUser);
-  const [email, setEmail] = useState('');
+  const { logout } = useAuth();
   usePage({ initPage: initMainPage });
   return (
     <div>
@@ -33,11 +32,12 @@ export const MainPage = () => {
       <Button view="action" size="l">
         Act
       </Button>
+      <Button onClick={logout}>Выйти</Button>
 
       {user ? (
         <div>
-          <p>{user.name}</p>
-          <p>{user.secondName}</p>
+          <p>{user.first_name}</p>
+          <p>{user.second_name}</p>
         </div>
       ) : (
         <p>Пользователь не найден!</p>
