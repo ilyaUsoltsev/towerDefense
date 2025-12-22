@@ -38,10 +38,6 @@ export const LoginPage = () => {
     }
   }, [isLoading, hasAttemptedAuthCheck, userData, navigate]);
 
-  if (isLoading || !hasAttemptedAuthCheck) {
-    return <Loader isLoading={isLoading} />;
-  }
-
   const validate = (values: LoginRequestData) => {
     const errors: Record<string, string> = {};
 
