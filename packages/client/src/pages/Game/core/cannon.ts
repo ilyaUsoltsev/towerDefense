@@ -1,21 +1,23 @@
-import { Point, Projectile, Tile } from './types';
+import { Point, Tile } from './types';
 import Enemy from './enemy';
 import { GameConfig } from './config';
+import ProjectileManager from './projectileManager';
 
 class Cannon {
   position: Tile;
   range: number;
   tileSize: number;
-  projectiles: Projectile[] = [];
   fireRate = GameConfig.cannon.fireRate;
   projectileSpeed = GameConfig.cannon.projectileSpeed;
   damage = GameConfig.cannon.damage;
   lastFireTime = 0;
+  private projectileManager: ProjectileManager;
 
-  constructor(position: Tile, range: number, tileSize: number) {
+  constructor(position: Tile, range: number, tileSize: number, projectileManager: ProjectileManager) {
     this.position = position;
     this.range = range;
     this.tileSize = tileSize;
+    this.projectileManager = projectileManager;
   }
 
   getCenter(): Point {
@@ -44,13 +46,12 @@ class Cannon {
     }
 
     const cannonCenter = this.getCenter();
-    this.projectiles.push({
-      x: cannonCenter.x,
-      y: cannonCenter.y,
-      targetX: target.x,
-      targetY: target.y,
-      speed: this.projectileSpeed,
-    });
+    this.projectileManager.createProjectile(
+      cannonCenter,
+      target,
+      this.projectileSpeed,
+      this.damage
+    );
     this.lastFireTime = currentTime;
   }
 
@@ -63,38 +64,6 @@ class Cannon {
       const target = enemiesInRange[0].getPosition();
       this.shootAt(target, currentTime);
     }
-
-    this.updateProjectiles(enemies);
-  }
-
-  private updateProjectiles(enemies: Enemy[]): void {
-    this.projectiles = this.projectiles.filter(projectile => {
-      const dx = projectile.targetX - projectile.x;
-      const dy = projectile.targetY - projectile.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < projectile.speed) {
-        return false;
-      }
-
-      // Check collision with entities
-      for (const enemy of enemies) {
-        if (enemy.destroyed()) continue;
-
-        const enemyPos = enemy.getPosition();
-        const distToEnemy = Math.sqrt(
-          (projectile.x - enemyPos.x) ** 2 + (projectile.y - enemyPos.y) ** 2
-        );
-        if (distToEnemy < GameConfig.enemy.radius) {
-          enemy.takeHit(this.damage);
-          return false;
-        }
-      }
-
-      projectile.x += (dx / distance) * projectile.speed;
-      projectile.y += (dy / distance) * projectile.speed;
-      return true;
-    });
   }
 
   render(context: CanvasRenderingContext2D): void {
@@ -112,17 +81,6 @@ class Cannon {
     context.beginPath();
     context.arc(center.x, center.y, this.range, 0, 2 * Math.PI);
     context.stroke();
-
-    this.renderProjectiles(context);
-  }
-
-  private renderProjectiles(context: CanvasRenderingContext2D): void {
-    context.fillStyle = 'orange';
-    this.projectiles.forEach(projectile => {
-      context.beginPath();
-      context.arc(projectile.x, projectile.y, 3, 0, 2 * Math.PI);
-      context.fill();
-    });
   }
 }
 

@@ -20,4 +20,8 @@ export const GameConfig = {
     height: 4,
     offset: 18,
   },
+  projectile: {
+    radius: 4,
+    color: 'orange',
+  },
 } as const;

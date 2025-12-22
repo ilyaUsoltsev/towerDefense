@@ -2,6 +2,8 @@ import Enemy from './enemy';
 import { GameConfig } from './config';
 import PathManager from './pathManager';
 import { Tile } from './types';
+import { eventBus } from './eventBus';
+import e from 'express';
 
 class EnemyManager {
   enemies: Enemy[] = [];
@@ -11,6 +13,7 @@ class EnemyManager {
   spawnInterval: number;
   lastSpawnTime: number;
   isSpawning: boolean;
+  private unsubscribe!: () => void;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -24,6 +27,7 @@ class EnemyManager {
     this.spawnInterval = spawnInterval;
     this.lastSpawnTime = 0;
     this.isSpawning = false;
+    this.addEventListeners();
   }
 
   addEnemy(health: number): Enemy {
@@ -67,6 +71,11 @@ class EnemyManager {
       this.lastSpawnTime = currentTime;
     }
 
+    // Update all enemies
+    this.enemies.forEach(enemy => {
+      enemy.update();
+    });
+
     // Remove destroyed or finished entities
     this.enemies = this.enemies.filter(
       enemy => !enemy.destroyed() && !enemy.hasReachedEnd()
@@ -93,6 +102,33 @@ class EnemyManager {
 
   clearAll(): void {
     this.enemies = [];
+  }
+
+  removeEventListeners(): void {
+    this.unsubscribe();
+  }
+
+  private addEventListeners() {
+    this.unsubscribe = eventBus.on('pathManager:pathUpdated', async () => {
+      const pathUpdatePromises = this.enemies.map(async enemy => {
+        const currentPositionTile: Tile = {
+          x: Math.floor(enemy.currentPosition.x / GameConfig.tileSize),
+          y: Math.floor(enemy.currentPosition.y / GameConfig.tileSize),
+          id: 'current',
+        };
+        const newPathForEnemy = await this.pathManager.getPath(
+          currentPositionTile
+        );
+        enemy.setPath(newPathForEnemy);
+        enemy.currentIndex = 0;
+      });
+
+      try {
+        await Promise.all(pathUpdatePromises);
+      } catch (error) {
+        console.error('Error updating enemy paths:', error);
+      }
+    });
   }
 }
 

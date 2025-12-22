@@ -1,4 +1,3 @@
-import { eventBus } from './eventBus';
 import { GameConfig } from './config';
 import PathManager from './pathManager';
 import { Point, Tile } from './types';
@@ -23,7 +22,6 @@ class Enemy {
     this.health = health;
     this.maxHealth = health;
     this.isDestroyed = false;
-    this.addEventListeners();
     this.path = this.pathManager.getStartFinishPath();
   }
 
@@ -92,9 +90,11 @@ class Enemy {
     return this.isDestroyed;
   }
 
-  render(context: CanvasRenderingContext2D) {
+  update() {
     this.moveAlongPath();
+  }
 
+  render(context: CanvasRenderingContext2D) {
     // Render enemy circle
     context.fillStyle = 'red';
     context.beginPath();
@@ -147,22 +147,6 @@ class Enemy {
       }
     }
     context.stroke();
-  }
-
-  private addEventListeners() {
-    eventBus.on('pathManager:pathUpdated', () => {
-      const currentPositionTile: Tile = {
-        x: Math.floor(this.currentPosition.x / GameConfig.tileSize),
-        y: Math.floor(this.currentPosition.y / GameConfig.tileSize),
-        id: 'current',
-      };
-      this.pathManager
-        .getPath(currentPositionTile)
-        .then((newPathForEnemy: Tile[]) => {
-          this.setPath(newPathForEnemy);
-          this.currentIndex = 0;
-        });
-    });
   }
 }
 

@@ -5,10 +5,11 @@ import { GameConfig } from './config';
 
 class PathManager {
   context: CanvasRenderingContext2D;
-  private easyStar: EasyStar.js;
   startTile: Tile;
   endTile: Tile;
   statFinishPath: Tile[] = [];
+  private easyStar: EasyStar.js;
+  private unsubscribe!: () => void;
 
   constructor(context: CanvasRenderingContext2D, start: Tile, end: Tile) {
     this.context = context;
@@ -28,6 +29,31 @@ class PathManager {
     return path;
   }
 
+  public getStartFinishPath(): Tile[] {
+    return this.statFinishPath;
+  }
+
+  public async getPath(start?: Tile, end?: Tile): Promise<Tile[]> {
+    return await this.findPath(start ?? this.startTile, end ?? this.endTile);
+  }
+
+  public removeEventListeners() {
+    this.unsubscribe();
+  }
+
+  // Temprorary method for rendering tiles (for debugging)
+  public renderPathStartFinish() {
+    this.context.fillStyle = 'yellow';
+    this.statFinishPath.forEach(tile => {
+      this.context.fillRect(
+        tile.x * GameConfig.tileSize,
+        tile.y * GameConfig.tileSize,
+        GameConfig.tileSize,
+        GameConfig.tileSize
+      );
+    });
+  }
+
   private async trySetCollisionMap(tile: Tile, collisionMap: (0 | 1)[][]) {
     collisionMap[tile.y][tile.x] = 1;
     this.easyStar.setGrid(collisionMap);
@@ -44,16 +70,8 @@ class PathManager {
     }
   }
 
-  public getStartFinishPath(): Tile[] {
-    return this.statFinishPath;
-  }
-
-  public async getPath(start?: Tile, end?: Tile): Promise<Tile[]> {
-    return await this.findPath(start ?? this.startTile, end ?? this.endTile);
-  }
-
   private addEventListeners() {
-    eventBus.on('mapManager:tryAddCannon', payload => {
+    this.unsubscribe = eventBus.on('mapManager:tryAddCannon', payload => {
       this.trySetCollisionMap(payload.cannonTile, payload.collisionMap);
     });
   }
@@ -79,19 +97,6 @@ class PathManager {
         }
       );
       this.easyStar.calculate();
-    });
-  }
-
-  // Temprorary method for rendering tiles (for debugging)
-  public renderPathStartFinish() {
-    this.context.fillStyle = 'yellow';
-    this.statFinishPath.forEach(tile => {
-      this.context.fillRect(
-        tile.x * GameConfig.tileSize,
-        tile.y * GameConfig.tileSize,
-        GameConfig.tileSize,
-        GameConfig.tileSize
-      );
     });
   }
 }

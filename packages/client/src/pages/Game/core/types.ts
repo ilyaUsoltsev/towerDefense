@@ -3,23 +3,13 @@ export interface Point {
   y: number;
 }
 
-export interface Tile {
-  x: number;
-  y: number;
+export interface Tile extends Point {
   id: string;
 }
 
 export interface CannonData {
   position: Tile;
   range: number;
-}
-
-export interface Projectile {
-  x: number;
-  y: number;
-  targetX: number;
-  targetY: number;
-  speed: number;
 }
 
 /**

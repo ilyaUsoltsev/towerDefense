@@ -48,24 +48,27 @@ class GameEngine {
 
   async start() {
     await this.initialize();
-    this.loop();
+    this.loop(0);
   }
 
   stop() {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    this.cannonManager.removeEventListeners();
+    this.mapManager.removeEventListeners();
+    this.enemyManager.removeEventListeners();
+    this.pathManager.removeEventListeners();
     eventBus.clear();
-    this.mapManager?.removeEventListeners();
   }
 
-  private loop = () => {
-    this.render();
+  private loop = (timestamp: number) => {
+    this.render(timestamp);
     this.animationFrameId = requestAnimationFrame(this.loop);
   };
 
-  private render() {
-    const currentTime = Date.now();
+  private render(timestamp: number) {
+    const currentTime = timestamp;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.mapManager.renderGameField();
     this.mapManager.renderWalls();

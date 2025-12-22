@@ -62,7 +62,13 @@ export class EventBus {
   ): void {
     const handlers = this.handlers.get(event);
     if (handlers) {
-      handlers.forEach(handler => handler(payload));
+      handlers.forEach(handler => {
+        try {
+          handler(payload);
+        } catch (error) {
+          console.error('Error emitting event:', error);
+        }
+      });
     }
   }
 

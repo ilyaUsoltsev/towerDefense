@@ -38,9 +38,6 @@ export const MainPage = () => {
 
       <Game />
 
-      <div>
-        <Game />
-      </div>
       {user ? (
         <div>
           <p>{user.first_name}</p>
