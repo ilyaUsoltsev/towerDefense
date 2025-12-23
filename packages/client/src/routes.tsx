@@ -5,6 +5,7 @@ import { GamePage, initGamePage } from './pages/Game';
 import { initLoginPage, LoginPage } from './pages/Login';
 import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
+import { initProfilePage, ProfilePage } from './pages/Profile';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { ROUTE } from './constants/ROUTE';
@@ -47,6 +48,11 @@ export const routes = [
     path: ROUTE.REGISTER,
     element: <RegisterPage />,
     fetchData: initRegisterPage,
+  },
+  {
+    path: ROUTE.USER,
+    Component: ProfilePage,
+    fetchData: initProfilePage,
   },
   {
     path: ROUTE.ANY,

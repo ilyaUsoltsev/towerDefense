@@ -3,8 +3,8 @@ import { RootState } from '../store';
 import { SERVER_HOST } from '../constants';
 
 interface Friend {
-  name: string;
-  secondName: string;
+  first_name: string;
+  second_name: string;
   avatar: string;
 }
 
