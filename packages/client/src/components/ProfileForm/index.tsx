@@ -1,6 +1,13 @@
-import { Form, Field } from 'react-final-form';
-import { TextInput, Button, Card } from '@gravity-ui/uikit';
+import { Form } from 'react-final-form';
+import { Button, Card } from '@gravity-ui/uikit';
 import { User } from '../../slices/userSlice';
+import { FormField } from '../FormField';
+import {
+  isNotEmpty,
+  isValidEmail,
+  isValidPhone,
+  VALIDATION_MESSAGES,
+} from '../../utils/validation';
 import styles from './ProfileForm.module.css';
 
 interface ProfileFormProps {
@@ -8,33 +15,31 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm = ({ user }: ProfileFormProps) => {
-  const validateProfile = (values: Record<string, unknown>) => {
+  const validateProfile = (values: Record<string, string>) => {
     const errors: Record<string, string> = {};
 
-    if (!values.first_name) {
-      errors.first_name = 'Поле обязательно для заполнения';
+    if (!isNotEmpty(values.first_name)) {
+      errors.first_name = VALIDATION_MESSAGES.REQUIRED;
     }
 
-    if (!values.second_name) {
-      errors.second_name = 'Поле обязательно для заполнения';
+    if (!isNotEmpty(values.second_name)) {
+      errors.second_name = VALIDATION_MESSAGES.REQUIRED;
     }
 
-    if (!values.login) {
-      errors.login = 'Поле обязательно для заполнения';
+    if (!isNotEmpty(values.login)) {
+      errors.login = VALIDATION_MESSAGES.REQUIRED;
     }
 
-    if (!values.email) {
-      errors.email = 'Поле обязательно для заполнения';
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email as string)
-    ) {
-      errors.email = 'Некорректный email';
+    if (!isNotEmpty(values.email)) {
+      errors.email = VALIDATION_MESSAGES.REQUIRED;
+    } else if (!isValidEmail(values.email)) {
+      errors.email = VALIDATION_MESSAGES.INVALID_EMAIL;
     }
 
-    if (!values.phone) {
-      errors.phone = 'Поле обязательно для заполнения';
-    } else if (!/^\+?[0-9]{10,15}$/.test(values.phone as string)) {
-      errors.phone = 'Некорректный номер телефона';
+    if (!isNotEmpty(values.phone)) {
+      errors.phone = VALIDATION_MESSAGES.REQUIRED;
+    } else if (!isValidPhone(values.phone)) {
+      errors.phone = VALIDATION_MESSAGES.INVALID_PHONE;
     }
 
     return errors;
@@ -70,107 +75,47 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
         initialValues={initialProfileValues}>
         {({ handleSubmit }) => (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <Field name="first_name">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="text"
-                  placeholder="Имя"
-                  label="Имя"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="first_name"
+              type="text"
+              placeholder="Имя"
+              label="Имя"
+            />
 
-            <Field name="second_name">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="text"
-                  placeholder="Фамилия"
-                  label="Фамилия"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="second_name"
+              type="text"
+              placeholder="Фамилия"
+              label="Фамилия"
+            />
 
-            <Field name="display_name">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="text"
-                  placeholder="Отображаемое имя"
-                  label="Отображаемое имя"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="display_name"
+              type="text"
+              placeholder="Отображаемое имя"
+              label="Отображаемое имя"
+            />
 
-            <Field name="login">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="text"
-                  placeholder="Логин"
-                  label="Логин"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="login"
+              type="text"
+              placeholder="Логин"
+              label="Логин"
+            />
 
-            <Field name="email">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="email"
-                  placeholder="Email"
-                  label="Email"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="email"
+              type="email"
+              placeholder="Email"
+              label="Email"
+            />
 
-            <Field name="phone">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="tel"
-                  placeholder="+79001001100"
-                  label="Телефон"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="phone"
+              type="tel"
+              placeholder="+79001001100"
+              label="Телефон"
+            />
 
             <Button
               width="max"

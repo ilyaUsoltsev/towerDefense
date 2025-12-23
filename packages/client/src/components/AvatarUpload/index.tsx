@@ -1,6 +1,12 @@
 import { useState, useRef } from 'react';
 import { Card, Avatar, User, Button } from '@gravity-ui/uikit';
 import { User as UserType } from '../../slices/userSlice';
+import {
+  isAllowedImageType,
+  getAllowedImageTypesAccept,
+  getAllowedImageFormatsText,
+  getInvalidFileTypeMessage,
+} from '../../constants/fileTypes';
 import styles from './AvatarUpload.module.css';
 
 interface AvatarUploadProps {
@@ -14,15 +20,8 @@ export const AvatarUpload = ({ user }: AvatarUploadProps) => {
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const allowedTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/gif',
-        'image/webp',
-      ];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Допустимы только файлы JPEG, JPG, PNG, GIF, WebP');
+      if (!isAllowedImageType(file.type)) {
+        alert(getInvalidFileTypeMessage());
         return;
       }
 
@@ -65,7 +64,7 @@ export const AvatarUpload = ({ user }: AvatarUploadProps) => {
           <input
             type="file"
             ref={fileInputRef}
-            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+            accept={getAllowedImageTypesAccept()}
             onChange={handleAvatarChange}
             className={styles.fileInput}
           />
@@ -76,7 +75,9 @@ export const AvatarUpload = ({ user }: AvatarUploadProps) => {
             onClick={() => fileInputRef.current?.click()}>
             Загрузить аватар
           </Button>
-          <p className={styles.hint}>Допустимы: JPEG, JPG, PNG, GIF, WebP</p>
+          <p className={styles.hint}>
+            Допустимы: {getAllowedImageFormatsText()}
+          </p>
         </div>
       </div>
     </Card>

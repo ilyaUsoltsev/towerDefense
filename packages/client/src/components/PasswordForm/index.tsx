@@ -1,25 +1,31 @@
-import { Form, Field } from 'react-final-form';
-import { TextInput, Button, Card } from '@gravity-ui/uikit';
+import { Form } from 'react-final-form';
+import { Button, Card } from '@gravity-ui/uikit';
+import { FormField } from '../FormField';
+import {
+  isNotEmpty,
+  hasMinLength,
+  VALIDATION_MESSAGES,
+} from '../../utils/validation';
 import styles from './PasswordForm.module.css';
 
 export const PasswordForm = () => {
-  const validatePassword = (values: Record<string, unknown>) => {
+  const validatePassword = (values: Record<string, string>) => {
     const errors: Record<string, string> = {};
 
-    if (!values.oldPassword) {
-      errors.oldPassword = 'Поле обязательно для заполнения';
+    if (!isNotEmpty(values.oldPassword)) {
+      errors.oldPassword = VALIDATION_MESSAGES.REQUIRED;
     }
 
-    if (!values.newPassword) {
-      errors.newPassword = 'Поле обязательно для заполнения';
-    } else if ((values.newPassword as string).length < 8) {
-      errors.newPassword = 'Пароль должен быть не менее 8 символов';
+    if (!isNotEmpty(values.newPassword)) {
+      errors.newPassword = VALIDATION_MESSAGES.REQUIRED;
+    } else if (!hasMinLength(values.newPassword, 8)) {
+      errors.newPassword = VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH;
     }
 
-    if (!values.confirmPassword) {
-      errors.confirmPassword = 'Поле обязательно для заполнения';
+    if (!isNotEmpty(values.confirmPassword)) {
+      errors.confirmPassword = VALIDATION_MESSAGES.REQUIRED;
     } else if (values.newPassword !== values.confirmPassword) {
-      errors.confirmPassword = 'Пароли не совпадают';
+      errors.confirmPassword = VALIDATION_MESSAGES.PASSWORDS_NOT_MATCH;
     }
 
     return errors;
@@ -39,56 +45,26 @@ export const PasswordForm = () => {
       <Form onSubmit={handlePasswordSubmit} validate={validatePassword}>
         {({ handleSubmit }) => (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <Field name="oldPassword">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="password"
-                  placeholder="Текущий пароль"
-                  label="Текущий пароль"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="oldPassword"
+              type="password"
+              placeholder="Текущий пароль"
+              label="Текущий пароль"
+            />
 
-            <Field name="newPassword">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="password"
-                  placeholder="Новый пароль"
-                  label="Новый пароль"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="newPassword"
+              type="password"
+              placeholder="Новый пароль"
+              label="Новый пароль"
+            />
 
-            <Field name="confirmPassword">
-              {({ input, meta }) => (
-                <TextInput
-                  {...input}
-                  size="l"
-                  type="password"
-                  placeholder="Подтвердите новый пароль"
-                  label="Подтверждение пароля"
-                  validationState={
-                    meta.error && meta.touched ? 'invalid' : undefined
-                  }
-                  errorMessage={meta.touched ? meta.error || '' : ''}
-                  errorPlacement="outside"
-                />
-              )}
-            </Field>
+            <FormField
+              name="confirmPassword"
+              type="password"
+              placeholder="Подтвердите новый пароль"
+              label="Подтверждение пароля"
+            />
 
             <Button
               width="max"
