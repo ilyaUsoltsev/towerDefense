@@ -1,19 +1,35 @@
+import { ArrowRightFromSquare, Person } from '@gravity-ui/icons';
+import { Avatar } from '@gravity-ui/uikit';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-export const Header = () => {
+import { selectUser } from '../../slices/userSlice';
+import { useSelector } from '../../store';
+
+import { useAuth } from '../../hooks/useAuth';
+
+import { ROUTE } from '../../constants/ROUTE';
+
+import styles from './Header.module.css';
+
+const Header: FC = () => {
+  const user = useSelector(selectUser);
+  const { logout } = useAuth();
+
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Главная</Link>
-        </li>
-        <li>
-          <Link to="/friends">Страница со списком друзей</Link>
-        </li>
-        <li>
-          <Link to="/404">404</Link>
-        </li>
-      </ul>
-    </nav>
+    <div className={styles.headerWrapper}>
+      <Link to={ROUTE.USER} className={styles.userLink}>
+        <div className={styles.avatarWrapper}>
+          <Avatar icon={Person} aria-label="avatar" size="l" theme="brand" />
+          <p>{user?.display_name}</p>
+        </div>
+      </Link>
+
+      <button className={styles.iconButton} onClick={logout}>
+        <ArrowRightFromSquare />
+      </button>
+    </div>
   );
 };
+
+export default Header;

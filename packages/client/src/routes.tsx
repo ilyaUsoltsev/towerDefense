@@ -1,11 +1,13 @@
 import { AppDispatch, RootState } from './store';
 
-import { initMainPage, MainPage } from './pages/Main';
-import { initNotFoundPage, NotFoundPage } from './pages/NotFound';
+import { initNotFoundPage, NotFoundPage } from './pages/ErrorsPage/NotFound';
+import { GamePage, initGamePage } from './pages/Game';
 import { initLoginPage, LoginPage } from './pages/Login';
+import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 import { initProfilePage, ProfilePage } from './pages/Profile';
 
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { ROUTE } from './constants/ROUTE';
 
 export type PageInitContext = {
@@ -21,17 +23,30 @@ export type PageInitArgs = {
 export const routes = [
   {
     path: ROUTE.ROOT,
-    Component: MainPage,
+    element: (
+      <ProtectedRoute>
+        <MainPage />
+      </ProtectedRoute>
+    ),
     fetchData: initMainPage,
   },
   {
+    path: ROUTE.GAME,
+    element: (
+      <ProtectedRoute>
+        <GamePage />
+      </ProtectedRoute>
+    ),
+    fetchData: initGamePage,
+  },
+  {
     path: ROUTE.LOGIN,
-    Component: LoginPage,
+    element: <LoginPage />,
     fetchData: initLoginPage,
   },
   {
     path: ROUTE.REGISTER,
-    Component: RegisterPage,
+    element: <RegisterPage />,
     fetchData: initRegisterPage,
   },
   {
@@ -41,7 +56,7 @@ export const routes = [
   },
   {
     path: ROUTE.ANY,
-    Component: NotFoundPage,
+    element: <NotFoundPage />,
     fetchData: initNotFoundPage,
   },
 ];

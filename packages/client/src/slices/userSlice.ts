@@ -1,17 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { SERVER_HOST } from '../constants';
-
-export interface User {
-  id?: number;
-  first_name?: string;
-  second_name?: string;
-  display_name?: string;
-  login?: string;
-  avatar?: string;
-  email?: string;
-  phone?: string;
-}
+import { User } from '../api/type';
 
 export interface UserState {
   data: User | null;
@@ -34,7 +24,15 @@ export const fetchUserThunk = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setUser: (state, action: PayloadAction<User | null>) => {
+      state.data = action.payload;
+    },
+    // Опционально: очистка данных
+    clearUser: state => {
+      state.data = null;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchUserThunk.pending.type, state => {
@@ -55,5 +53,7 @@ export const userSlice = createSlice({
 });
 
 export const selectUser = (state: RootState) => state.user.data;
+
+export const { setUser } = userSlice.actions;
 
 export default userSlice.reducer;
