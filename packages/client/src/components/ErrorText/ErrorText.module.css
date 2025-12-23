@@ -1,0 +1,14 @@
+.login__page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+.logo__big {
+  width: 400px;
+  object-fit: cover;
+}

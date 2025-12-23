@@ -6,6 +6,7 @@ import { initLoginPage, LoginPage } from './pages/Login';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 
 import { ROUTE } from './constants/ROUTE';
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 
 export type PageInitContext = {
   clientToken?: string;
@@ -20,22 +21,26 @@ export type PageInitArgs = {
 export const routes = [
   {
     path: ROUTE.ROOT,
-    Component: MainPage,
+    element: (
+      <ProtectedRoute>
+        <MainPage />
+      </ProtectedRoute>
+    ),
     fetchData: initMainPage,
   },
   {
     path: ROUTE.LOGIN,
-    Component: LoginPage,
+    element: <LoginPage />,
     fetchData: initLoginPage,
   },
   {
     path: ROUTE.REGISTER,
-    Component: RegisterPage,
+    element: <RegisterPage />,
     fetchData: initRegisterPage,
   },
   {
     path: ROUTE.ANY,
-    Component: NotFoundPage,
+    element: <NotFoundPage />,
     fetchData: initNotFoundPage,
   },
 ];
