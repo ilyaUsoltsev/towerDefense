@@ -12,6 +12,9 @@ class GameEngine {
   private cannonManager!: CannonManager;
   private enemyManager!: EnemyManager;
   private pathManager!: PathManager;
+  private lastFrameTime = 0;
+  private readonly targetFPS = 60;
+  private readonly frameInterval = 1000 / this.targetFPS;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -63,19 +66,25 @@ class GameEngine {
   }
 
   private loop = (timestamp: number) => {
-    this.render(timestamp);
     this.animationFrameId = requestAnimationFrame(this.loop);
+
+    // Adjust for target FPS
+    // Otherwise on different monitors the game speed would vary
+    const deltaTime = timestamp - this.lastFrameTime;
+    if (deltaTime >= this.frameInterval) {
+      this.lastFrameTime = timestamp - (deltaTime % this.frameInterval);
+      this.render(timestamp);
+    }
   };
 
   private render(timestamp: number) {
-    const currentTime = timestamp;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.mapManager.renderGameField();
     this.mapManager.renderWalls();
     this.mapManager.renderStart();
     this.mapManager.renderFinish();
     this.pathManager.renderPathStartFinish();
-    this.enemyManager.update(currentTime);
+    this.enemyManager.update(timestamp);
     this.cannonManager.update(this.enemyManager.getAliveEnemies());
     this.cannonManager.render();
     this.enemyManager.render();
