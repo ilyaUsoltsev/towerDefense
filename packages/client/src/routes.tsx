@@ -5,6 +5,9 @@ import { GamePage, initGamePage } from './pages/Game';
 import { initLoginPage, LoginPage } from './pages/Login';
 import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
+import { initError400Page, Error400Page } from './pages/Error400';
+
+import { ROUTE } from './constants/ROUTE';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { ROUTE } from './constants/ROUTE';
@@ -47,6 +50,11 @@ export const routes = [
     path: ROUTE.REGISTER,
     element: <RegisterPage />,
     fetchData: initRegisterPage,
+  },
+  {
+    path: ROUTE.ERROR_400,
+    Component: Error400Page,
+    fetchData: initError400Page,
   },
   {
     path: ROUTE.ANY,
