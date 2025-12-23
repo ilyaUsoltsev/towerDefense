@@ -10,7 +10,12 @@ class ProjectileManager {
     this.context = context;
   }
 
-  createProjectile(start: Point, target: Point, speed?: number, damage?: number): void {
+  createProjectile(
+    start: Point,
+    target: Point,
+    speed?: number,
+    damage?: number
+  ): void {
     const projectile = new Projectile(start, target, speed, damage);
     this.projectiles.push(projectile);
   }

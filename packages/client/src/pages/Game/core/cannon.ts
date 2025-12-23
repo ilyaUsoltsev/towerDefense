@@ -13,7 +13,12 @@ class Cannon {
   lastFireTime = 0;
   private projectileManager: ProjectileManager;
 
-  constructor(position: Tile, range: number, tileSize: number, projectileManager: ProjectileManager) {
+  constructor(
+    position: Tile,
+    range: number,
+    tileSize: number,
+    projectileManager: ProjectileManager
+  ) {
     this.position = position;
     this.range = range;
     this.tileSize = tileSize;

@@ -1,12 +1,13 @@
 import { AppDispatch, RootState } from './store';
 
-import { initMainPage, MainPage } from './pages/Main';
-import { initNotFoundPage, NotFoundPage } from './pages/NotFound';
+import { initNotFoundPage, NotFoundPage } from './pages/ErrorsPage/NotFound';
+import { GamePage, initGamePage } from './pages/Game';
 import { initLoginPage, LoginPage } from './pages/Login';
+import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 
-import { ROUTE } from './constants/ROUTE';
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { ROUTE } from './constants/ROUTE';
 
 export type PageInitContext = {
   clientToken?: string;
@@ -27,6 +28,15 @@ export const routes = [
       </ProtectedRoute>
     ),
     fetchData: initMainPage,
+  },
+  {
+    path: ROUTE.GAME,
+    element: (
+      <ProtectedRoute>
+        <GamePage />
+      </ProtectedRoute>
+    ),
+    fetchData: initGamePage,
   },
   {
     path: ROUTE.LOGIN,
