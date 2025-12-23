@@ -5,6 +5,7 @@ import { GamePage, initGamePage } from './pages/Game';
 import { initLoginPage, LoginPage } from './pages/Login';
 import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
+import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { ROUTE } from './constants/ROUTE';
@@ -49,6 +50,12 @@ export const routes = [
     fetchData: initRegisterPage,
   },
   {
+    path: ROUTE.LEADERBOARD,
+    Component: LeaderboardPage,
+    fetchData: initLeaderboardPage,
+  },
+  {
+    path: '*',
     path: ROUTE.ANY,
     element: <NotFoundPage />,
     fetchData: initNotFoundPage,
