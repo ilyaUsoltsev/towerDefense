@@ -3,7 +3,6 @@ import { GameConfig } from './config';
 import PathManager from './pathManager';
 import { Tile } from './types';
 import { eventBus } from './eventBus';
-import e from 'express';
 
 class EnemyManager {
   enemies: Enemy[] = [];
@@ -90,10 +89,6 @@ class EnemyManager {
 
   getEnemies(): Enemy[] {
     return this.enemies;
-  }
-
-  getAliveEnemies(): Enemy[] {
-    return this.enemies.filter(enemy => !enemy.destroyed());
   }
 
   getEnemyCount(): number {

@@ -1,4 +1,5 @@
 import { GameConfig } from './config';
+import { eventBus } from './eventBus';
 import PathManager from './pathManager';
 import { Point, Tile } from './types';
 
@@ -65,7 +66,11 @@ class Enemy {
   }
 
   hasReachedEnd(): boolean {
-    return this.currentIndex >= this.path.length - 1;
+    const hasReached = this.currentIndex >= this.path.length - 1;
+    if (hasReached) {
+      eventBus.emit('redux:enemyReachedFinish', null);
+    }
+    return hasReached;
   }
 
   takeHit(damage: number): void {

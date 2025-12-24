@@ -34,10 +34,9 @@ class CannonManager {
     );
   }
 
-  update(enemies: Enemy[]): void {
-    const currentTime = Date.now();
+  update(enemies: Enemy[], timestamp: number): void {
     this.cannons.forEach(cannon => {
-      cannon.update(enemies, currentTime);
+      cannon.update(enemies, timestamp);
     });
     this.projectileManager.update(enemies);
   }
