@@ -19,6 +19,7 @@ export interface GameEvents {
   'pathManager:pathUpdated': Tile[];
   'mapManager:cannonPlaced': Tile;
   'mapManager:tryAddCannon': { cannonTile: Tile; collisionMap: (0 | 1)[][] };
+  'redux:enemyReachedFinish': null;
 }
 
 export type GameEventName = keyof GameEvents;

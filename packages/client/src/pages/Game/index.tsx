@@ -6,6 +6,7 @@ import PageWrapper from '../../components/PageWrapper';
 
 import Game from './Game';
 import styles from './Game.module.css';
+import GameMenu from './GameMenu';
 
 export const GamePage: FC = () => {
   usePage({ initPage: initGamePage });
@@ -14,6 +15,7 @@ export const GamePage: FC = () => {
     <PageWrapper description="Главное меню">
       <div className={styles.gameWrapper}>
         <Game />
+        <GameMenu />
       </div>
     </PageWrapper>
   );

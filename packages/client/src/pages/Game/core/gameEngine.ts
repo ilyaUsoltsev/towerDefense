@@ -85,7 +85,7 @@ class GameEngine {
     this.mapManager.renderFinish();
     this.pathManager.renderPathStartFinish();
     this.enemyManager.update(timestamp);
-    this.cannonManager.update(this.enemyManager.getAliveEnemies());
+    this.cannonManager.update(this.enemyManager.getEnemies(), timestamp);
     this.cannonManager.render();
     this.enemyManager.render();
   }
