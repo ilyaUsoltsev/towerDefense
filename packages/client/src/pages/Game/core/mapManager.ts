@@ -179,7 +179,7 @@ class MapManager {
     );
     if (collisionLayer) {
       collisionLayer.tiles.forEach(tile => {
-        grid[tile.y][tile.x] = 2;
+        grid[tile.y][tile.x] = TileType.Wall;
       });
     }
 

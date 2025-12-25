@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import GameEngine from './core/gameEngine';
-import { EngineAdapter } from './adapters/GameEngineAdapter';
+import { GameEngineAdapter } from './adapters/GameEngineAdapter';
 import { useStore } from '../../store';
 
 const Game = () => {
@@ -13,7 +13,7 @@ const Game = () => {
     }
 
     const gameEngine = new GameEngine(canvasRef.current);
-    const adapter = new EngineAdapter(gameEngine, store);
+    const adapter = new GameEngineAdapter(gameEngine, store);
 
     const unsubscribeFromStore = store.subscribe(() => {
       adapter.syncState(store.getState());

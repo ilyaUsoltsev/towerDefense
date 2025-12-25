@@ -6,13 +6,13 @@ import EnemyManager from './enemyManager';
 import Player from './player';
 
 class GameEngine {
-  private canvas: HTMLCanvasElement;
+  mapManager!: MapManager;
+  cannonManager!: CannonManager;
+  pathManager!: PathManager;
   private context: CanvasRenderingContext2D;
-  private animationFrameId: number | null = null;
-  public mapManager!: MapManager;
-  public cannonManager!: CannonManager;
+  private canvas: HTMLCanvasElement;
   private enemyManager!: EnemyManager;
-  public pathManager!: PathManager;
+  private animationFrameId: number | null = null;
   private player!: Player;
   private lastFrameTime = 0;
   private readonly targetFPS = 60;
@@ -79,6 +79,23 @@ class GameEngine {
       this.pathManager.setCollisionMap(this.mapManager.collisionMap);
     }
     return this.player.getMoney();
+  }
+
+  upgradeCannon(cannonId: string): number | null {
+    const cannon = this.cannonManager.getCannonById(cannonId);
+    if (cannon) {
+      console.log(cannon.getUpgradeCost(), 'cost');
+      if (this.player.haveEnoughMoney(cannon.getUpgradeCost()) === false) {
+        return null;
+      }
+      // Deduct money before upgrading!
+      this.player.subtractMoney(cannon.getUpgradeCost());
+
+      this.cannonManager.upgradeCannon(cannonId);
+      return this.player.getMoney();
+    }
+
+    return null;
   }
 
   private loop = (timestamp: number) => {

@@ -6,6 +6,12 @@ export interface SelectedEntity {
   id: string;
   position: Tile;
   selling: boolean;
+  upgrading: boolean;
+  level: number;
+  damage: number;
+  range: number;
+  fireRate: number;
+  upgradeCost: number;
 }
 
 export interface UserState {
@@ -50,6 +56,11 @@ export const gameSlice = createSlice({
     gameSetHp: (state, action: PayloadAction<number>) => {
       state.hp = action.payload;
     },
+    gameUpgradeSelectedEntity: state => {
+      if (state.selectedEntity) {
+        state.selectedEntity.upgrading = true;
+      }
+    },
   },
 });
 
@@ -60,6 +71,7 @@ export const {
   gameSetBlockingPath,
   gameSetHp,
   gameSellSelectedEntity,
+  gameUpgradeSelectedEntity,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

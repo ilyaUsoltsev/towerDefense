@@ -1,6 +1,9 @@
 import { Button } from '@gravity-ui/uikit';
 import { useDispatch, useSelector } from '../../store';
-import { gameSellSelectedEntity } from '../../slices/gameSlice';
+import {
+  gameSellSelectedEntity,
+  gameUpgradeSelectedEntity,
+} from '../../slices/gameSlice';
 
 const GameMenu = () => {
   const hp = useSelector(state => state.game.hp);
@@ -15,6 +18,12 @@ const GameMenu = () => {
     }
   };
 
+  const upgradeSelectedEntity = () => {
+    if (selectedEntity) {
+      dispatch(gameUpgradeSelectedEntity());
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <h2>Game Menu</h2>
@@ -24,9 +33,20 @@ const GameMenu = () => {
       {selectedEntity ? (
         <div>
           <h3>Selected Entity</h3>
-          <p>Type: {selectedEntity.type}</p>
           <p>ID: {selectedEntity.id}</p>
-          <Button view="action" onClick={sellSelectedEntity}>
+          <p>Type: {selectedEntity.type}</p>
+          <p>Level: {selectedEntity.level}</p>
+          <p>Damage: {selectedEntity.damage}</p>
+          <p>Range: {selectedEntity.range}</p>
+          <p>Frequency: {1000 / selectedEntity.fireRate} Hz</p>
+          <p>Upgrade Cost: {selectedEntity.upgradeCost}</p>
+          <Button
+            view="action"
+            onClick={upgradeSelectedEntity}
+            disabled={money < selectedEntity.upgradeCost}>
+            Апгрейд
+          </Button>
+          <Button view="outlined" onClick={sellSelectedEntity}>
             Продать
           </Button>
         </div>

@@ -5,6 +5,7 @@ import ProjectileManager from './projectileManager';
 
 class Cannon {
   id: string;
+  selectedByUser = false;
   position: Tile;
   range: number;
   tileSize: number;
@@ -34,6 +35,8 @@ class Cannon {
     this.level += 1;
     this.damage *= 1.5;
     this.range *= 1.2;
+    this.fireRate *= 0.5;
+    this.projectileSpeed *= 1.1;
   }
 
   getSellValue(): number {
@@ -90,10 +93,28 @@ class Cannon {
     }
   }
 
+  setSelected(selected: boolean): void {
+    this.selectedByUser = selected;
+  }
+
   render(context: CanvasRenderingContext2D): void {
     const center = this.getCenter();
 
-    context.fillStyle = 'black';
+    // fillstyle depends on level
+    switch (this.level) {
+      case 1:
+        context.fillStyle = 'gray';
+        break;
+      case 2:
+        context.fillStyle = 'blue';
+        break;
+      case 3:
+        context.fillStyle = 'green';
+        break;
+      default:
+        context.fillStyle = 'gold';
+    }
+
     context.fillRect(
       this.position.x * this.tileSize,
       this.position.y * this.tileSize,
