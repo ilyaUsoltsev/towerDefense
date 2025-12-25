@@ -3,15 +3,17 @@ import MapManager from './mapManager';
 import PathManager from './pathManager';
 import { eventBus } from './eventBus';
 import EnemyManager from './enemyManager';
+import Player from './player';
 
 class GameEngine {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private animationFrameId: number | null = null;
-  private mapManager!: MapManager;
-  private cannonManager!: CannonManager;
+  public mapManager!: MapManager;
+  public cannonManager!: CannonManager;
   private enemyManager!: EnemyManager;
-  private pathManager!: PathManager;
+  public pathManager!: PathManager;
+  private player!: Player;
   private lastFrameTime = 0;
   private readonly targetFPS = 60;
   private readonly frameInterval = 1000 / this.targetFPS;
@@ -22,12 +24,14 @@ class GameEngine {
   }
 
   async initialize() {
-    this.mapManager = new MapManager(this.context);
-    this.cannonManager = new CannonManager(this.context);
+    this.player = new Player();
+    this.mapManager = new MapManager(this.context, this.player);
+    this.cannonManager = new CannonManager(this.context, this.player);
     this.pathManager = new PathManager(
       this.context,
       this.mapManager.getStartTile(),
-      this.mapManager.getFinishTile()
+      this.mapManager.getFinishTile(),
+      this.player
     );
 
     await this.pathManager.setCollisionMap(this.mapManager.collisionMap);
@@ -35,8 +39,8 @@ class GameEngine {
     this.enemyManager = new EnemyManager(
       this.context,
       this.pathManager,
-      this.mapManager.getTiles('Start')[0],
-      2000
+      this.mapManager.getStartTile(),
+      this.player
     );
 
     // Generate initial enemies
@@ -47,6 +51,7 @@ class GameEngine {
 
     this.canvas.width = this.mapManager.mapWidth * this.mapManager.tileSize;
     this.canvas.height = this.mapManager.mapHeight * this.mapManager.tileSize;
+    eventBus.emit('redux:gameInitialize', null);
   }
 
   async start() {
@@ -63,6 +68,17 @@ class GameEngine {
     this.enemyManager.removeEventListeners();
     this.pathManager.removeEventListeners();
     eventBus.clear();
+  }
+
+  sellCannon(cannonId: string) {
+    const [cannon, soldFor] = this.cannonManager.sellCannon(cannonId);
+    if (cannon) {
+      this.player.addMoney(soldFor);
+      const collisionMap = this.mapManager.collisionMap;
+      collisionMap[cannon.position.y][cannon.position.x] = 0; // Free the tile
+      this.pathManager.setCollisionMap(this.mapManager.collisionMap);
+    }
+    return this.player.getMoney();
   }
 
   private loop = (timestamp: number) => {

@@ -1,19 +1,22 @@
 import { eventBus } from './eventBus';
-import { Tile } from './types';
+import { Point, Tile } from './types';
 import Cannon from './cannon';
 import Enemy from './enemy';
 import { GameConfig } from './config';
 import ProjectileManager from './projectileManager';
+import Player from './player';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
   cannons: Cannon[] = [];
   private projectileManager: ProjectileManager;
   private unsubscribe!: () => void;
+  private player: Player;
 
-  constructor(context: CanvasRenderingContext2D) {
+  constructor(context: CanvasRenderingContext2D, player: Player) {
     this.context = context;
     this.projectileManager = new ProjectileManager(context);
+    this.player = player;
     this.addEventListeners();
   }
 
@@ -52,6 +55,32 @@ class CannonManager {
     return this.cannons;
   }
 
+  getCannonById(id: string): Cannon | undefined {
+    return this.cannons.find(cannon => cannon.id === id);
+  }
+
+  getCannonAtPosition(tile: Point): Cannon | undefined {
+    return this.cannons.find(
+      cannon => cannon.position.x === tile.x && cannon.position.y === tile.y
+    );
+  }
+
+  upgradeCannon(id: string): boolean {
+    const cannon = this.getCannonById(id);
+    if (!cannon) return false;
+    cannon.upgrade();
+    return true;
+  }
+
+  sellCannon(id: string): [Cannon | null, number] {
+    const cannon = this.getCannonById(id);
+    if (!cannon) return [null, 0];
+    const sellValue = cannon.getSellValue();
+    this.cannons = this.cannons.filter(c => c.id !== id);
+
+    return [cannon, sellValue];
+  }
+
   destroy(tile: Tile): void {
     this.cannons = this.cannons.filter(
       cannon => cannon.position.x !== tile.x || cannon.position.y !== tile.y
@@ -65,6 +94,8 @@ class CannonManager {
   private addEventListeners(): void {
     this.unsubscribe = eventBus.on('mapManager:cannonPlaced', (tile: Tile) => {
       this.addCannon(tile);
+      this.player.subtractMoney(GameConfig.cannon.cost);
+      eventBus.emit('redux:setMoney', { money: this.player.getMoney() });
     });
   }
 }

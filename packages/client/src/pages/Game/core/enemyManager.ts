@@ -3,11 +3,13 @@ import { GameConfig } from './config';
 import PathManager from './pathManager';
 import { Tile } from './types';
 import { eventBus } from './eventBus';
+import Player from './player';
 
 class EnemyManager {
   enemies: Enemy[] = [];
   pathManager: PathManager;
   startTile: Tile;
+  player: Player;
   context: CanvasRenderingContext2D;
   spawnInterval: number;
   lastSpawnTime: number;
@@ -18,12 +20,13 @@ class EnemyManager {
     context: CanvasRenderingContext2D,
     pathManager: PathManager,
     startTile: Tile,
-    spawnInterval = 2000
+    player: Player
   ) {
     this.context = context;
     this.pathManager = pathManager;
     this.startTile = startTile;
-    this.spawnInterval = spawnInterval;
+    this.player = player;
+    this.spawnInterval = GameConfig.spawn.interval;
     this.lastSpawnTime = 0;
     this.isSpawning = false;
     this.addEventListeners();
@@ -73,6 +76,9 @@ class EnemyManager {
     // Update all enemies
     this.enemies.forEach(enemy => {
       enemy.update();
+      if (enemy.hasReachedEnd()) {
+        this.handleEnemyReachedEnd();
+      }
     });
 
     // Remove destroyed or finished entities
@@ -101,6 +107,14 @@ class EnemyManager {
 
   removeEventListeners(): void {
     this.unsubscribe();
+  }
+
+  private handleEnemyReachedEnd() {
+    const remainingHp = this.player.takeDamage();
+
+    eventBus.emit('redux:setPlayerHp', {
+      hp: remainingHp,
+    });
   }
 
   private addEventListeners() {

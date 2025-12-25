@@ -1,5 +1,7 @@
+import { GameConfig } from './config';
 import { eventBus } from './eventBus';
 import mapData from './map.json';
+import Player from './player';
 import { Tile } from './types';
 
 class MapManager {
@@ -8,15 +10,17 @@ class MapManager {
   tileSize: number;
   mapWidth: number;
   mapHeight: number;
-  collisionMap: (0 | 1)[][];
+  collisionMap: number[][];
   private boundClickOnMap: (event: MouseEvent) => void;
+  private player: Player;
 
-  constructor(context: CanvasRenderingContext2D) {
+  constructor(context: CanvasRenderingContext2D, player: Player) {
     this.mapData = mapData;
     this.tileSize = mapData.tileSize;
     this.mapWidth = mapData.mapWidth;
     this.mapHeight = mapData.mapHeight;
     this.context = context;
+    this.player = player;
     this.collisionMap = this.createCollisionGrid();
     this.boundClickOnMap = this.clickOnMap.bind(this);
     this.addEventListeners();
@@ -74,6 +78,17 @@ class MapManager {
       return; // Prevent placing cannon on start tile, a* will fail
     }
 
+    if (this.collisionMap[tileY][tileX] === 1) {
+      // There's a cannon here, emit selection event
+      eventBus.emit('redux:selectedCannon', { x: tileX, y: tileY });
+      return;
+    }
+
+    if (!this.player.haveEnoughMoney(GameConfig.cannon.cost)) {
+      alert('Not enough money to place cannon');
+      return;
+    }
+
     if (this.collisionMap[tileY][tileX] === 0) {
       const cannonTile = { x: tileX, y: tileY, id: 'cannon' };
       this.collisionMap[tileY][tileX] = 1;
@@ -101,9 +116,9 @@ class MapManager {
     });
   }
 
-  private createCollisionGrid(): (0 | 1)[][] {
+  private createCollisionGrid(): number[][] {
     //  Empty grid initialization with zeroes
-    const grid: (0 | 1)[][] = [];
+    const grid: number[][] = [];
     for (let y = 0; y < this.mapData.mapHeight; y++) {
       grid[y] = new Array(this.mapData.mapWidth).fill(0);
     }
@@ -114,7 +129,7 @@ class MapManager {
     );
     if (collisionLayer) {
       collisionLayer.tiles.forEach(tile => {
-        grid[tile.y][tile.x] = 1;
+        grid[tile.y][tile.x] = 2;
       });
     }
 

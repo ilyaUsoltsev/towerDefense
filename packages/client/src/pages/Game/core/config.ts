@@ -1,4 +1,6 @@
 export const GameConfig = {
+  hp: 10,
+  initialMoney: 2000,
   tileSize: 32,
   enemy: {
     defaultSpeed: 1,
@@ -10,6 +12,7 @@ export const GameConfig = {
     fireRate: 1000,
     projectileSpeed: 5,
     damage: 5,
+    cost: 100,
   },
   spawn: {
     interval: 2000,
