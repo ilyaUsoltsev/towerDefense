@@ -3,6 +3,7 @@ import { eventBus } from './eventBus';
 import mapData from './map.json';
 import Player from './player';
 import { Point, Tile } from './types';
+import { TileType } from './utils/constants';
 
 class MapManager {
   context: CanvasRenderingContext2D;
@@ -81,7 +82,7 @@ class MapManager {
     const { x: tileX, y: tileY } = this.getTileFromMouse(event);
     if (
       // TODO: this is not efficient, we could find boundary tiles once and store them
-      this.collisionMap[tileY][tileX] === 0 &&
+      this.collisionMap[tileY]?.[tileX] === 0 &&
       this.getTiles('Game').some(tile => tile.x === tileX && tile.y === tileY)
     ) {
       this.cursorTile = { x: tileX, y: tileY };
@@ -91,6 +92,7 @@ class MapManager {
   }
 
   private clickOnMap(event: MouseEvent): void {
+    this.cursorTile = null; // Clear cursor on click
     const { x: tileX, y: tileY } = this.getTileFromMouse(event);
 
     const startTile = this.getStartTile();
@@ -99,7 +101,7 @@ class MapManager {
       return; // Prevent placing cannon on start tile, a* will fail
     }
 
-    if (this.collisionMap[tileY][tileX] === 1) {
+    if (this.collisionMap[tileY]?.[tileX] === TileType.Cannon) {
       // There's a cannon here, emit selection event
       eventBus.emit('redux:selectedCannon', { x: tileX, y: tileY });
       return;
@@ -110,14 +112,13 @@ class MapManager {
       return;
     }
 
-    if (this.collisionMap[tileY][tileX] === 0) {
+    if (this.collisionMap[tileY]?.[tileX] === TileType.Empty) {
       const cannonTile = { x: tileX, y: tileY, id: 'cannon' };
-      this.collisionMap[tileY][tileX] = 1;
+      this.collisionMap[tileY][tileX] = TileType.Cannon;
       eventBus.emit('mapManager:tryAddCannon', {
         cannonTile,
         collisionMap: this.collisionMap,
       });
-      this.cursorTile = null;
     }
   }
 
