@@ -1,6 +1,8 @@
+import { GameConfig } from './config';
+
 class Player {
-  private playerHealth = 10;
-  private money = 2000;
+  private playerHealth = GameConfig.hp;
+  private money = GameConfig.initialMoney;
 
   takeDamage() {
     this.playerHealth -= 1;

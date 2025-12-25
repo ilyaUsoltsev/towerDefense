@@ -79,6 +79,9 @@ class EnemyManager {
       if (enemy.hasReachedEnd()) {
         this.handleEnemyReachedEnd();
       }
+      if (enemy.destroyed()) {
+        this.handleEnemyDestroyed();
+      }
     });
 
     // Remove destroyed or finished entities
@@ -107,6 +110,15 @@ class EnemyManager {
 
   removeEventListeners(): void {
     this.unsubscribe();
+  }
+
+  private handleEnemyDestroyed() {
+    const reward = GameConfig.enemy.reward;
+    this.player.addMoney(reward);
+
+    eventBus.emit('redux:setMoney', {
+      money: this.player.getMoney(),
+    });
   }
 
   private handleEnemyReachedEnd() {
