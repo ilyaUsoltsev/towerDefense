@@ -23,6 +23,7 @@ const Game = () => {
     gameEngine.start();
 
     return () => {
+      adapter.removeSubscriptions();
       gameEngine.stop();
       unsubscribeFromStore();
     };

@@ -4,6 +4,7 @@ import { GameConfig } from './config';
 import ProjectileManager from './projectileManager';
 
 class Cannon {
+  id: string;
   position: Tile;
   range: number;
   tileSize: number;
@@ -11,6 +12,8 @@ class Cannon {
   projectileSpeed = GameConfig.cannon.projectileSpeed;
   damage = GameConfig.cannon.damage;
   lastFireTime = 0;
+  level = 1;
+  cost: number;
   private projectileManager: ProjectileManager;
 
   constructor(
@@ -19,10 +22,26 @@ class Cannon {
     tileSize: number,
     projectileManager: ProjectileManager
   ) {
+    this.id = `cannon-${position.x}-${position.y}`;
     this.position = position;
     this.range = range;
     this.tileSize = tileSize;
     this.projectileManager = projectileManager;
+    this.cost = GameConfig.cannon.cost;
+  }
+
+  upgrade(): void {
+    this.level += 1;
+    this.damage *= 1.5;
+    this.range *= 1.2;
+  }
+
+  getSellValue(): number {
+    return Math.floor(this.cost * 0.7 * this.level);
+  }
+
+  getUpgradeCost(): number {
+    return Math.floor(this.cost * 1.5 * this.level);
   }
 
   getCenter(): Point {

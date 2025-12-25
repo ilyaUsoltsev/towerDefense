@@ -66,11 +66,7 @@ class Enemy {
   }
 
   hasReachedEnd(): boolean {
-    const hasReached = this.currentIndex >= this.path.length - 1;
-    if (hasReached) {
-      eventBus.emit('redux:enemyReachedFinish', null);
-    }
-    return hasReached;
+    return this.currentIndex >= this.path.length - 1;
   }
 
   takeHit(damage: number): void {

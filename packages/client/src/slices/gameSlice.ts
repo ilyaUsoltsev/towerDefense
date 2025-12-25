@@ -1,8 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Tile } from '../pages/Game/core/types';
 
 export interface SelectedEntity {
   type: 'enemy' | 'cannon';
   id: string;
+  position: Tile;
+  selling: boolean;
 }
 
 export interface UserState {
@@ -13,8 +16,8 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  hp: 10,
-  money: 1000,
+  hp: 0, // will be initialized on game start
+  money: 0, // will be initialized on game start
   selectedEntity: null,
   blockingPath: false,
 };
@@ -23,26 +26,40 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    gameAddMoney: (state, action: PayloadAction<number>) => {
-      state.money += action.payload;
+    gameInitializeState: (
+      state,
+      action: PayloadAction<{ hp: number; money: number }>
+    ) => {
+      state.hp = action.payload.hp;
+      state.money = action.payload.money;
+    },
+    gameSetMoney: (state, action: PayloadAction<number>) => {
+      state.money = action.payload;
     },
     gameSelectEntity: (state, action: PayloadAction<SelectedEntity | null>) => {
       state.selectedEntity = action.payload;
     },
+    gameSellSelectedEntity: state => {
+      if (state.selectedEntity) {
+        state.selectedEntity.selling = true;
+      }
+    },
     gameSetBlockingPath: (state, action: PayloadAction<boolean>) => {
       state.blockingPath = action.payload;
     },
-    gameRemoveHp: state => {
-      state.hp -= 1;
+    gameSetHp: (state, action: PayloadAction<number>) => {
+      state.hp = action.payload;
     },
   },
 });
 
 export const {
-  gameAddMoney,
+  gameInitializeState,
+  gameSetMoney,
   gameSelectEntity,
   gameSetBlockingPath,
-  gameRemoveHp,
+  gameSetHp,
+  gameSellSelectedEntity,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
