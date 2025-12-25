@@ -85,10 +85,7 @@ class PathManager {
     });
   }
 
-  private async findPath(
-    startPoint: { x: number; y: number; id: string },
-    endPoint: { x: number; y: number; id: string }
-  ): Promise<Tile[]> {
+  private async findPath(startPoint: Tile, endPoint: Tile): Promise<Tile[]> {
     return new Promise((resolve, reject) => {
       this.easyStar.findPath(
         startPoint.x,

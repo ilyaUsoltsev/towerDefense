@@ -104,6 +104,7 @@ class GameEngine {
     this.cannonManager.update(this.enemyManager.getEnemies(), timestamp);
     this.cannonManager.render();
     this.enemyManager.render();
+    this.mapManager.renderCursorTile();
   }
 }
 

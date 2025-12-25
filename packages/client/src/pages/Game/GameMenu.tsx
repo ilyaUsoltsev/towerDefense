@@ -18,7 +18,6 @@ const GameMenu = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <h2>Game Menu</h2>
-      <Button view="action">Start Wave</Button>
       <p>HP: {hp}</p>
       <p>Money: {money}</p>
       <br />

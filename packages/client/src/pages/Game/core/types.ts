@@ -4,7 +4,7 @@ export interface Point {
 }
 
 export interface Tile extends Point {
-  id: string;
+  id?: string;
 }
 
 export interface CannonData {

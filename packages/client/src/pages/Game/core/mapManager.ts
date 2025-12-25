@@ -2,7 +2,7 @@ import { GameConfig } from './config';
 import { eventBus } from './eventBus';
 import mapData from './map.json';
 import Player from './player';
-import { Tile } from './types';
+import { Point, Tile } from './types';
 
 class MapManager {
   context: CanvasRenderingContext2D;
@@ -11,7 +11,10 @@ class MapManager {
   mapWidth: number;
   mapHeight: number;
   collisionMap: number[][];
+  cursorTile: Point | null = null;
+  private mapDataCache = new Map<string, Tile[]>();
   private boundClickOnMap: (event: MouseEvent) => void;
+  private boundMouseMoveOnMap: (event: MouseEvent) => void;
   private player: Player;
 
   constructor(context: CanvasRenderingContext2D, player: Player) {
@@ -23,6 +26,7 @@ class MapManager {
     this.player = player;
     this.collisionMap = this.createCollisionGrid();
     this.boundClickOnMap = this.clickOnMap.bind(this);
+    this.boundMouseMoveOnMap = this.mouseMoveOnMap.bind(this);
     this.addEventListeners();
   }
 
@@ -56,21 +60,38 @@ class MapManager {
     this.renderTiles(finishTiles, 'red');
   }
 
+  public renderCursorTile() {
+    this._renderCursorTile();
+  }
+
   private addEventListeners() {
     this.context.canvas.addEventListener('click', this.boundClickOnMap);
+    this.context.canvas.addEventListener('mousemove', this.boundMouseMoveOnMap);
   }
 
   public removeEventListeners() {
     this.context.canvas.removeEventListener('click', this.boundClickOnMap);
+    this.context.canvas.removeEventListener(
+      'mousemove',
+      this.boundMouseMoveOnMap
+    );
+  }
+
+  private mouseMoveOnMap(event: MouseEvent): void {
+    const { x: tileX, y: tileY } = this.getTileFromMouse(event);
+    if (
+      // TODO: this is not efficient, we could find boundary tiles once and store them
+      this.collisionMap[tileY][tileX] === 0 &&
+      this.getTiles('Game').some(tile => tile.x === tileX && tile.y === tileY)
+    ) {
+      this.cursorTile = { x: tileX, y: tileY };
+    } else {
+      this.cursorTile = null;
+    }
   }
 
   private clickOnMap(event: MouseEvent): void {
-    const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const tileX = Math.floor(x / this.tileSize);
-    const tileY = Math.floor(y / this.tileSize);
+    const { x: tileX, y: tileY } = this.getTileFromMouse(event);
 
     const startTile = this.getStartTile();
 
@@ -96,24 +117,52 @@ class MapManager {
         cannonTile,
         collisionMap: this.collisionMap,
       });
+      this.cursorTile = null;
     }
   }
 
-  public getTiles(tileName: string): Tile[] {
+  getTiles(tileName: string): Tile[] {
+    if (this.mapDataCache.has(tileName)) {
+      return this.mapDataCache.get(tileName)!;
+    }
     const walls = this.mapData.layers.find(layer => layer.name === tileName);
-    return walls ? walls.tiles : [];
+    const result = walls ? walls.tiles : [];
+    this.mapDataCache.set(tileName, result);
+    return result;
+  }
+
+  private getTileFromMouse(event: MouseEvent): Tile {
+    const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const tileX = Math.floor(x / this.tileSize);
+    const tileY = Math.floor(y / this.tileSize);
+
+    return { x: tileX, y: tileY };
   }
 
   private renderTiles(tiles: Tile[], color: string) {
     this.context.fillStyle = color;
     tiles.forEach(tile => {
-      this.context.fillRect(
-        tile.x * this.tileSize,
-        tile.y * this.tileSize,
-        this.tileSize,
-        this.tileSize
-      );
+      this.addTileToContext(tile.x, tile.y);
     });
+  }
+
+  private _renderCursorTile() {
+    if (this.cursorTile) {
+      this.context.fillStyle = 'rgba(19, 147, 96, 0.75)';
+      this.addTileToContext(this.cursorTile.x, this.cursorTile.y);
+    }
+  }
+
+  private addTileToContext(x: number, y: number) {
+    this.context.fillRect(
+      x * this.tileSize,
+      y * this.tileSize,
+      this.tileSize,
+      this.tileSize
+    );
   }
 
   private createCollisionGrid(): number[][] {
