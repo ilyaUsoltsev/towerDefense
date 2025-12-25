@@ -10,8 +10,14 @@ import {
   gameSetMoney,
 } from '../../../slices/gameSlice';
 import { GameConfig } from '../core/config';
+import { getCannonState } from '../core/utils/get-cannon-state';
 
-export class EngineAdapter {
+/**
+ * This class is an adapter between GameEngine and Redux store.
+ * It listens to GameEngine events and dispatches corresponding Redux actions.
+ * It also listens to Redux store changes and updates the GameEngine state accordingly.
+ */
+export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
   constructor(private gameEngine: GameEngine, private store: Store) {}
 
@@ -39,14 +45,7 @@ export class EngineAdapter {
       const cannon =
         this.gameEngine.cannonManager.getCannonAtPosition(position);
       if (cannon) {
-        this.store.dispatch(
-          gameSelectEntity({
-            type: 'cannon',
-            id: cannon.id,
-            position: cannon.position,
-            selling: false,
-          })
-        );
+        this.store.dispatch(gameSelectEntity(getCannonState(cannon)));
       }
     });
 
@@ -62,6 +61,23 @@ export class EngineAdapter {
       this.store.dispatch(gameSelectEntity(null));
       this.store.dispatch(gameSetMoney(moneyBalance));
     }
+
+    if (state.game.selectedEntity?.upgrading) {
+      const success = this.gameEngine.upgradeCannon(
+        state.game.selectedEntity.id
+      );
+      if (success !== null) {
+        const cannon = this.gameEngine.cannonManager.getCannonById(
+          state.game.selectedEntity.id
+        );
+        if (cannon) {
+          this.store.dispatch(gameSelectEntity(getCannonState(cannon)));
+          this.store.dispatch(gameSetMoney(success));
+        }
+      }
+    }
+
+    // Additional state sync logic can be added here
   }
 
   removeSubscriptions() {

@@ -1,5 +1,5 @@
 export enum TileType {
   Empty = 0,
-  Path = 1,
-  Cannon = 2,
+  Cannon = 1,
+  Wall = 2,
 }
