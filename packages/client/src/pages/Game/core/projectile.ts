@@ -17,7 +17,7 @@ class Projectile {
     this.y = start.y;
     this.targetX = target.x;
     this.targetY = target.y;
-    this.speed = CannonsConfig[cannonType].projectileSeed;
+    this.speed = CannonsConfig[cannonType].projectileSpeed;
     this.damage = CannonsConfig[cannonType].damage;
   }
 
