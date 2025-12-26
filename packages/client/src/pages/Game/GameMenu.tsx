@@ -66,7 +66,7 @@ const GameMenu = () => {
         ))}
       </div>
       {cannon && (
-        <Card className="p-2">
+        <Card className="p-2 flex-col gap-2">
           <p>Тип: {cannon}</p>
           <p>Урон: {CannonsConfig[cannon].damage}</p>
           <p>Дальность: {CannonsConfig[cannon].range}</p>
@@ -77,7 +77,7 @@ const GameMenu = () => {
       )}
 
       {selectedEntity && (
-        <Card className="p-2">
+        <Card className="p-2 flex-col gap-2">
           <p>ID: {selectedEntity.id}</p>
           <p>Type: {selectedEntity.type}</p>
           <p>Level: {selectedEntity.level}</p>

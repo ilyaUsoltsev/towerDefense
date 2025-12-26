@@ -30,9 +30,6 @@ export const GamePage: FC = () => {
               <Text color="warning" variant="body-3">
                 Gold: <Text variant="subheader-3">{money}</Text>
               </Text>
-              <Text color="danger" variant="body-3">
-                Score: <Text variant="subheader-3">{0}</Text>
-              </Text>
             </div>
             <Game />
           </div>
