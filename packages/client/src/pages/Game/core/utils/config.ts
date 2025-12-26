@@ -1,10 +1,10 @@
 export const GameConfig = {
   hp: 10,
-  initialMoney: 1500,
+  initialMoney: 80,
   tileSize: 32,
   enemy: {
     defaultSpeed: 1,
-    defaultHealth: 100,
+    defaultHealth: 20,
     radius: 10,
     reward: 10,
   },
