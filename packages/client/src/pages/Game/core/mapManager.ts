@@ -1,3 +1,4 @@
+import { CannonsConfig, CannonType } from '../utils/cannons';
 import { GameConfig } from './config';
 import { eventBus } from './eventBus';
 import mapData from './map.json';
@@ -13,6 +14,7 @@ class MapManager {
   mapHeight: number;
   collisionMap: number[][];
   cursorTile: Point | null = null;
+  placingCannonType: CannonType | null = null;
   private mapDataCache = new Map<string, Tile[]>();
   private boundClickOnMap: (event: MouseEvent) => void;
   private boundMouseMoveOnMap: (event: MouseEvent) => void;
@@ -31,46 +33,55 @@ class MapManager {
     this.addEventListeners();
   }
 
-  public getStartTile(): Tile {
+  getStartTile(): Tile {
     const tiles = this.getTiles('Start');
     return tiles[0];
   }
 
-  public getFinishTile(): Tile {
+  getFinishTile(): Tile {
     const tiles = this.getTiles('Finish');
     return tiles[0];
   }
 
-  public renderGameField() {
+  renderGameField() {
     const tiles = this.getTiles('Game');
     this.renderTiles(tiles, 'lightblue');
   }
 
-  public renderWalls() {
+  renderWalls() {
     const walls = this.getTiles('Walls');
     this.renderTiles(walls, 'gray');
   }
 
-  public renderStart() {
+  renderStart() {
     const startTiles = this.getTiles('Start');
     this.renderTiles(startTiles, 'green');
   }
 
-  public renderFinish() {
+  renderFinish() {
     const finishTiles = this.getTiles('Finish');
     this.renderTiles(finishTiles, 'red');
   }
 
-  public renderCursorTile() {
+  renderCursorTile() {
     this._renderCursorTile();
   }
 
-  private addEventListeners() {
-    this.context.canvas.addEventListener('click', this.boundClickOnMap);
-    this.context.canvas.addEventListener('mousemove', this.boundMouseMoveOnMap);
+  getTiles(tileName: string): Tile[] {
+    if (this.mapDataCache.has(tileName)) {
+      return this.mapDataCache.get(tileName)!;
+    }
+    const walls = this.mapData.layers.find(layer => layer.name === tileName);
+    const result = walls ? walls.tiles : [];
+    this.mapDataCache.set(tileName, result);
+    return result;
   }
 
-  public removeEventListeners() {
+  setPlacingCannonType(cannonType: CannonType | null) {
+    this.placingCannonType = cannonType;
+  }
+
+  removeEventListeners() {
     this.context.canvas.removeEventListener('click', this.boundClickOnMap);
     this.context.canvas.removeEventListener(
       'mousemove',
@@ -78,7 +89,16 @@ class MapManager {
     );
   }
 
+  private addEventListeners() {
+    this.context.canvas.addEventListener('click', this.boundClickOnMap);
+    this.context.canvas.addEventListener('mousemove', this.boundMouseMoveOnMap);
+  }
+
   private mouseMoveOnMap(event: MouseEvent): void {
+    if (!this.placingCannonType) {
+      this.cursorTile = null;
+      return;
+    }
     const { x: tileX, y: tileY } = this.getTileFromMouse(event);
     if (
       // TODO: this is not efficient, we could find boundary tiles once and store them
@@ -107,7 +127,13 @@ class MapManager {
       return;
     }
 
-    if (!this.player.haveEnoughMoney(GameConfig.cannon.cost)) {
+    if (!this.placingCannonType) {
+      return;
+    }
+
+    if (
+      !this.player.haveEnoughMoney(CannonsConfig[this.placingCannonType].cost)
+    ) {
       alert('Not enough money to place cannon');
       return;
     }
@@ -118,18 +144,9 @@ class MapManager {
       eventBus.emit('mapManager:tryAddCannon', {
         cannonTile,
         collisionMap: this.collisionMap,
+        cannonType: this.placingCannonType,
       });
     }
-  }
-
-  getTiles(tileName: string): Tile[] {
-    if (this.mapDataCache.has(tileName)) {
-      return this.mapDataCache.get(tileName)!;
-    }
-    const walls = this.mapData.layers.find(layer => layer.name === tileName);
-    const result = walls ? walls.tiles : [];
-    this.mapDataCache.set(tileName, result);
-    return result;
   }
 
   private getTileFromMouse(event: MouseEvent): Tile {

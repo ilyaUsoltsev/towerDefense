@@ -3,6 +3,7 @@ import { Tile } from './types';
 import { eventBus } from './eventBus';
 import { GameConfig } from './config';
 import Player from './player';
+import { CannonType } from '../utils/cannons';
 
 class PathManager {
   context: CanvasRenderingContext2D;
@@ -63,13 +64,17 @@ class PathManager {
     });
   }
 
-  private async trySetCollisionMap(tile: Tile, collisionMap: number[][]) {
+  private async trySetCollisionMap(
+    tile: Tile,
+    collisionMap: number[][],
+    cannonType: CannonType
+  ) {
     collisionMap[tile.y][tile.x] = 1;
     this.easyStar.setGrid(collisionMap);
     try {
       await this.getPath(this.startTile, this.endTile);
       this.setCollisionMap(collisionMap);
-      eventBus.emit('mapManager:cannonPlaced', tile);
+      eventBus.emit('mapManager:cannonPlaced', { tile, cannonType });
       return true;
     } catch {
       // No path exists, revert the change
@@ -81,7 +86,11 @@ class PathManager {
 
   private addEventListeners() {
     this.unsubscribe = eventBus.on('mapManager:tryAddCannon', payload => {
-      this.trySetCollisionMap(payload.cannonTile, payload.collisionMap);
+      this.trySetCollisionMap(
+        payload.cannonTile,
+        payload.collisionMap,
+        payload.cannonType
+      );
     });
   }
 

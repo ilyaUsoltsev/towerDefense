@@ -77,11 +77,12 @@ export class GameEngineAdapter {
       }
     }
 
-    // Additional state sync logic can be added here
+    // selectedCannon can be null to cancel placing, so we pass it directly
+    this.gameEngine.mapManager.setPlacingCannonType(state.game.selectedCannon);
   }
 
   removeSubscriptions() {
     this.unsubSink.forEach(unsub => unsub());
-    this.unsubSink = [];
+    this.unsubSink.length = 0;
   }
 }

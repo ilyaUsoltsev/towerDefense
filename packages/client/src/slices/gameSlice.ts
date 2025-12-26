@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tile } from '../pages/Game/core/types';
+import { CannonType } from '../pages/Game/utils/cannons';
 
 export interface SelectedEntity {
-  type: 'enemy' | 'cannon';
+  type: CannonType;
   id: string;
   position: Tile;
   selling: boolean;
@@ -19,12 +20,14 @@ export interface UserState {
   money: number;
   selectedEntity: SelectedEntity | null;
   blockingPath: boolean;
+  selectedCannon: CannonType | null;
 }
 
 const initialState: UserState = {
   hp: 0, // will be initialized on game start
   money: 0, // will be initialized on game start
   selectedEntity: null,
+  selectedCannon: null,
   blockingPath: false,
 };
 
@@ -61,6 +64,9 @@ export const gameSlice = createSlice({
         state.selectedEntity.upgrading = true;
       }
     },
+    gameSelectCannon: (state, action: PayloadAction<CannonType | null>) => {
+      state.selectedCannon = action.payload;
+    },
   },
 });
 
@@ -72,6 +78,7 @@ export const {
   gameSetHp,
   gameSellSelectedEntity,
   gameUpgradeSelectedEntity,
+  gameSelectCannon,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

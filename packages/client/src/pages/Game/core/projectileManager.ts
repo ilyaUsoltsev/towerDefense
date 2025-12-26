@@ -1,6 +1,7 @@
 import Projectile from './projectile';
 import Enemy from './enemy';
 import { Point } from './types';
+import { CannonType } from '../utils/cannons';
 
 class ProjectileManager {
   private projectiles: Projectile[] = [];
@@ -10,13 +11,8 @@ class ProjectileManager {
     this.context = context;
   }
 
-  createProjectile(
-    start: Point,
-    target: Point,
-    speed?: number,
-    damage?: number
-  ): void {
-    const projectile = new Projectile(start, target, speed, damage);
+  createProjectile(start: Point, target: Point, cannonType: CannonType): void {
+    const projectile = new Projectile(start, target, cannonType);
     this.projectiles.push(projectile);
   }
 

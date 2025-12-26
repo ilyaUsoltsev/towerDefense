@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import GameEngine from './core/gameEngine';
 import { GameEngineAdapter } from './adapters/GameEngineAdapter';
 import { useStore } from '../../store';
 
-const Game = () => {
+const Game = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const store = useStore();
 
@@ -30,6 +30,6 @@ const Game = () => {
   }, []);
 
   return <canvas ref={canvasRef} />;
-};
+});
 
 export default Game;
