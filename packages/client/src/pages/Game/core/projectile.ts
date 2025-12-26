@@ -1,6 +1,7 @@
 import { Point } from './types';
 import Enemy from './enemy';
 import { GameConfig } from './config';
+import { CannonsConfig, CannonType } from '../utils/cannons';
 
 class Projectile {
   x: number;
@@ -11,18 +12,13 @@ class Projectile {
   damage: number;
   private destroyed = false;
 
-  constructor(
-    start: Point,
-    target: Point,
-    speed: number = GameConfig.cannon.projectileSpeed,
-    damage: number = GameConfig.cannon.damage
-  ) {
+  constructor(start: Point, target: Point, cannonType: CannonType) {
     this.x = start.x;
     this.y = start.y;
     this.targetX = target.x;
     this.targetY = target.y;
-    this.speed = speed;
-    this.damage = damage;
+    this.speed = CannonsConfig[cannonType].projectileSeed;
+    this.damage = CannonsConfig[cannonType].damage;
   }
 
   update(enemies: Enemy[]): void {

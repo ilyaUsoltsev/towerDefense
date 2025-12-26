@@ -3,7 +3,7 @@ import Cannon from '../cannon';
 
 export const getCannonState = (cannon: Cannon): SelectedEntity => {
   return {
-    type: 'cannon',
+    type: cannon.cannonType,
     id: cannon.id,
     position: cannon.position,
     level: cannon.level,

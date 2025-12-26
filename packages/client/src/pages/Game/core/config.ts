@@ -8,13 +8,6 @@ export const GameConfig = {
     radius: 10,
     reward: 10,
   },
-  cannon: {
-    defaultRange: 64,
-    fireRate: 1000,
-    projectileSpeed: 5,
-    damage: 5,
-    cost: 100,
-  },
   spawn: {
     interval: 2000,
     initialCount: 3,

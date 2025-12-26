@@ -2,9 +2,9 @@ import { eventBus } from './eventBus';
 import { Point, Tile } from './types';
 import Cannon from './cannon';
 import Enemy from './enemy';
-import { GameConfig } from './config';
 import ProjectileManager from './projectileManager';
 import Player from './player';
+import { CannonsConfig, CannonType } from '../utils/cannons';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
@@ -20,13 +20,8 @@ class CannonManager {
     this.addEventListeners();
   }
 
-  addCannon(position: Tile): void {
-    const cannon = new Cannon(
-      position,
-      GameConfig.cannon.defaultRange,
-      GameConfig.tileSize,
-      this.projectileManager
-    );
+  addCannon(position: Tile, cannonType: CannonType): void {
+    const cannon = new Cannon(position, cannonType, this.projectileManager);
     this.cannons.push(cannon);
   }
 
@@ -92,11 +87,14 @@ class CannonManager {
   }
 
   private addEventListeners(): void {
-    this.unsubscribe = eventBus.on('mapManager:cannonPlaced', (tile: Tile) => {
-      this.addCannon(tile);
-      this.player.subtractMoney(GameConfig.cannon.cost);
-      eventBus.emit('redux:setMoney', { money: this.player.getMoney() });
-    });
+    this.unsubscribe = eventBus.on(
+      'mapManager:cannonPlaced',
+      ({ tile, cannonType }: { tile: Tile; cannonType: CannonType }) => {
+        this.addCannon(tile, cannonType);
+        this.player.subtractMoney(CannonsConfig[cannonType].cost);
+        eventBus.emit('redux:setMoney', { money: this.player.getMoney() });
+      }
+    );
   }
 }
 

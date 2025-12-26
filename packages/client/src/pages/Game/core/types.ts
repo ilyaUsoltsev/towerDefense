@@ -1,3 +1,5 @@
+import { CannonType } from '../utils/cannons';
+
 export interface Point {
   x: number;
   y: number;
@@ -17,8 +19,12 @@ export interface CannonData {
  */
 export interface GameEvents {
   'redux:gameInitialize': null;
-  'mapManager:cannonPlaced': Tile;
-  'mapManager:tryAddCannon': { cannonTile: Tile; collisionMap: number[][] };
+  'mapManager:cannonPlaced': { tile: Tile; cannonType: CannonType };
+  'mapManager:tryAddCannon': {
+    cannonTile: Tile;
+    collisionMap: number[][];
+    cannonType: CannonType;
+  };
   'redux:selectedCannon': { x: number; y: number };
   'pathManager:pathUpdated': Tile[];
   'redux:setMoney': { money: number };
