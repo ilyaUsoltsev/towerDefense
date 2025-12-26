@@ -32,7 +32,7 @@ class Cannon {
     this.cost = CannonsConfig[cannonType].cost;
     this.damage = CannonsConfig[cannonType].damage;
     this.fireRate = CannonsConfig[cannonType].fireRate;
-    this.projectileSpeed = CannonsConfig[cannonType].projectileSeed;
+    this.projectileSpeed = CannonsConfig[cannonType].projectileSpeed;
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
 

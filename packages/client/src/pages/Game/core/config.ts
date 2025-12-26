@@ -18,7 +18,7 @@ export const GameConfig = {
     offset: 18,
   },
   projectile: {
-    radius: 4,
+    radius: 3,
     color: 'orange',
   },
 } as const;
