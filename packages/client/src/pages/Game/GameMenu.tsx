@@ -6,7 +6,7 @@ import {
   gameSelectCannon,
   gameUpgradeSelectedEntity,
 } from '../../slices/gameSlice';
-import { CannonsConfig, CannonType } from './utils/cannons';
+import { CannonsConfig, CannonType } from './constants/cannons-config';
 import { useLayoutEffect, useState } from 'react';
 
 const options: { value: CannonType; content: React.ReactNode }[] = [

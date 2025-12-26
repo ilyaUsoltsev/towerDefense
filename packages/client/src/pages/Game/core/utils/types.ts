@@ -1,4 +1,4 @@
-import { CannonType } from '../utils/cannons';
+import { CannonType } from '../../constants/cannons-config';
 
 export interface Point {
   x: number;

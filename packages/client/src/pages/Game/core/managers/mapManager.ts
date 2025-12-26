@@ -1,10 +1,9 @@
-import { CannonsConfig, CannonType } from '../utils/cannons';
-import { GameConfig } from './config';
-import { eventBus } from './eventBus';
-import mapData from './map.json';
-import Player from './player';
-import { Point, Tile } from './types';
-import { TileType } from './utils/constants';
+import { CannonsConfig, CannonType } from '../../constants/cannons-config';
+import { eventBus } from '../utils/eventBus';
+import mapData from '../utils/map.json';
+import Player from '../entities/player';
+import { Point, Tile } from '../utils/types';
+import { TileType } from '../utils/constants';
 
 class MapManager {
   context: CanvasRenderingContext2D;

@@ -1,10 +1,10 @@
-import { eventBus } from './eventBus';
-import { Point, Tile } from './types';
-import Cannon from './cannon';
-import Enemy from './enemy';
+import { eventBus } from '../utils/eventBus';
+import { Point, Tile } from '../utils/types';
+import Cannon from '../entities/cannon';
+import Enemy from '../entities/enemy';
 import ProjectileManager from './projectileManager';
-import Player from './player';
-import { CannonsConfig, CannonType } from '../utils/cannons';
+import Player from '../entities/player';
+import { CannonsConfig, CannonType } from '../../constants/cannons-config';
 
 class CannonManager {
   context: CanvasRenderingContext2D;

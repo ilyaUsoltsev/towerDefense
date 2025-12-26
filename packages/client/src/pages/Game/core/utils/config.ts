@@ -9,7 +9,7 @@ export const GameConfig = {
     reward: 10,
   },
   spawn: {
-    interval: 2000,
+    interval: 1000,
     initialCount: 3,
   },
   healthBar: {

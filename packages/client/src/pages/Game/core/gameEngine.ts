@@ -1,9 +1,9 @@
-import CannonManager from './cannonManager';
-import MapManager from './mapManager';
-import PathManager from './pathManager';
-import { eventBus } from './eventBus';
-import EnemyManager from './enemyManager';
-import Player from './player';
+import CannonManager from './managers/cannonManager';
+import MapManager from './managers/mapManager';
+import PathManager from './managers/pathManager';
+import { eventBus } from './utils/eventBus';
+import EnemyManager from './managers/enemyManager';
+import Player from './entities/player';
 
 class GameEngine {
   mapManager!: MapManager;

@@ -1,9 +1,9 @@
 import EasyStar from 'easystarjs';
-import { Tile } from './types';
-import { eventBus } from './eventBus';
-import { GameConfig } from './config';
-import Player from './player';
-import { CannonType } from '../utils/cannons';
+import { Tile } from '../utils/types';
+import { eventBus } from '../utils/eventBus';
+import { GameConfig } from '../utils/config';
+import Player from '../entities/player';
+import { CannonType } from '../../constants/cannons-config';
 
 class PathManager {
   context: CanvasRenderingContext2D;

@@ -1,7 +1,8 @@
-import Projectile from './projectile';
-import Enemy from './enemy';
-import { Point } from './types';
-import { CannonType } from '../utils/cannons';
+import Projectile from '../entities/projectile/projectile';
+import Enemy from '../entities/enemy';
+import { Point } from '../utils/types';
+import Cannon from '../entities/cannon';
+import { projectileConfig } from './constants/projectile-config';
 
 class ProjectileManager {
   private projectiles: Projectile[] = [];
@@ -11,8 +12,17 @@ class ProjectileManager {
     this.context = context;
   }
 
-  createProjectile(start: Point, target: Point, cannonType: CannonType): void {
-    const projectile = new Projectile(start, target, cannonType);
+  createProjectile(start: Point, target: Point, cannon: Cannon): void {
+    const config = projectileConfig[cannon.cannonType];
+
+    const projectile = new Projectile(
+      start,
+      target,
+      cannon,
+      new config.moveStrategy(),
+      new config.collisionStrategy()
+    );
+
     this.projectiles.push(projectile);
   }
 

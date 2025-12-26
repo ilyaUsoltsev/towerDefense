@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Tile } from '../pages/Game/core/types';
-import { CannonType } from '../pages/Game/utils/cannons';
+import { Tile } from '../pages/Game/core/utils/types';
+import { CannonType } from '../pages/Game/constants/cannons-config';
 
 export interface SelectedEntity {
   type: CannonType;

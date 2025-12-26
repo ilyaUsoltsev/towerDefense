@@ -1,7 +1,6 @@
-import { GameConfig } from './config';
-import { eventBus } from './eventBus';
-import PathManager from './pathManager';
-import { Point, Tile } from './types';
+import { GameConfig } from '../utils/config';
+import PathManager from '../managers/pathManager';
+import { Tile, Point } from '../utils/types';
 
 class Enemy {
   path: Tile[] = [];
