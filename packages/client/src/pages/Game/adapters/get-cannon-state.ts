@@ -1,5 +1,5 @@
-import { SelectedEntity } from '../../../../slices/gameSlice';
-import Cannon from '../cannon';
+import { SelectedEntity } from '../../../slices/gameSlice';
+import Cannon from '../core/entities/cannon';
 
 export const getCannonState = (cannon: Cannon): SelectedEntity => {
   return {

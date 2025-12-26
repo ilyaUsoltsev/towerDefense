@@ -1,8 +1,8 @@
-import { Point, Tile } from './types';
+import { Point, Tile } from '../utils/types';
 import Enemy from './enemy';
-import { GameConfig } from './config';
-import ProjectileManager from './projectileManager';
-import { CannonsConfig, CannonType } from '../utils/cannons';
+import { GameConfig } from '../utils/config';
+import ProjectileManager from '../managers/projectileManager';
+import { CannonsConfig, CannonType } from '../../constants/cannons-config';
 
 class Cannon {
   id: string;
@@ -12,6 +12,7 @@ class Cannon {
   tileSize: number;
   fireRate: number;
   projectileSpeed: number;
+  explosionRadius: number;
   damage: number;
   lastFireTime = 0;
   level = 1;
@@ -33,6 +34,7 @@ class Cannon {
     this.damage = CannonsConfig[cannonType].damage;
     this.fireRate = CannonsConfig[cannonType].fireRate;
     this.projectileSpeed = CannonsConfig[cannonType].projectileSpeed;
+    this.explosionRadius = CannonsConfig[cannonType].explosionRadius;
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
 
@@ -82,11 +84,7 @@ class Cannon {
     }
 
     const cannonCenter = this.getCenter();
-    this.projectileManager.createProjectile(
-      cannonCenter,
-      target,
-      this.cannonType
-    );
+    this.projectileManager.createProjectile(cannonCenter, target, this);
     this.lastFireTime = currentTime;
   }
 

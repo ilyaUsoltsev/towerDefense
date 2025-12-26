@@ -2,15 +2,16 @@ import type { Store } from '@reduxjs/toolkit';
 
 import { RootState } from '../../../store';
 import GameEngine from '../core/gameEngine';
-import { eventBus } from '../core/eventBus';
+
 import {
   gameSelectEntity,
   gameInitializeState,
   gameSetHp,
   gameSetMoney,
 } from '../../../slices/gameSlice';
-import { GameConfig } from '../core/config';
-import { getCannonState } from '../core/utils/get-cannon-state';
+import { GameConfig } from '../core/utils/config';
+import { getCannonState } from './get-cannon-state';
+import { eventBus } from '../core/utils/eventBus';
 
 /**
  * This class is an adapter between GameEngine and Redux store.

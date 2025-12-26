@@ -1,9 +1,9 @@
-import Enemy from './enemy';
-import { GameConfig } from './config';
+import Enemy from '../entities/enemy';
+import { GameConfig } from '../utils/config';
 import PathManager from './pathManager';
-import { Tile } from './types';
-import { eventBus } from './eventBus';
-import Player from './player';
+import { Tile } from '../utils/types';
+import { eventBus } from '../utils/eventBus';
+import Player from '../entities/player';
 
 class EnemyManager {
   enemies: Enemy[] = [];
