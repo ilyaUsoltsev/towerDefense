@@ -18,6 +18,7 @@ class Cannon {
   level = 1;
   cost: number;
   cannonType: CannonType;
+  upgradeCost: number;
   private projectileManager: ProjectileManager;
   private image: HTMLImageElement;
 
@@ -35,6 +36,7 @@ class Cannon {
     this.fireRate = CannonsConfig[cannonType].fireRate;
     this.projectileSpeed = CannonsConfig[cannonType].projectileSpeed;
     this.explosionRadius = CannonsConfig[cannonType].explosionRadius;
+    this.upgradeCost = CannonsConfig[cannonType].upgradeCost;
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
 
@@ -43,19 +45,21 @@ class Cannon {
   }
 
   upgrade(): void {
+    this.cost += this.upgradeCost * this.level;
     this.level += 1;
     this.damage *= 1.5;
     this.range *= 1.2;
     this.fireRate *= 0.5;
     this.projectileSpeed *= 1.1;
+    this.explosionRadius *= 1.2;
   }
 
   getSellValue(): number {
-    return Math.floor(this.cost * 0.7 * this.level);
+    return Math.floor(this.cost * 0.7);
   }
 
   getUpgradeCost(): number {
-    return Math.floor(this.cost * 1.5 * this.level);
+    return Math.floor(this.upgradeCost * this.level);
   }
 
   getCenter(): Point {
