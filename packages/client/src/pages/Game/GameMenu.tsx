@@ -8,6 +8,7 @@ import {
 } from '../../slices/gameSlice';
 import { CannonsConfig, CannonType } from './constants/cannons-config';
 import { useLayoutEffect, useState } from 'react';
+import { GameConfig } from './constants/game-config';
 
 const options: { value: CannonType; content: React.ReactNode }[] = [
   { content: <img src="/basic.png" width={30} />, value: 'basic' },
@@ -67,7 +68,7 @@ const GameMenu = () => {
       </div>
       {cannon && (
         <Card className="p-2 flex-col gap-2">
-          <p>Тип: {cannon}</p>
+          <p>{CannonsConfig[cannon].name}</p>
           <p>Урон: {CannonsConfig[cannon].damage}</p>
           <p>Дальность: {CannonsConfig[cannon].range}</p>
           <p>
@@ -75,7 +76,6 @@ const GameMenu = () => {
             {Math.round((1000 / CannonsConfig[cannon].fireRate) * 100) / 100} Гц
           </p>
           <p>Стоимость: {CannonsConfig[cannon].cost}</p>
-          <p>{CannonsConfig[cannon].description}</p>
         </Card>
       )}
 
@@ -84,14 +84,20 @@ const GameMenu = () => {
           <p>ID: {selectedEntity.id}</p>
           <p>Type: {selectedEntity.type}</p>
           <p>Level: {selectedEntity.level}</p>
-          <p>Damage: {selectedEntity.damage}</p>
-          <p>Range: {selectedEntity.range}</p>
-          <p>Frequency: {1000 / selectedEntity.fireRate} Hz</p>
+          <p>Damage: {Math.round(selectedEntity.damage)}</p>
+          <p>Range: {Math.round(selectedEntity.range)}</p>
+          <p>
+            Frequency:&nbsp;
+            {Math.round((1000 / selectedEntity.fireRate) * 100) / 100} Hz
+          </p>
           <p>Upgrade Cost: {selectedEntity.upgradeCost}</p>
           <Button
             view="action"
             onClick={upgradeSelectedEntity}
-            disabled={money < selectedEntity.upgradeCost}>
+            disabled={
+              money < selectedEntity.upgradeCost ||
+              selectedEntity.level >= GameConfig.maxCannonLevel
+            }>
             Апгрейд
           </Button>
           <Button view="outlined" onClick={sellSelectedEntity}>

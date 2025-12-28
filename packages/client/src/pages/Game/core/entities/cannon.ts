@@ -39,17 +39,19 @@ class Cannon {
     this.upgradeCost = CannonsConfig[cannonType].upgradeCost;
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
-
     this.image = new Image();
     this.image.src = `/${cannonType}.png`;
   }
 
   upgrade(): void {
+    if (this.level >= GameConfig.maxCannonLevel) {
+      return;
+    }
     this.cost += this.upgradeCost * this.level;
     this.level += 1;
-    this.damage *= 1.5;
+    this.damage *= 1.1;
     this.range *= 1.2;
-    this.fireRate *= 0.5;
+    this.fireRate *= 0.9;
     this.projectileSpeed *= 1.1;
     this.explosionRadius *= 1.2;
   }

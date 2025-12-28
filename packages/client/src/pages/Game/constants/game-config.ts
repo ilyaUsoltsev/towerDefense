@@ -3,14 +3,7 @@ export const GameConfig = {
   hp: 10,
   initialMoney: 80,
   tileSize: 32,
-  enemy: {
-    radius: 10,
-    reward: 10,
-  },
-  spawn: {
-    interval: 1000,
-    initialCount: 3,
-  },
+  maxCannonLevel: 5,
   healthBar: {
     width: 24,
     height: 3,
