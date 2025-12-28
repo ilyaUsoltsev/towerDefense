@@ -10,7 +10,7 @@ import {
   gameSetMoney,
   gameSetWaveNumber,
 } from '../../../slices/gameSlice';
-import { GameConfig } from '../core/utils/config';
+import { GameConfig } from '../constants/game-config';
 import { getCannonState } from './get-cannon-state';
 import { eventBus } from '../core/utils/eventBus';
 

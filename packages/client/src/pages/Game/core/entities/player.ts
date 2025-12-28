@@ -1,4 +1,4 @@
-import { GameConfig } from '../utils/config';
+import { GameConfig } from '../../constants/game-config';
 
 class Player {
   private playerHealth = GameConfig.hp;

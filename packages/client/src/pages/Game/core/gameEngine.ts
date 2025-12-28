@@ -43,7 +43,8 @@ class GameEngine {
       this.player
     );
 
-    // Start auto-spawning
+    // Начать спавн врагов
+    // TODO: Запускать спавн с началом игры
     this.enemyManager.startSpawning();
 
     this.canvas.width = this.mapManager.mapWidth * this.mapManager.tileSize;
@@ -81,11 +82,11 @@ class GameEngine {
   upgradeCannon(cannonId: string): number | null {
     const cannon = this.cannonManager.getCannonById(cannonId);
     if (cannon) {
-      console.log(cannon.getUpgradeCost(), 'cost');
+      // Проверяем, хватает ли денег у игрока на улучшение.
       if (this.player.haveEnoughMoney(cannon.getUpgradeCost()) === false) {
         return null;
       }
-      // Deduct money before upgrading!
+      // Вычитаем деньги игрока за улучшение.
       this.player.subtractMoney(cannon.getUpgradeCost());
 
       this.cannonManager.upgradeCannon(cannonId);

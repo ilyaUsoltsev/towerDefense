@@ -6,8 +6,8 @@ import Game from './Game';
 import styles from './Game.module.css';
 import GameMenu from './GameMenu';
 import { useSelector } from '../../store';
-import { Text } from '@gravity-ui/uikit';
-import { wavesConfig } from './constants/waves-config';
+import { GameStats } from './components/GameStats';
+import { WaveInfo } from './components/WaveInfo';
 
 export const GamePage: FC = () => {
   usePage({ initPage: initGamePage });
@@ -20,24 +20,12 @@ export const GamePage: FC = () => {
       <div className={styles.gameWrapper}>
         <div className="flex gap-2">
           <div>
-            <div className="flex justify-around">
-              <Text color="info" variant="body-3">
-                Wave:&nbsp;
-                <Text variant="subheader-3">
-                  {waveNumber + 1}/{wavesConfig.length}
-                </Text>
-              </Text>
-              <Text color="positive-heavy" variant="body-3">
-                Lives: <Text variant="subheader-3">{lives}</Text>
-              </Text>
-              <Text color="warning" variant="body-3">
-                Gold: <Text variant="subheader-3">{money}</Text>
-              </Text>
-            </div>
+            <GameStats waveNumber={waveNumber} lives={lives} money={money} />
             <Game />
           </div>
           <GameMenu />
         </div>
+        {waveNumber !== null && <WaveInfo waveNumber={waveNumber} />}
       </div>
     </PageWrapper>
   );

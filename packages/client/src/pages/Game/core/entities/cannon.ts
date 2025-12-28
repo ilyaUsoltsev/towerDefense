@@ -1,6 +1,6 @@
 import { Point, Tile } from '../utils/types';
 import Enemy from './enemy';
-import { GameConfig } from '../utils/config';
+import { GameConfig } from '../../constants/game-config';
 import ProjectileManager from '../managers/projectileManager';
 import { CannonsConfig, CannonType } from '../../constants/cannons-config';
 

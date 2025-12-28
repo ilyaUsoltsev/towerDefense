@@ -21,7 +21,7 @@ export interface UserState {
   selectedEntity: SelectedEntity | null;
   blockingPath: boolean;
   selectedCannon: CannonType | null;
-  waveNumber: number;
+  waveNumber: number | null;
 }
 
 const initialState: UserState = {
@@ -30,7 +30,7 @@ const initialState: UserState = {
   selectedEntity: null,
   selectedCannon: null,
   blockingPath: false,
-  waveNumber: 0,
+  waveNumber: null,
 };
 
 export const gameSlice = createSlice({

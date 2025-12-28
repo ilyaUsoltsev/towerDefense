@@ -1,11 +1,10 @@
 import Enemy from '../entities/enemy';
-import { GameConfig } from '../utils/config';
+import { GameConfig } from '../../constants/game-config';
 import PathManager from './pathManager';
 import { Tile } from '../utils/types';
 import { eventBus } from '../utils/eventBus';
 import Player from '../entities/player';
 import { wavesConfig } from '../../constants/waves-config';
-import { EnemyType } from '../../constants/enemies-config';
 
 class EnemyManager {
   enemies: Enemy[] = [];

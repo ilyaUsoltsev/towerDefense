@@ -1,7 +1,7 @@
 import EasyStar from 'easystarjs';
 import { Tile } from '../utils/types';
 import { eventBus } from '../utils/eventBus';
-import { GameConfig } from '../utils/config';
+import { GameConfig } from '../../constants/game-config';
 import Player from '../entities/player';
 import { CannonType } from '../../constants/cannons-config';
 

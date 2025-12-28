@@ -10,11 +10,11 @@ import { CannonsConfig, CannonType } from './constants/cannons-config';
 import { useLayoutEffect, useState } from 'react';
 
 const options: { value: CannonType; content: React.ReactNode }[] = [
-  { content: <img src="/dumb.png" width={30} />, value: 'dumb' },
   { content: <img src="/basic.png" width={30} />, value: 'basic' },
   { content: <img src="/rocket.png" width={30} />, value: 'rocket' },
   { content: <img src="/sniper.png" width={30} />, value: 'sniper' },
   { content: <img src="/freeze.png" width={30} />, value: 'freeze' },
+  { content: <img src="/dumb.png" width={30} />, value: 'dumb' },
 ];
 
 const GameMenu = () => {
@@ -70,7 +70,10 @@ const GameMenu = () => {
           <p>Тип: {cannon}</p>
           <p>Урон: {CannonsConfig[cannon].damage}</p>
           <p>Дальность: {CannonsConfig[cannon].range}</p>
-          <p>Частота: {1000 / CannonsConfig[cannon].fireRate} Гц</p>
+          <p>
+            Частота:&nbsp;
+            {Math.round((1000 / CannonsConfig[cannon].fireRate) * 100) / 100} Гц
+          </p>
           <p>Стоимость: {CannonsConfig[cannon].cost}</p>
           <p>{CannonsConfig[cannon].description}</p>
         </Card>

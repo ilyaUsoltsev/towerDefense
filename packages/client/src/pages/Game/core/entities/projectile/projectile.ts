@@ -1,6 +1,6 @@
 import { Point } from '../../utils/types';
 import Enemy from '../enemy';
-import { GameConfig } from '../../utils/config';
+import { GameConfig } from '../../../constants/game-config';
 import Cannon from '../cannon';
 import MoveStrategy from './MoveStrategy';
 import CollisionStrategy from './CollisionStrategy';

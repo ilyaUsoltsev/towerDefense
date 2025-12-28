@@ -1,4 +1,4 @@
-import { GameConfig } from '../utils/config';
+import { GameConfig } from '../../constants/game-config';
 import PathManager from '../managers/pathManager';
 import { Tile, Point } from '../utils/types';
 import { EnemiesConfig, EnemyType } from '../../constants/enemies-config';
