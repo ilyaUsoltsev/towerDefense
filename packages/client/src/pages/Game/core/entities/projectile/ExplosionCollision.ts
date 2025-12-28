@@ -12,7 +12,7 @@ export class ExplosionCollision implements CollisionStrategy {
       const dist = Math.hypot(projectile.x - pos.x, projectile.y - pos.y);
 
       if (projectile.isExploded() && dist < projectile.explosionRadius) {
-        enemy.takeHit(projectile.damage);
+        enemy.takeHit(projectile.damage, projectile.effect);
       }
     }
     if (projectile.isExploded()) {

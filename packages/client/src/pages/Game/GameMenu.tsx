@@ -9,9 +9,11 @@ import {
 import { CannonsConfig, CannonType } from './constants/cannons-config';
 import { useLayoutEffect, useState } from 'react';
 import { GameConfig } from './constants/game-config';
+import { EffectsConfig } from './constants/effects-config';
 
 const options: { value: CannonType; content: React.ReactNode }[] = [
   { content: <img src="/basic.png" width={30} />, value: 'basic' },
+  { content: <img src="/fast.png" width={30} />, value: 'fast' },
   { content: <img src="/rocket.png" width={30} />, value: 'rocket' },
   { content: <img src="/sniper.png" width={30} />, value: 'sniper' },
   { content: <img src="/freeze.png" width={30} />, value: 'freeze' },
@@ -70,6 +72,9 @@ const GameMenu = () => {
         <Card className="p-2 flex-col gap-2">
           <p>{CannonsConfig[cannon].name}</p>
           <p>Урон: {CannonsConfig[cannon].damage}</p>
+          <p>
+            Эффект: {EffectsConfig[cannon] ? EffectsConfig[cannon].name : 'Нет'}
+          </p>
           <p>Дальность: {CannonsConfig[cannon].range}</p>
           <p>
             Частота:&nbsp;

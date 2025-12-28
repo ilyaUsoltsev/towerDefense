@@ -28,7 +28,7 @@ export const wavesConfig = [
     name: 'Boss',
     count: 3,
     spawnInterval: 900,
-    hp: 500,
+    hp: 100,
     reward: 50,
   },
 ] as const;

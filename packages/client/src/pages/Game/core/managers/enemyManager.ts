@@ -68,7 +68,7 @@ class EnemyManager {
 
     // Update all enemies
     this.enemies.forEach(enemy => {
-      enemy.update();
+      enemy.update(currentTime);
       if (enemy.hasReachedEnd()) {
         this.handleEnemyReachedEnd();
       }

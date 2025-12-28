@@ -3,6 +3,7 @@ import Enemy from './enemy';
 import { GameConfig } from '../../constants/game-config';
 import ProjectileManager from '../managers/projectileManager';
 import { CannonsConfig, CannonType } from '../../constants/cannons-config';
+import { Effect, EffectsConfig } from '../../constants/effects-config';
 
 class Cannon {
   id: string;
@@ -19,6 +20,7 @@ class Cannon {
   cost: number;
   cannonType: CannonType;
   upgradeCost: number;
+  effect: Effect | null;
   private projectileManager: ProjectileManager;
   private image: HTMLImageElement;
 
@@ -37,6 +39,7 @@ class Cannon {
     this.projectileSpeed = CannonsConfig[cannonType].projectileSpeed;
     this.explosionRadius = CannonsConfig[cannonType].explosionRadius;
     this.upgradeCost = CannonsConfig[cannonType].upgradeCost;
+    this.effect = EffectsConfig[cannonType];
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
     this.image = new Image();
@@ -54,6 +57,10 @@ class Cannon {
     this.fireRate *= 0.9;
     this.projectileSpeed *= 1.1;
     this.explosionRadius *= 1.2;
+    if (this.effect) {
+      this.effect.duration *= 1.5;
+      this.effect.magnitude *= 0.9;
+    }
   }
 
   getSellValue(): number {

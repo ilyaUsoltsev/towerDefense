@@ -131,6 +131,7 @@
 Абстрактный класс: [entities/projectile/MoveStrategy.ts](entities/projectile/MoveStrategy.ts)
 
 Реализации:
+
 - **StraightMove** ([StraightMove.ts](entities/projectile/StraightMove.ts)) — летит по прямой линии от начальной точки до достижения радиуса пушки
 - **AtTargetMove** ([AtTargetMove.ts](entities/projectile/AtTargetMove.ts)) — летит прямо к цели, взрывается при достижении (для ракет)
 - **NoMove** ([NoMove.ts](entities/projectile/NoMove.ts)) — неподвижный снаряд (не используется)
@@ -140,6 +141,7 @@
 Абстрактный класс: [entities/projectile/CollisionStrategy.ts](entities/projectile/CollisionStrategy.ts)
 
 Реализации:
+
 - **SingleHitCollision** ([SingleHitCollision.ts](entities/projectile/SingleHitCollision.ts)) — уничтожается при первом контакте с врагом, наносит урон одной цели
 - **ExplosionCollision** ([ExplosionCollision.ts](entities/projectile/ExplosionCollision.ts)) — зонный урон в радиусе взрыва, наносит урон всем врагам в области после взрыва снаряда
 - **NoCollisionStrategy** ([NoCollisionStrategy.ts](entities/projectile/NoCollisionStrategy.ts)) — без обнаружения столкновений (для dumb пушек)
@@ -152,9 +154,10 @@
 projectileConfig = {
   dumb: { moveStrategy: NoMove, collisionStrategy: NoCollisionStrategy },
   basic: { moveStrategy: StraightMove, collisionStrategy: SingleHitCollision },
+  fast: { moveStrategy: StraightMove, collisionStrategy: SingleHitCollision },
   rocket: { moveStrategy: AtTargetMove, collisionStrategy: ExplosionCollision },
   sniper: { moveStrategy: StraightMove, collisionStrategy: SingleHitCollision },
-  freeze: { moveStrategy: StraightMove, collisionStrategy: SingleHitCollision }
+  freeze: { moveStrategy: AtTargetMove, collisionStrategy: ExplosionCollision }
 }
 ```
 
@@ -172,16 +175,19 @@ projectileConfig = {
 Централизованная событийно-ориентированная коммуникация между компонентами (паттерн Singleton):
 
 **Методы**:
+
 - `on(event, handler)` — подписка на событие, возвращает функцию отписки
 - `once(event, handler)` — одноразовый слушатель
 - `emit(event, payload)` — рассылка события
 
 **События игровой логики**:
+
 - `pathManager:pathUpdated` — путь изменён, враги пересчитывают маршруты
 - `mapManager:cannonPlaced` — пушка успешно размещена
 - `mapManager:tryAddCannon` — клик пользователя для размещения пушки
 
 **События Redux (интеграция с UI)**:
+
 - `redux:waveStarted` — начало новой волны
 - `redux:selectedCannon` — пушка выбрана для улучшения/продажи
 - `redux:setMoney` — обновление денег игрока
@@ -336,7 +342,8 @@ projectileConfig = {
 {
   dumb: { cost: 2, range: 0, damage: 0, fireRate: 0, ... },
   basic: { cost: 5, range: 60, damage: 10, fireRate: 1500, projectileSpeed: 3, ... },
-  rocket: { cost: 15, range: 70, damage: 15, fireRate: 800, explosionRadius: 50, ... },
+  fast:  {cost: 15...},
+  rocket: { cost: 20, range: 70, damage: 15, fireRate: 800, explosionRadius: 50, ... },
   sniper: { cost: 50, range: 100, damage: 50, fireRate: 4000, projectileSpeed: 15, ... },
   freeze: { cost: 50, range: 80, damage: 10, fireRate: 1500, projectileSpeed: 3, ... }
 }

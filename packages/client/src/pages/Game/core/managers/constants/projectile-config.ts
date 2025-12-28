@@ -23,6 +23,10 @@ export const projectileConfig: Record<
     moveStrategy: StraightMove,
     collisionStrategy: SingleHitCollision,
   },
+  fast: {
+    moveStrategy: StraightMove,
+    collisionStrategy: SingleHitCollision,
+  },
   rocket: {
     moveStrategy: AtTargetMove,
     collisionStrategy: ExplosionCollision,
@@ -32,7 +36,7 @@ export const projectileConfig: Record<
     collisionStrategy: SingleHitCollision,
   },
   freeze: {
-    moveStrategy: StraightMove,
-    collisionStrategy: SingleHitCollision,
+    moveStrategy: AtTargetMove,
+    collisionStrategy: ExplosionCollision,
   },
 };

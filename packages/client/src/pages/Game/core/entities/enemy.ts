@@ -2,10 +2,12 @@ import { GameConfig } from '../../constants/game-config';
 import PathManager from '../managers/pathManager';
 import { Tile, Point } from '../utils/types';
 import { EnemiesConfig, EnemyType } from '../../constants/enemies-config';
+import { Effect } from '../../constants/effects-config';
 
 class Enemy {
   path: Tile[] = [];
   currentPosition: Point;
+  baseSpeed: number;
   speed: number;
   currentIndex: number;
   pathManager: PathManager;
@@ -15,6 +17,7 @@ class Enemy {
   radius: number;
   reward: number;
   color: string;
+  activeEffects: Effect[] = [];
 
   constructor(
     start: Tile,
@@ -32,7 +35,8 @@ class Enemy {
     this.health = hp;
     this.maxHealth = hp;
     // Каждый враг получает случайную скорость в диапазоне 90%-110% от базовой скорости
-    this.speed = EnemiesConfig[type].speed * (Math.random() * 0.2 + 0.9);
+    this.baseSpeed = EnemiesConfig[type].speed * (Math.random() * 0.2 + 0.9);
+    this.speed = this.baseSpeed;
     this.radius = EnemiesConfig[type].radius;
     this.color = EnemiesConfig[type].color;
     this.reward = reward;
@@ -83,13 +87,18 @@ class Enemy {
     return this.currentIndex >= this.path.length - 1;
   }
 
-  takeHit(damage: number): void {
+  takeHit(damage: number, effect: Effect | null): void {
     if (this.isDestroyed) return;
 
     this.health -= damage;
     if (this.health <= 0) {
       this.health = 0;
       this.isDestroyed = true;
+      return;
+    }
+
+    if (effect) {
+      this.takeEffect(effect);
     }
   }
 
@@ -105,8 +114,9 @@ class Enemy {
     return this.isDestroyed;
   }
 
-  update() {
+  update(currentTime: number): void {
     this.moveAlongPath();
+    this.updateEffects(currentTime);
   }
 
   render(context: CanvasRenderingContext2D) {
@@ -121,6 +131,22 @@ class Enemy {
       2 * Math.PI
     );
     context.fill();
+
+    // Отрисовка эффекта (например, ледяной эффект)
+    // синяя полупрозрачная оболочка вокруг врага
+    const freezeEffect = this.activeEffects.find(e => e.name === 'Freeze');
+    if (freezeEffect) {
+      context.fillStyle = 'rgba(0, 150, 255, 0.4)';
+      context.beginPath();
+      context.arc(
+        this.currentPosition.x,
+        this.currentPosition.y,
+        this.radius + 4,
+        0,
+        2 * Math.PI
+      );
+      context.fill();
+    }
 
     // Отрисовка полоски здоровья
     const healthBarWidth = GameConfig.healthBar.width;
@@ -162,6 +188,40 @@ class Enemy {
       }
     }
     context.stroke();
+  }
+
+  private takeEffect(effect: Effect): void {
+    const existingEffect = this.activeEffects.find(e => e.name === effect.name);
+
+    if (existingEffect) {
+      // Если эффект уже активен, обновляем его длительность
+      existingEffect.duration = effect.duration;
+    } else {
+      this.activeEffects.push({ ...effect });
+    }
+  }
+
+  private updateEffects(currentTime: number) {
+    let speedMultiplier = 1;
+
+    this.activeEffects.forEach(effect => {
+      // TODO: делать по-другому, нужен deltaTime в этом методе
+      if (effect.timepassed === 0) {
+        effect.timepassed = currentTime;
+      }
+      effect.duration -= currentTime - effect.timepassed;
+      effect.timepassed = currentTime;
+
+      if (effect.name === 'Freeze') {
+        speedMultiplier *= effect.magnitude;
+      }
+    });
+    // удаляем истекшие эффекты
+    this.activeEffects = this.activeEffects.filter(
+      effect => effect.duration > 0
+    );
+
+    this.speed = this.baseSpeed * speedMultiplier;
   }
 }
 

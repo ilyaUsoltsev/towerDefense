@@ -4,6 +4,7 @@ import { GameConfig } from '../../../constants/game-config';
 import Cannon from '../cannon';
 import MoveStrategy from './MoveStrategy';
 import CollisionStrategy from './CollisionStrategy';
+import { Effect } from '../../../constants/effects-config';
 
 class Projectile {
   x: number;
@@ -17,6 +18,7 @@ class Projectile {
   range: number;
   explosionRadius: number;
   exploded = false;
+  effect: Effect | null;
   private destroyed = false;
   private moveStrategy: MoveStrategy;
   private collisionStrategy: CollisionStrategy;
@@ -38,6 +40,7 @@ class Projectile {
     this.damage = cannon.damage;
     this.range = cannon.range;
     this.explosionRadius = cannon.explosionRadius;
+    this.effect = cannon.effect;
     this.moveStrategy = moveStrategy;
     this.collisionStrategy = collisionStrategy;
   }

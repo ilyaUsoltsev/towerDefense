@@ -11,7 +11,7 @@ export class SingleHitCollision implements CollisionStrategy {
       const dist = Math.hypot(projectile.x - pos.x, projectile.y - pos.y);
 
       if (dist < enemy.radius) {
-        enemy.takeHit(projectile.damage);
+        enemy.takeHit(projectile.damage, projectile.effect);
         projectile.destroy();
         return;
       }

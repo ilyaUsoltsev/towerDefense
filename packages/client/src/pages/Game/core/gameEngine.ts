@@ -99,8 +99,7 @@ class GameEngine {
   private loop = (timestamp: number) => {
     this.animationFrameId = requestAnimationFrame(this.loop);
 
-    // Adjust for target FPS
-    // Otherwise on different monitors the game speed would vary
+    // Поправка на FPS, скорость может меняться в зависимости от FPS
     const deltaTime = timestamp - this.lastFrameTime;
     if (deltaTime >= this.frameInterval) {
       this.lastFrameTime = timestamp - (deltaTime % this.frameInterval);
