@@ -62,13 +62,13 @@ class EnemyManager {
     this.isSpawning = false;
   }
 
-  update(currentTime: number): void {
+  update(currentTime: number, deltaTime: number): void {
     // Создание врагов в зависимости от времени и волны
     this.handleWave(currentTime);
 
     // Update all enemies
     this.enemies.forEach(enemy => {
-      enemy.update(currentTime);
+      enemy.update(deltaTime);
       if (enemy.hasReachedEnd()) {
         this.handleEnemyReachedEnd();
       }

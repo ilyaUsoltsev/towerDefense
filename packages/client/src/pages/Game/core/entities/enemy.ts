@@ -116,9 +116,9 @@ class Enemy {
     return this.isDestroyed;
   }
 
-  update(currentTime: number): void {
+  update(deltaTime: number): void {
     this.moveAlongPath();
-    this.updateEffects(currentTime);
+    this.updateEffects(deltaTime);
   }
 
   render(context: CanvasRenderingContext2D) {
@@ -203,16 +203,11 @@ class Enemy {
     }
   }
 
-  private updateEffects(currentTime: number) {
+  private updateEffects(deltaTime: number) {
     let speedMultiplier = 1;
 
     this.activeEffects.forEach(effect => {
-      // TODO: делать по-другому, нужен deltaTime в этом методе
-      if (effect.timepassed === 0) {
-        effect.timepassed = currentTime;
-      }
-      effect.duration -= currentTime - effect.timepassed;
-      effect.timepassed = currentTime;
+      effect.duration -= deltaTime;
 
       if (effect.name === 'Freeze') {
         speedMultiplier *= effect.magnitude;

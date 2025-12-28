@@ -6,7 +6,6 @@ export type Effect = {
   magnitude: number;
   duration: number;
   name: EffectName;
-  timepassed: number;
 };
 
 export const EffectsConfig: Record<CannonType, Effect | null> = {
@@ -14,7 +13,6 @@ export const EffectsConfig: Record<CannonType, Effect | null> = {
     magnitude: 0.7,
     duration: 1000,
     name: 'Freeze',
-    timepassed: 0,
   },
   dumb: null,
   basic: null,

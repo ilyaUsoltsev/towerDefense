@@ -103,18 +103,18 @@ class GameEngine {
     const deltaTime = timestamp - this.lastFrameTime;
     if (deltaTime >= this.frameInterval) {
       this.lastFrameTime = timestamp - (deltaTime % this.frameInterval);
-      this.render(timestamp);
+      this.render(timestamp, deltaTime);
     }
   };
 
-  private render(timestamp: number) {
+  private render(timestamp: number, deltaTime: number) {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.mapManager.renderGameField();
     this.mapManager.renderWalls();
     this.mapManager.renderStart();
     this.mapManager.renderFinish();
     this.pathManager.renderPathStartFinish();
-    this.enemyManager.update(timestamp);
+    this.enemyManager.update(timestamp, deltaTime);
     this.cannonManager.update(this.enemyManager.getEnemies(), timestamp);
     this.cannonManager.render();
     this.enemyManager.render();
