@@ -82,6 +82,16 @@ class EnemyManager {
     this.enemies = this.enemies.filter(
       enemy => !enemy.destroyed() && !enemy.hasReachedEnd()
     );
+
+    // Проверка на завершение игры
+    if (
+      !this.isSpawning &&
+      this.enemies.length === 0 &&
+      this.waveIndex >= wavesConfig.length
+    ) {
+      // Игра завершена, все волны пройдены
+      // console.log('Game Over: All waves completed!');
+    }
   }
 
   render(): void {
@@ -119,6 +129,10 @@ class EnemyManager {
         this.waveIndex++;
         this.currentWaveEnemiesSpawned = 0;
         this.lastSpawnTime = currentTime + GameConfig.waveDelay; // Задержка перед следующей волной
+      }
+
+      if (this.waveIndex >= wavesConfig.length) {
+        return; // Все волны завершены
       }
 
       const spawnInterval = wavesConfig[this.waveIndex].spawnInterval;
