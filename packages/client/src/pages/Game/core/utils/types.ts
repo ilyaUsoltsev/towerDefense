@@ -18,15 +18,16 @@ export interface CannonData {
  * Central event definitions for game-wide communication
  */
 export interface GameEvents {
-  'redux:gameInitialize': null;
   'mapManager:cannonPlaced': { tile: Tile; cannonType: CannonType };
   'mapManager:tryAddCannon': {
     cannonTile: Tile;
     collisionMap: number[][];
     cannonType: CannonType;
   };
-  'redux:selectedCannon': { x: number; y: number };
   'pathManager:pathUpdated': Tile[];
+  'redux:waveStarted': { waveNumber: number };
+  'redux:gameInitialize': null;
+  'redux:selectedCannon': { x: number; y: number };
   'redux:setMoney': { money: number };
   'redux:setPlayerHp': { hp: number };
 }

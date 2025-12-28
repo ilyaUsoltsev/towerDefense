@@ -1,4 +1,4 @@
-const config = {
+export const CannonsConfig = {
   dumb: {
     cost: 2,
     range: 0,
@@ -35,7 +35,7 @@ const config = {
     damage: 50,
     fireRate: 4000,
     upgradeCost: 150,
-    projectileSpeed: 10,
+    projectileSpeed: 30,
     description: 'Большая дальность и урон, но медленная скорострельность',
     explosionRadius: 0,
   },
@@ -51,6 +51,4 @@ const config = {
   },
 } as const;
 
-export type CannonType = keyof typeof config;
-
-export const CannonsConfig = config;
+export type CannonType = keyof typeof CannonsConfig;

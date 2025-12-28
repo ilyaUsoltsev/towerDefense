@@ -21,6 +21,7 @@ export interface UserState {
   selectedEntity: SelectedEntity | null;
   blockingPath: boolean;
   selectedCannon: CannonType | null;
+  waveNumber: number;
 }
 
 const initialState: UserState = {
@@ -29,6 +30,7 @@ const initialState: UserState = {
   selectedEntity: null,
   selectedCannon: null,
   blockingPath: false,
+  waveNumber: 0,
 };
 
 export const gameSlice = createSlice({
@@ -67,6 +69,9 @@ export const gameSlice = createSlice({
     gameSelectCannon: (state, action: PayloadAction<CannonType | null>) => {
       state.selectedCannon = action.payload;
     },
+    gameSetWaveNumber: (state, action: PayloadAction<number>) => {
+      state.waveNumber = action.payload;
+    },
   },
 });
 
@@ -79,6 +84,7 @@ export const {
   gameSellSelectedEntity,
   gameUpgradeSelectedEntity,
   gameSelectCannon,
+  gameSetWaveNumber,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

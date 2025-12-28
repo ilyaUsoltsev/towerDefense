@@ -1,10 +1,9 @@
 export const GameConfig = {
+  waveDelay: 10000,
   hp: 10,
   initialMoney: 80,
   tileSize: 32,
   enemy: {
-    defaultSpeed: 1,
-    defaultHealth: 20,
     radius: 10,
     reward: 10,
   },
@@ -13,8 +12,8 @@ export const GameConfig = {
     initialCount: 3,
   },
   healthBar: {
-    width: 30,
-    height: 4,
+    width: 24,
+    height: 3,
     offset: 18,
   },
   projectile: {

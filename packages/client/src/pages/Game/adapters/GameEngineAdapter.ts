@@ -8,22 +8,23 @@ import {
   gameInitializeState,
   gameSetHp,
   gameSetMoney,
+  gameSetWaveNumber,
 } from '../../../slices/gameSlice';
 import { GameConfig } from '../core/utils/config';
 import { getCannonState } from './get-cannon-state';
 import { eventBus } from '../core/utils/eventBus';
 
 /**
- * This class is an adapter between GameEngine and Redux store.
- * It listens to GameEngine events and dispatches corresponding Redux actions.
- * It also listens to Redux store changes and updates the GameEngine state accordingly.
+ * Этот адаптер синхронизирует состояние между GameEngine и Redux store.
+ * Он слушает события из GameEngine и диспатчит соответствующие действия Redux.
+ * Он также слушает изменения в хранилище Redux и обновляет состояние GameEngine соответственно.
  */
 export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
   constructor(private gameEngine: GameEngine, private store: Store) {}
 
-  // This methods provides Engine → Redux syncronization
-  // All event should start with "redux:"
+  // Этот метод обеспечивает синхронизацию от движка к Redux
+  // Все события должны начинаться с "redux:"
   init() {
     const unsubInit = eventBus.on('redux:gameInitialize', () => {
       this.store.dispatch(
@@ -33,6 +34,13 @@ export class GameEngineAdapter {
         })
       );
     });
+
+    const waveStartedUnsub = eventBus.on(
+      'redux:waveStarted',
+      ({ waveNumber }) => {
+        this.store.dispatch(gameSetWaveNumber(waveNumber));
+      }
+    );
 
     const unsubHp = eventBus.on('redux:setPlayerHp', ({ hp }) => {
       this.store.dispatch(gameSetHp(hp));
@@ -50,10 +58,16 @@ export class GameEngineAdapter {
       }
     });
 
-    this.unsubSink = [unsubInit, unsubHp, unsubCannonClick, unsubMoney];
+    this.unsubSink = [
+      unsubInit,
+      unsubHp,
+      unsubCannonClick,
+      unsubMoney,
+      waveStartedUnsub,
+    ];
   }
 
-  // This method provides Redux → Engine syncronization
+  // Этот метод обеспечивает синхронизацию от Redux к движку
   syncState(state: RootState) {
     if (state.game.selectedEntity?.selling) {
       const moneyBalance = this.gameEngine.sellCannon(
@@ -78,7 +92,7 @@ export class GameEngineAdapter {
       }
     }
 
-    // selectedCannon can be null to cancel placing, so we pass it directly
+    // selectedCannon может быть null, чтобы отменить размещение, поэтому мы передаем его напрямую
     this.gameEngine.mapManager.setPlacingCannonType(state.game.selectedCannon);
   }
 

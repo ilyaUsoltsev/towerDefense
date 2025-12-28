@@ -1,26 +1,41 @@
 import { GameConfig } from '../utils/config';
 import PathManager from '../managers/pathManager';
 import { Tile, Point } from '../utils/types';
+import { EnemiesConfig, EnemyType } from '../../constants/enemies-config';
 
 class Enemy {
   path: Tile[] = [];
   currentPosition: Point;
-  speed = GameConfig.enemy.defaultSpeed;
+  speed: number;
   currentIndex: number;
   pathManager: PathManager;
   health: number;
   maxHealth: number;
   isDestroyed: boolean;
+  radius: number;
+  reward: number;
+  color: string;
 
-  constructor(start: Tile, pathManager: PathManager, health: number) {
+  constructor(
+    start: Tile,
+    pathManager: PathManager,
+    type: EnemyType,
+    hp: number,
+    reward: number
+  ) {
     this.pathManager = pathManager;
     this.currentPosition = {
       x: start.x * GameConfig.tileSize + GameConfig.tileSize / 2,
       y: start.y * GameConfig.tileSize + GameConfig.tileSize / 2,
     };
     this.currentIndex = 0;
-    this.health = health;
-    this.maxHealth = health;
+    this.health = hp;
+    this.maxHealth = hp;
+    // Каждый враг получает случайную скорость в диапазоне 90%-110% от базовой скорости
+    this.speed = EnemiesConfig[type].speed * (Math.random() * 0.2 + 0.9);
+    this.radius = EnemiesConfig[type].radius;
+    this.color = EnemiesConfig[type].color;
+    this.reward = reward;
     this.isDestroyed = false;
     this.path = this.pathManager.getStartFinishPath();
   }
@@ -95,30 +110,30 @@ class Enemy {
   }
 
   render(context: CanvasRenderingContext2D) {
-    // Render enemy circle
-    context.fillStyle = 'red';
+    // Отрисовка врага
+    context.fillStyle = this.color;
     context.beginPath();
     context.arc(
       this.currentPosition.x,
       this.currentPosition.y,
-      GameConfig.enemy.radius,
+      this.radius,
       0,
       2 * Math.PI
     );
     context.fill();
 
-    // Render health bar
+    // Отрисовка полоски здоровья
     const healthBarWidth = GameConfig.healthBar.width;
     const healthBarHeight = GameConfig.healthBar.height;
     const healthBarX = this.currentPosition.x - healthBarWidth / 2;
     const healthBarY = this.currentPosition.y - GameConfig.healthBar.offset;
     const healthPercentage = this.health / this.maxHealth;
 
-    // Background
+    // Фон
     context.fillStyle = 'rgba(0, 0, 0, 0.5)';
     context.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
 
-    // Health
+    // Здоровье
     context.fillStyle =
       healthPercentage > 0.5
         ? 'green'
@@ -132,7 +147,7 @@ class Enemy {
       healthBarHeight
     );
 
-    // Render enemy's path (for debugging)
+    // Отрисовка пути врага (для дебага)
 
     context.strokeStyle = 'rgba(0, 0, 255, 0.3)';
     context.beginPath();

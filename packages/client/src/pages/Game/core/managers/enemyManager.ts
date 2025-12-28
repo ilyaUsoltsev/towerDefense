@@ -4,6 +4,8 @@ import PathManager from './pathManager';
 import { Tile } from '../utils/types';
 import { eventBus } from '../utils/eventBus';
 import Player from '../entities/player';
+import { wavesConfig } from '../../constants/waves-config';
+import { EnemyType } from '../../constants/enemies-config';
 
 class EnemyManager {
   enemies: Enemy[] = [];
@@ -11,9 +13,10 @@ class EnemyManager {
   startTile: Tile;
   player: Player;
   context: CanvasRenderingContext2D;
-  spawnInterval: number;
   lastSpawnTime: number;
   isSpawning: boolean;
+  waveIndex = 0;
+  currentWaveEnemiesSpawned = 0;
   private unsubscribe!: () => void;
 
   constructor(
@@ -26,28 +29,29 @@ class EnemyManager {
     this.pathManager = pathManager;
     this.startTile = startTile;
     this.player = player;
-    this.spawnInterval = GameConfig.spawn.interval;
     this.lastSpawnTime = 0;
     this.isSpawning = false;
     this.addEventListeners();
   }
 
-  addEnemy(health: number): Enemy {
-    const enemy = new Enemy(this.startTile, this.pathManager, health);
+  addEnemy(waveIndex: number): void {
+    const enemyType = wavesConfig[waveIndex].enemyType;
+    const hp = wavesConfig[waveIndex].hp;
+    const reward = wavesConfig[waveIndex].reward;
+    const enemy = new Enemy(
+      this.startTile,
+      this.pathManager,
+      enemyType,
+      hp,
+      reward
+    );
     this.enemies.push(enemy);
-    return enemy;
   }
 
   removeEnemy(enemy: Enemy): void {
     const index = this.enemies.indexOf(enemy);
     if (index > -1) {
       this.enemies.splice(index, 1);
-    }
-  }
-
-  generateEnemies(count: number, health: number): void {
-    for (let i = 0; i < count; i++) {
-      this.addEnemy(health);
     }
   }
 
@@ -59,19 +63,9 @@ class EnemyManager {
     this.isSpawning = false;
   }
 
-  setSpawnInterval(interval: number): void {
-    this.spawnInterval = interval;
-  }
-
   update(currentTime: number): void {
-    // Auto-spawn entities if spawning is enabled
-    if (
-      this.isSpawning &&
-      currentTime - this.lastSpawnTime >= this.spawnInterval
-    ) {
-      this.addEnemy(GameConfig.enemy.defaultHealth);
-      this.lastSpawnTime = currentTime;
-    }
+    // Создание врагов в зависимости от времени и волны
+    this.handleWave(currentTime);
 
     // Update all enemies
     this.enemies.forEach(enemy => {
@@ -80,7 +74,7 @@ class EnemyManager {
         this.handleEnemyReachedEnd();
       }
       if (enemy.destroyed()) {
-        this.handleEnemyDestroyed();
+        this.handleEnemyDestroyed(enemy);
       }
     });
 
@@ -112,9 +106,39 @@ class EnemyManager {
     this.unsubscribe();
   }
 
-  private handleEnemyDestroyed() {
-    const reward = GameConfig.enemy.reward;
-    this.player.addMoney(reward);
+  // Часть логики update. Запускается каждый кадр для управления волнами врагов
+  private handleWave(currentTime: number) {
+    const allWavesCompleted = this.waveIndex >= wavesConfig.length;
+    if (allWavesCompleted) {
+      // Остановка игры, все волны завершены
+      this.isSpawning = false;
+    } else {
+      // Проверка на переход к следующей волне
+      const currentWaveEnemyCount = wavesConfig[this.waveIndex].count;
+      if (this.currentWaveEnemiesSpawned >= currentWaveEnemyCount) {
+        this.waveIndex++;
+        this.currentWaveEnemiesSpawned = 0;
+        this.lastSpawnTime = currentTime + GameConfig.waveDelay; // Задержка перед следующей волной
+      }
+
+      const spawnInterval = wavesConfig[this.waveIndex].spawnInterval;
+      if (
+        this.isSpawning &&
+        currentTime - this.lastSpawnTime >= spawnInterval
+      ) {
+        if (this.currentWaveEnemiesSpawned === 0) {
+          // Начало новой волны
+          eventBus.emit('redux:waveStarted', { waveNumber: this.waveIndex });
+        }
+        this.addEnemy(this.waveIndex);
+        this.currentWaveEnemiesSpawned++;
+        this.lastSpawnTime = currentTime;
+      }
+    }
+  }
+
+  private handleEnemyDestroyed(enemy: Enemy) {
+    this.player.addMoney(enemy.reward);
 
     eventBus.emit('redux:setMoney', {
       money: this.player.getMoney(),

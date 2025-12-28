@@ -43,9 +43,6 @@ class GameEngine {
       this.player
     );
 
-    // Generate initial enemies
-    // this.enemyManager.generateEnemies(0, GameConfig.enemy.defaultHealth);
-
     // Start auto-spawning
     this.enemyManager.startSpawning();
 
