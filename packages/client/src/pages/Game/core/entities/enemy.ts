@@ -9,6 +9,7 @@ class Enemy {
   currentPosition: Point;
   baseSpeed: number;
   speed: number;
+  immune: boolean;
   currentIndex: number;
   pathManager: PathManager;
   health: number;
@@ -34,6 +35,7 @@ class Enemy {
     this.currentIndex = 0;
     this.health = hp;
     this.maxHealth = hp;
+    this.immune = EnemiesConfig[type].immune;
     // Каждый враг получает случайную скорость в диапазоне 90%-110% от базовой скорости
     this.baseSpeed = EnemiesConfig[type].speed * (Math.random() * 0.2 + 0.9);
     this.speed = this.baseSpeed;
@@ -97,7 +99,7 @@ class Enemy {
       return;
     }
 
-    if (effect) {
+    if (effect && !this.immune) {
       this.takeEffect(effect);
     }
   }
