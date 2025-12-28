@@ -349,6 +349,19 @@ projectileConfig = {
 }
 ```
 
+### Типы эффектов ([constants/effects-config.ts](../constants/effects-config.ts))
+
+```typescript
+{
+  dumb: null,
+  basic: null,
+  fast:  null,
+  rocket: null,
+  sniper: null,
+  freeze: { duration: 2000, magnitude: 0.5, name: 'Freeze' }
+}
+```
+
 ### Типы врагов ([constants/enemies-config.ts](../constants/enemies-config.ts))
 
 ```typescript
