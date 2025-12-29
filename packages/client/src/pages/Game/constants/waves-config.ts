@@ -1,4 +1,15 @@
-export const wavesConfig = [
+import { EnemyType } from './enemies-config';
+
+export type Wave = {
+  enemyType: EnemyType;
+  name: string;
+  count: number;
+  spawnInterval: number;
+  hp: number;
+  reward: number;
+};
+
+export const wavesConfig: readonly Wave[] = [
   {
     enemyType: 'normal',
     name: 'Normal',
