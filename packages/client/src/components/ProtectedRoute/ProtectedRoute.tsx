@@ -32,19 +32,8 @@ export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
     return <Loader isLoading={true} />;
   }
 
-  // Если есть ошибка проверки
-  if (error) {
-    return (
-      <Navigate
-        to={ROUTE.LOGIN}
-        state={{ from: location.pathname, error: error }}
-        replace
-      />
-    );
-  }
-
   // Если пользователь не авторизован (нет данных)
-  if (!userData) {
+  if (!userData || error) {
     return (
       <Navigate to={ROUTE.LOGIN} state={{ from: location.pathname }} replace />
     );

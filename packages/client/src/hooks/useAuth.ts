@@ -19,19 +19,9 @@ export const useAuth = () => {
   const isLoading: boolean = useSelector(selectIsLoading);
   const error = useSelector(selectError);
 
-  /**
-   * Проверяет авторизацию пользователя
-   * @param throwOnError — бросать ошибку при проблемах (по умолчанию false)
-   * @returns true, если пользователь авторизован
-   */
-  const checkLoginUser = async (throwOnError = false): Promise<boolean> => {
+  const checkLoginUser = async (): Promise<boolean> => {
     try {
       const result = await dispatch(checkUserThunk());
-
-      if (result.meta.requestStatus === 'rejected' && throwOnError) {
-        throw (result.payload as APIError).reason;
-      }
-
       // result.payload может быть null (если 401) или User
       return result.payload !== null;
     } catch {
