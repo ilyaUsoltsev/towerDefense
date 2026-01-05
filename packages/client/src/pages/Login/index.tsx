@@ -1,4 +1,8 @@
-import { fetchUserThunk, selectUser } from '../../slices/userSlice';
+import {
+  fetchUserThunk,
+  selectIsLoading,
+  selectUser,
+} from '../../slices/userSlice';
 import { TextInput } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
 import { PageInitArgs } from '../../routes';
@@ -104,7 +108,12 @@ export const LoginPage = () => {
 };
 
 export const initLoginPage = async ({ dispatch, state }: PageInitArgs) => {
-  if (!selectUser(state)) {
-    return dispatch(fetchUserThunk());
+  const user = selectUser(state);
+  if (!user) {
+    // Только если нет пользователя И не идёт загрузка
+    const isLoading = selectIsLoading(state);
+    if (!isLoading) {
+      return dispatch(fetchUserThunk());
+    }
   }
 };
