@@ -11,15 +11,6 @@ import { useLayoutEffect, useState } from 'react';
 import { GameConfig } from './constants/game-config';
 import { EffectsConfig } from './constants/effects-config';
 
-const options: { value: CannonType; content: React.ReactNode }[] = [
-  { content: <img src="/basic.png" width={30} />, value: 'basic' },
-  { content: <img src="/fast.png" width={30} />, value: 'fast' },
-  { content: <img src="/rocket.png" width={30} />, value: 'rocket' },
-  { content: <img src="/sniper.png" width={30} />, value: 'sniper' },
-  { content: <img src="/freeze.png" width={30} />, value: 'freeze' },
-  { content: <img src="/dumb.png" width={30} />, value: 'dumb' },
-];
-
 const GameMenu = () => {
   const [cannon, setCannon] = useState<CannonType | null>(null);
   const selectedEntity = useSelector(state => state.game.selectedEntity);
@@ -59,12 +50,13 @@ const GameMenu = () => {
   return (
     <div className="flex-col gap-2" style={{ width: '200px' }}>
       <div className="flex gap-2">
-        {options.map(option => (
+        {Object.keys(CannonsConfig).map(cannonType => (
           <span
-            key={option.value}
+            key={cannonType}
             className="cursor-pointer"
-            onClick={() => chooseCannon(option.value)}>
-            {option.content}
+            onClick={() => chooseCannon(cannonType as CannonType)}>
+            {/* IMPORTANT: image filename should match cannonType */}
+            <img src={`/${cannonType}.png`} alt={cannonType} width={30} />
           </span>
         ))}
       </div>

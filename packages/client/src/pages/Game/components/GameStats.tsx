@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { Text } from '@gravity-ui/uikit';
 import { wavesConfig } from '../constants/waves-config';
+import GameStatsItem from './GameStatsItem';
 
 interface GameStatsProps {
   waveNumber: number | null;
@@ -11,20 +11,19 @@ interface GameStatsProps {
 export const GameStats: FC<GameStatsProps> = ({ waveNumber, lives, money }) => {
   return (
     <div className="flex justify-around">
-      <Text color="info" variant="body-3">
-        Wave:&nbsp;
-        {waveNumber !== null && (
-          <Text variant="subheader-3">
-            {waveNumber + 1}/{wavesConfig.length}
-          </Text>
-        )}
-      </Text>
-      <Text color="positive-heavy" variant="body-3">
-        Lives: <Text variant="subheader-3">{lives}</Text>
-      </Text>
-      <Text color="warning" variant="body-3">
-        Gold: <Text variant="subheader-3">{money}</Text>
-      </Text>
+      {waveNumber !== null && (
+        <GameStatsItem
+          color="info"
+          title="Wave"
+          value={`${waveNumber + 1}/${wavesConfig.length}`}
+        />
+      )}
+      <GameStatsItem
+        color="positive-heavy"
+        title="Lives"
+        value={lives.toString()}
+      />
+      <GameStatsItem color="warning" title="Gold" value={money.toString()} />
     </div>
   );
 };
