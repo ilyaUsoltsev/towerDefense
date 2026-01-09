@@ -1,133 +1,66 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import AuthApi from '../api/auth';
-import { CreateUser, LoginRequestData, User, APIError } from '../api/type';
+import { CreateUser, LoginRequestData, APIError } from '../api/type';
 import { ROUTE } from '../constants/ROUTE';
-import { isApiError } from '../api/isApiError';
-import { useDispatch } from '../store';
-import { setUser } from '../slices/userSlice';
+import { useDispatch, useSelector } from '../store';
+import {
+  checkUserThunk,
+  loginThunk,
+  logoutThunk,
+  registerThunk,
+  selectError,
+  selectIsLoading,
+} from '../slices/userSlice';
 
 export const useAuth = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Состояние из стора (больше не управляем вручную)
+  const isLoading: boolean = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
 
-  const authApi = new AuthApi();
-
-  // Общий обработчик ошибок API
-  const handleApiError = (error: APIError): string => {
-    if (error.status === 401) return 'Неверный логин или пароль';
-    if (error.status === 400) return ''; // Обрабатывается отдельно
-    return error.reason || error.message || 'Произошла ошибка';
-  };
-
-  // Обновление глобального состояния и локального state
-  const updateUserState = (user: User | null) => {
-    dispatch(setUser(user));
-  };
-
-  // Проверка авторизации пользователя
-  const checkLoginUser = async (throwOnError = false): Promise<boolean> => {
-    setIsLoading(true);
-    setError(null);
-
+  const checkLoginUser = async (): Promise<boolean> => {
     try {
-      const result = await authApi.me();
-
-      if (isApiError(result)) {
-        if (throwOnError) throw result;
-
-        if (result.status === 401) {
-          updateUserState(null);
-          return false;
-        }
-
-        setError('Ошибка проверки авторизации');
-        return false;
-      }
-
-      updateUserState(result as User);
-      return true;
-    } catch (err) {
-      if (throwOnError) throw err;
-      setError('Ошибка проверки авторизации');
-      updateUserState(null);
+      const result = await dispatch(checkUserThunk());
+      // result.payload может быть null (если 401) или User
+      return result.payload !== null;
+    } catch {
       return false;
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  // Вход в систему
+  /**
+   * Вход в систему
+   * @param model — данные для авторизации (email, password)
+   */
   const login = async (model: LoginRequestData) => {
-    setIsLoading(true);
-    setError(null);
+    const result = await dispatch(loginThunk(model));
 
-    try {
-      const result = await authApi.login(model);
-
-      if (isApiError(result)) {
-        const errorMsg = handleApiError(result as APIError);
-        if (result.status === 400) {
-          await checkLoginUser();
-          navigate(ROUTE.ROOT, { replace: true });
-          return;
-        }
-        setError(errorMsg);
-        return;
-      }
-      await checkLoginUser(true);
+    if (result.meta.requestStatus === 'fulfilled') {
       navigate(ROUTE.ROOT, { replace: true });
-    } catch (err) {
-      setError('Произошла ошибка');
-    } finally {
-      setIsLoading(false);
     }
+    // Если ошибка — она уже сохранена в сторе (selectError)
   };
 
-  // Регистрация
+  /**
+   * Регистрация нового пользователя
+   * @param model — данные пользователя для регистрации
+   */
   const register = async (model: CreateUser) => {
-    setIsLoading(true);
-    setError(null);
+    const result = await dispatch(registerThunk(model));
 
-    try {
-      const result = await authApi.create(model);
-
-      if (isApiError(result)) {
-        setError(handleApiError(result as APIError));
-        return;
-      }
-
+    if (result.meta.requestStatus === 'fulfilled') {
       navigate(ROUTE.ROOT, { replace: true });
-    } catch {
-      setError('Произошла ошибка');
-    } finally {
-      setIsLoading(false);
     }
+    // Ошибка также попадает в стор через extraReducers
   };
 
-  // Выход из системы
+  /**
+   * Выход из системы
+   */
   const logout = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const result = await authApi.logout();
-
-      if (isApiError(result)) {
-        setError(handleApiError(result as APIError));
-        return;
-      }
-
-      updateUserState(null);
-      navigate(ROUTE.LOGIN, { replace: true });
-    } catch {
-      setError('Ошибка при выходе из системы');
-    } finally {
-      setIsLoading(false);
-    }
+    await dispatch(logoutThunk());
+    navigate(ROUTE.LOGIN, { replace: true });
   };
 
   return {
@@ -136,6 +69,6 @@ export const useAuth = () => {
     logout,
     checkLoginUser,
     isLoading,
-    error,
+    error, // Теперь это состояние из стора
   };
 };

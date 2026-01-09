@@ -1,35 +1,39 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../../slices/userSlice';
+import {
+  selectUser,
+  selectIsLoading,
+  selectError,
+} from '../../slices/userSlice';
 import { ROUTE } from '../../constants/ROUTE';
 import Loader from '../Loader';
 
 export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
-  const { checkLoginUser, isLoading } = useAuth();
+  const { checkLoginUser } = useAuth();
 
-  // Читаем данные пользователя из глобального state
+  // Берём состояние из глобального стора
   const userData = useSelector(selectUser);
-
-  // Флаг: была ли попытка проверки
-  const [hasAttemptedAuthCheck, setHasAttemptedAuthCheck] = useState(false);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
+  const checkedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    if (!hasAttemptedAuthCheck) {
-      checkLoginUser(); // Инициируем проверку
-      setHasAttemptedAuthCheck(true);
+    if (!checkedRef.current && userData === null && !isLoading && !error) {
+      checkedRef.current = true;
+      checkLoginUser();
     }
-  }, [checkLoginUser, hasAttemptedAuthCheck]);
+  }, [userData, isLoading, error]);
 
-  // Пока идёт проверка — показываем загрузчик
-  if (isLoading || !hasAttemptedAuthCheck) {
-    return <Loader isLoading={isLoading} />;
+  // Пока идёт загрузка — показываем Loader
+  if (isLoading) {
+    return <Loader isLoading={true} />;
   }
 
-  // Если проверка завершена, но userData отсутствует — редирект
-  if (!userData) {
+  // Если пользователь не авторизован (нет данных)
+  if (!userData || error) {
     return (
       <Navigate to={ROUTE.LOGIN} state={{ from: location.pathname }} replace />
     );
