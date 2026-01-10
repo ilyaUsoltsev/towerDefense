@@ -23,6 +23,7 @@ import { CannonType } from '../constants/cannons-config';
 export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
   private prevSelectedCannon: CannonType | null = null;
+  private isCleanedUp = false;
   constructor(
     private gameEngine: GameEngine,
     private store: Store<RootState>
@@ -108,6 +109,11 @@ export class GameEngineAdapter {
   }
 
   removeSubscriptions() {
+    // Защита от повторной очистки
+    if (this.isCleanedUp) {
+      return;
+    }
+    this.isCleanedUp = true;
     this.unsubSink.forEach(unsub => unsub());
     this.unsubSink.length = 0;
   }
