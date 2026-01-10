@@ -11,7 +11,7 @@ interface WaveInfoProps {
 const WaveCard: FC<{
   title: string;
   wave: typeof wavesConfig[number];
-  isNext?: boolean;
+  isNext: boolean;
   waveNumber: number;
 }> = ({ title, wave, isNext, waveNumber }) => {
   // Длина анимации рассчитывается исходя из времени задержки предыдущей волны
@@ -24,7 +24,6 @@ const WaveCard: FC<{
   return (
     <Card
       view="outlined"
-      key={isNext ? `wave-${waveNumber}` : undefined}
       className={`${styles.card} ${
         isNext ? styles.cardNext : styles.cardCurrent
       }`}
@@ -38,16 +37,10 @@ const WaveCard: FC<{
           {title}
         </Text>
         <Text variant="body-2" color="secondary">
-          Type:&nbsp;
-          <Text variant="body-2" color={isNext ? 'secondary' : 'primary'}>
-            {wave.name}
-          </Text>
+          Type: {wave.name}
         </Text>
         <Text variant="body-2" color="secondary">
-          HP:&nbsp;
-          <Text variant="body-2" color={isNext ? 'secondary' : 'primary'}>
-            {wave.hp}
-          </Text>
+          HP: {wave.hp}
         </Text>
       </div>
     </Card>
@@ -56,7 +49,8 @@ const WaveCard: FC<{
 
 export const WaveInfo: FC<WaveInfoProps> = ({ waveNumber }) => {
   const currentWave = wavesConfig[waveNumber];
-  const nextWave = wavesConfig[waveNumber + 1];
+  const isNext = waveNumber + 1 < wavesConfig.length;
+  const nextWave = isNext ? wavesConfig[waveNumber + 1] : undefined;
 
   return (
     <div className={styles.container}>
@@ -64,6 +58,7 @@ export const WaveInfo: FC<WaveInfoProps> = ({ waveNumber }) => {
         title="Current Wave"
         wave={currentWave}
         waveNumber={waveNumber}
+        isNext={false}
       />
       {nextWave && (
         <WaveCard
