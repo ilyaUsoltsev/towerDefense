@@ -30,7 +30,8 @@ class Cannon {
     cannonType: CannonType,
     projectileManager: ProjectileManager
   ) {
-    this.id = `cannon-${position.x}-${position.y}`;
+    // Уникальный идентификатор для каждой пушки, можно заменить на UUID при необходимости
+    this.id = `${cannonType}-${Math.random()}`;
     this.tileSize = GameConfig.tileSize;
     this.position = position;
     this.range = CannonsConfig[cannonType].range;
