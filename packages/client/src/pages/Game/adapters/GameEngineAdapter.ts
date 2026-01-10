@@ -12,7 +12,6 @@ import {
   gameClearSellCommand,
   gameClearUpgradeCommand,
 } from '../../../slices/gameSlice';
-import { getCannonState } from './get-cannon-state';
 import { eventBus } from '../core/utils/eventBus';
 
 /**
@@ -62,7 +61,7 @@ export class GameEngineAdapter {
       const cannon =
         this.gameEngine.cannonManager.getCannonAtPosition(position);
       if (cannon) {
-        this.store.dispatch(gameSelectEntity(getCannonState(cannon)));
+        this.store.dispatch(gameSelectEntity(cannon.toState()));
       }
     });
     this.unsubSink.push(unsubCannonClick);
@@ -91,7 +90,7 @@ export class GameEngineAdapter {
           state.game.pendingUpgradeCannonId
         );
         if (cannon) {
-          this.store.dispatch(gameSelectEntity(getCannonState(cannon)));
+          this.store.dispatch(gameSelectEntity(cannon.toState()));
           this.store.dispatch(gameSetMoney(success));
         }
       }

@@ -4,6 +4,7 @@ import { GameConfig } from '../../constants/game-config';
 import ProjectileManager from '../managers/projectileManager';
 import { CannonsConfig, CannonType } from '../../constants/cannons-config';
 import { Effect, EffectsConfig } from '../../constants/effects-config';
+import { SelectedEntity } from '../../../../slices/gameSlice';
 
 class Cannon {
   id: string;
@@ -103,6 +104,19 @@ class Cannon {
 
   setSelected(selected: boolean): void {
     this.selectedByUser = selected;
+  }
+
+  toState(): SelectedEntity {
+    return {
+      type: this.cannonType,
+      id: this.id,
+      position: this.position,
+      level: this.level,
+      damage: this.damage,
+      range: this.range,
+      fireRate: this.fireRate,
+      upgradeCost: this.getUpgradeCost(),
+    };
   }
 
   render(context: CanvasRenderingContext2D): void {
