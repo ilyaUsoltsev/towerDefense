@@ -8,7 +8,6 @@ import { SelectedEntity } from '../../../../slices/gameSlice';
 
 class Cannon {
   id: string;
-  selectedByUser = false;
   position: Tile;
   range: number;
   tileSize: number;
@@ -101,10 +100,6 @@ class Cannon {
       const target = enemiesInRange[0].getPosition();
       this.shootAt(target, currentTime);
     }
-  }
-
-  setSelected(selected: boolean): void {
-    this.selectedByUser = selected;
   }
 
   toState(): SelectedEntity {
