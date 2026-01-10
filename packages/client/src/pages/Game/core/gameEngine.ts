@@ -4,6 +4,7 @@ import PathManager from './managers/pathManager';
 import { eventBus } from './utils/eventBus';
 import EnemyManager from './managers/enemyManager';
 import Player from './entities/player';
+import { GameConfig } from '../constants/game-config';
 
 class GameEngine {
   mapManager!: MapManager;
@@ -49,7 +50,10 @@ class GameEngine {
 
     this.canvas.width = this.mapManager.mapWidth * this.mapManager.tileSize;
     this.canvas.height = this.mapManager.mapHeight * this.mapManager.tileSize;
-    eventBus.emit('redux:gameInitialize', null);
+    eventBus.emit('redux:gameInitialize', {
+      hp: GameConfig.hp,
+      money: GameConfig.initialMoney,
+    });
   }
 
   async start() {

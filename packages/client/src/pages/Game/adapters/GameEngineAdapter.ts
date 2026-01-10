@@ -10,7 +10,6 @@ import {
   gameSetMoney,
   gameSetWaveNumber,
 } from '../../../slices/gameSlice';
-import { GameConfig } from '../constants/game-config';
 import { getCannonState } from './get-cannon-state';
 import { eventBus } from '../core/utils/eventBus';
 
@@ -21,19 +20,23 @@ import { eventBus } from '../core/utils/eventBus';
  */
 export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
-  constructor(private gameEngine: GameEngine, private store: Store) {}
+  constructor(
+    private gameEngine: GameEngine,
+    private store: Store<RootState>
+  ) {}
 
   // Этот метод обеспечивает синхронизацию от движка к Redux
   // Все события должны начинаться с "redux:"
   init() {
-    const unsubInit = eventBus.on('redux:gameInitialize', () => {
+    const unsubInit = eventBus.on('redux:gameInitialize', ({ hp, money }) => {
       this.store.dispatch(
         gameInitializeState({
-          hp: GameConfig.hp,
-          money: GameConfig.initialMoney,
+          hp,
+          money,
         })
       );
     });
+    this.unsubSink.push(unsubInit);
 
     const waveStartedUnsub = eventBus.on(
       'redux:waveStarted',
@@ -41,14 +44,17 @@ export class GameEngineAdapter {
         this.store.dispatch(gameSetWaveNumber(waveNumber));
       }
     );
+    this.unsubSink.push(waveStartedUnsub);
 
     const unsubHp = eventBus.on('redux:setPlayerHp', ({ hp }) => {
       this.store.dispatch(gameSetHp(hp));
     });
+    this.unsubSink.push(unsubHp);
 
     const unsubMoney = eventBus.on('redux:setMoney', ({ money }) => {
       this.store.dispatch(gameSetMoney(money));
     });
+    this.unsubSink.push(unsubMoney);
 
     const unsubCannonClick = eventBus.on('redux:selectedCannon', position => {
       const cannon =
@@ -57,14 +63,7 @@ export class GameEngineAdapter {
         this.store.dispatch(gameSelectEntity(getCannonState(cannon)));
       }
     });
-
-    this.unsubSink = [
-      unsubInit,
-      unsubHp,
-      unsubCannonClick,
-      unsubMoney,
-      waveStartedUnsub,
-    ];
+    this.unsubSink.push(unsubCannonClick);
   }
 
   // Этот метод обеспечивает синхронизацию от Redux к движку

@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tile } from '../pages/Game/core/utils/types';
 import { CannonType } from '../pages/Game/constants/cannons-config';
+import { GameConfig } from '../pages/Game/constants/game-config';
+import { isUpgradable } from './utils/is-upgradable';
 
 export interface SelectedEntity {
   type: CannonType;
@@ -48,12 +50,14 @@ export const gameSlice = createSlice({
       state.money = action.payload;
     },
     gameSelectEntity: (state, action: PayloadAction<SelectedEntity | null>) => {
+      state.selectedCannon = null;
       state.selectedEntity = action.payload;
     },
     gameSellSelectedEntity: state => {
       if (state.selectedEntity) {
         state.selectedEntity.selling = true;
       }
+      state.selectedCannon = null;
     },
     gameSetBlockingPath: (state, action: PayloadAction<boolean>) => {
       state.blockingPath = action.payload;
@@ -62,11 +66,16 @@ export const gameSlice = createSlice({
       state.hp = action.payload;
     },
     gameUpgradeSelectedEntity: state => {
-      if (state.selectedEntity) {
+      if (!state.selectedEntity) {
+        return;
+      }
+
+      if (isUpgradable(state.money, state.selectedEntity)) {
         state.selectedEntity.upgrading = true;
       }
     },
     gameSelectCannon: (state, action: PayloadAction<CannonType | null>) => {
+      state.selectedEntity = null;
       state.selectedCannon = action.payload;
     },
     gameSetWaveNumber: (state, action: PayloadAction<number>) => {

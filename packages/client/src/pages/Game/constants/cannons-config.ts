@@ -8,6 +8,7 @@ export const CannonsConfig = {
     projectileSpeed: 0,
     name: 'Wall',
     explosionRadius: 0,
+    imagePath: '/dumb.png',
   },
   basic: {
     cost: 5,
@@ -18,6 +19,7 @@ export const CannonsConfig = {
     projectileSpeed: 5,
     name: 'Basic',
     explosionRadius: 0,
+    imagePath: '/basic.png',
   },
   fast: {
     cost: 15,
@@ -28,6 +30,7 @@ export const CannonsConfig = {
     projectileSpeed: 7,
     name: 'Fast Shooter',
     explosionRadius: 0,
+    imagePath: '/fast.png',
   },
   rocket: {
     cost: 20,
@@ -38,6 +41,7 @@ export const CannonsConfig = {
     projectileSpeed: 3,
     name: 'Rocket Launcher',
     explosionRadius: 50,
+    imagePath: '/rocket.png',
   },
   sniper: {
     cost: 50,
@@ -48,6 +52,7 @@ export const CannonsConfig = {
     projectileSpeed: 15,
     name: 'Sniper',
     explosionRadius: 0,
+    imagePath: '/sniper.png',
   },
   freeze: {
     cost: 50,
@@ -58,7 +63,12 @@ export const CannonsConfig = {
     projectileSpeed: 5,
     name: 'Freezer',
     explosionRadius: 50,
+    imagePath: '/freeze.png',
   },
 } as const;
 
 export type CannonType = keyof typeof CannonsConfig;
+
+export const CannonTypes: CannonType[] = Object.keys(
+  CannonsConfig
+) as CannonType[];

@@ -26,7 +26,7 @@ export interface GameEvents {
   };
   'pathManager:pathUpdated': Tile[];
   'redux:waveStarted': { waveNumber: number };
-  'redux:gameInitialize': null;
+  'redux:gameInitialize': { hp: number; money: number };
   'redux:selectedCannon': { x: number; y: number };
   'redux:setMoney': { money: number };
   'redux:setPlayerHp': { hp: number };

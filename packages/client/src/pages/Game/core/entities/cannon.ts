@@ -43,8 +43,7 @@ class Cannon {
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
     this.image = new Image();
-    /* IMPORTANT: image filename should match cannonType */
-    this.image.src = `/${cannonType}.png`;
+    this.image.src = CannonsConfig[cannonType].imagePath;
   }
 
   upgrade(): void {
