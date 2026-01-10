@@ -67,6 +67,8 @@ export const CannonsConfig = {
   },
 } as const;
 
+export type CannonProps = typeof CannonsConfig[CannonType];
+
 export type CannonType = keyof typeof CannonsConfig;
 
 export const CannonTypes: CannonType[] = Object.keys(

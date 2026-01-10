@@ -2,7 +2,11 @@ import { Point, Tile } from '../utils/types';
 import Enemy from './enemy';
 import { GameConfig } from '../../constants/game-config';
 import ProjectileManager from '../managers/projectileManager';
-import { CannonsConfig, CannonType } from '../../constants/cannons-config';
+import {
+  CannonProps,
+  CannonsConfig,
+  CannonType,
+} from '../../constants/cannons-config';
 import { Effect, EffectsConfig } from '../../constants/effects-config';
 import { SelectedEntity } from '../../../../slices/gameSlice';
 
@@ -19,6 +23,7 @@ class Cannon {
   level = 1;
   cost: number;
   cannonType: CannonType;
+  cannonConfig: CannonProps;
   upgradeCost: number;
   effect: Effect | null;
   private projectileManager: ProjectileManager;
@@ -32,19 +37,20 @@ class Cannon {
     // Уникальный идентификатор для каждой пушки, можно заменить на UUID при необходимости
     this.id = `${cannonType}-${Math.random()}`;
     this.tileSize = GameConfig.tileSize;
+    this.cannonConfig = CannonsConfig[cannonType];
     this.position = position;
-    this.range = CannonsConfig[cannonType].range;
-    this.cost = CannonsConfig[cannonType].cost;
-    this.damage = CannonsConfig[cannonType].damage;
-    this.fireRate = CannonsConfig[cannonType].fireRate;
-    this.projectileSpeed = CannonsConfig[cannonType].projectileSpeed;
-    this.explosionRadius = CannonsConfig[cannonType].explosionRadius;
-    this.upgradeCost = CannonsConfig[cannonType].upgradeCost;
+    this.range = this.cannonConfig.range;
+    this.cost = this.cannonConfig.cost;
+    this.damage = this.cannonConfig.damage;
+    this.fireRate = this.cannonConfig.fireRate;
+    this.projectileSpeed = this.cannonConfig.projectileSpeed;
+    this.explosionRadius = this.cannonConfig.explosionRadius;
+    this.upgradeCost = this.cannonConfig.upgradeCost;
     this.effect = EffectsConfig[cannonType];
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
     this.image = new Image();
-    this.image.src = CannonsConfig[cannonType].imagePath;
+    this.image.src = this.cannonConfig.imagePath;
   }
 
   upgrade(): void {
