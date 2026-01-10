@@ -10,8 +10,6 @@ export const getCannonState = (cannon: Cannon): SelectedEntity => {
     damage: cannon.damage,
     range: cannon.range,
     fireRate: cannon.fireRate,
-    selling: false,
-    upgrading: false,
     upgradeCost: cannon.getUpgradeCost(),
   };
 };

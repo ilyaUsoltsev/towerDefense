@@ -9,6 +9,8 @@ import {
   gameSetHp,
   gameSetMoney,
   gameSetWaveNumber,
+  gameClearSellCommand,
+  gameClearUpgradeCommand,
 } from '../../../slices/gameSlice';
 import { getCannonState } from './get-cannon-state';
 import { eventBus } from '../core/utils/eventBus';
@@ -68,21 +70,25 @@ export class GameEngineAdapter {
 
   // Этот метод обеспечивает синхронизацию от Redux к движку
   syncState(state: RootState) {
-    if (state.game.selectedEntity?.selling) {
+    // Обработка команды продажи
+    if (state.game.pendingSellCannonId) {
+      this.store.dispatch(gameClearSellCommand());
       const moneyBalance = this.gameEngine.sellCannon(
-        state.game.selectedEntity.id
+        state.game.pendingSellCannonId
       );
       this.store.dispatch(gameSelectEntity(null));
       this.store.dispatch(gameSetMoney(moneyBalance));
     }
 
-    if (state.game.selectedEntity?.upgrading) {
+    // Обработка команды апгрейда
+    if (state.game.pendingUpgradeCannonId) {
+      this.store.dispatch(gameClearUpgradeCommand());
       const success = this.gameEngine.upgradeCannon(
-        state.game.selectedEntity.id
+        state.game.pendingUpgradeCannonId
       );
       if (success !== null) {
         const cannon = this.gameEngine.cannonManager.getCannonById(
-          state.game.selectedEntity.id
+          state.game.pendingUpgradeCannonId
         );
         if (cannon) {
           this.store.dispatch(gameSelectEntity(getCannonState(cannon)));

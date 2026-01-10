@@ -1,15 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tile } from '../pages/Game/core/utils/types';
 import { CannonType } from '../pages/Game/constants/cannons-config';
-import { GameConfig } from '../pages/Game/constants/game-config';
 import { isUpgradable } from './utils/is-upgradable';
 
 export interface SelectedEntity {
   type: CannonType;
   id: string;
   position: Tile;
-  selling: boolean;
-  upgrading: boolean;
   level: number;
   damage: number;
   range: number;
@@ -24,15 +21,19 @@ export interface UserState {
   blockingPath: boolean;
   selectedCannon: CannonType | null;
   waveNumber: number | null;
+  pendingSellCannonId: string | null;
+  pendingUpgradeCannonId: string | null;
 }
 
 const initialState: UserState = {
-  hp: 0, // will be initialized on game start
-  money: 0, // will be initialized on game start
+  hp: 0, // инициализируется при старте игры
+  money: 0, // инициализируется при старте игры
   selectedEntity: null,
   selectedCannon: null,
   blockingPath: false,
   waveNumber: null,
+  pendingSellCannonId: null,
+  pendingUpgradeCannonId: null,
 };
 
 export const gameSlice = createSlice({
@@ -55,7 +56,7 @@ export const gameSlice = createSlice({
     },
     gameSellSelectedEntity: state => {
       if (state.selectedEntity) {
-        state.selectedEntity.selling = true;
+        state.pendingSellCannonId = state.selectedEntity.id;
       }
       state.selectedCannon = null;
     },
@@ -71,7 +72,7 @@ export const gameSlice = createSlice({
       }
 
       if (isUpgradable(state.money, state.selectedEntity)) {
-        state.selectedEntity.upgrading = true;
+        state.pendingUpgradeCannonId = state.selectedEntity.id;
       }
     },
     gameSelectCannon: (state, action: PayloadAction<CannonType | null>) => {
@@ -80,6 +81,12 @@ export const gameSlice = createSlice({
     },
     gameSetWaveNumber: (state, action: PayloadAction<number>) => {
       state.waveNumber = action.payload;
+    },
+    gameClearSellCommand: state => {
+      state.pendingSellCannonId = null;
+    },
+    gameClearUpgradeCommand: state => {
+      state.pendingUpgradeCannonId = null;
     },
   },
 });
@@ -94,6 +101,8 @@ export const {
   gameUpgradeSelectedEntity,
   gameSelectCannon,
   gameSetWaveNumber,
+  gameClearSellCommand,
+  gameClearUpgradeCommand,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
