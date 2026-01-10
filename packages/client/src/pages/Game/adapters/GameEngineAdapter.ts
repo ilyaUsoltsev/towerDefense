@@ -13,6 +13,7 @@ import {
   gameClearUpgradeCommand,
 } from '../../../slices/gameSlice';
 import { eventBus } from '../core/utils/eventBus';
+import { CannonType } from '../constants/cannons-config';
 
 /**
  * Этот адаптер синхронизирует состояние между GameEngine и Redux store.
@@ -21,6 +22,7 @@ import { eventBus } from '../core/utils/eventBus';
  */
 export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
+  private prevSelectedCannon: CannonType | null = null;
   constructor(
     private gameEngine: GameEngine,
     private store: Store<RootState>
@@ -97,7 +99,12 @@ export class GameEngineAdapter {
     }
 
     // selectedCannon может быть null, чтобы отменить размещение, поэтому мы передаем его напрямую
-    this.gameEngine.mapManager.setPlacingCannonType(state.game.selectedCannon);
+    if (this.prevSelectedCannon !== state.game.selectedCannon) {
+      this.prevSelectedCannon = state.game.selectedCannon;
+      this.gameEngine.mapManager.setPlacingCannonType(
+        state.game.selectedCannon
+      );
+    }
   }
 
   removeSubscriptions() {
