@@ -55,6 +55,11 @@ class Cannon {
     if (this.level >= GameConfig.maxCannonLevel) {
       return;
     }
+    this.level += 1;
+    this.damage = Math.floor(this.damage * 1.2);
+    this.range = Math.floor(this.range * 1.1);
+    this.fireRate = this.fireRate / 1.1;
+    this.projectileSpeed = this.projectileSpeed * 1.1;
   }
 
   getSellValue(): number {
