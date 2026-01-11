@@ -1,7 +1,9 @@
 import EasyStar from 'easystarjs';
-import { Tile } from './types';
-import { eventBus } from './eventBus';
-import { GameConfig } from './config';
+import { Tile } from '../utils/types';
+import { eventBus } from '../utils/eventBus';
+import { GameConfig } from '../../constants/game-config';
+import Player from '../entities/player';
+import { CannonType } from '../../constants/cannons-config';
 
 class PathManager {
   context: CanvasRenderingContext2D;
@@ -9,19 +11,30 @@ class PathManager {
   endTile: Tile;
   statFinishPath: Tile[] = [];
   private easyStar: EasyStar.js;
-  private unsubscribe!: () => void;
+  private unsubscribe: (() => void) | null = null;
+  private player: Player;
 
-  constructor(context: CanvasRenderingContext2D, start: Tile, end: Tile) {
+  constructor(
+    context: CanvasRenderingContext2D,
+    start: Tile,
+    end: Tile,
+    player: Player
+  ) {
     this.context = context;
     this.startTile = start;
     this.endTile = end;
+    this.player = player;
     this.easyStar = new EasyStar.js();
     this.easyStar.disableCornerCutting();
+    this.easyStar.enableDiagonals();
     this.easyStar.setAcceptableTiles([0]);
+  }
+
+  initialize(): void {
     this.addEventListeners();
   }
 
-  public async setCollisionMap(collisionMap: (0 | 1)[][]) {
+  public async setCollisionMap(collisionMap: number[][]) {
     this.easyStar.setGrid(collisionMap);
     const path = await this.getPath(this.startTile, this.endTile);
     this.statFinishPath = path;
@@ -38,7 +51,9 @@ class PathManager {
   }
 
   public removeEventListeners() {
-    this.unsubscribe();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   // Temprorary method for rendering tiles (for debugging)
@@ -54,13 +69,17 @@ class PathManager {
     });
   }
 
-  private async trySetCollisionMap(tile: Tile, collisionMap: (0 | 1)[][]) {
+  private async trySetCollisionMap(
+    tile: Tile,
+    collisionMap: number[][],
+    cannonType: CannonType
+  ) {
     collisionMap[tile.y][tile.x] = 1;
     this.easyStar.setGrid(collisionMap);
     try {
       await this.getPath(this.startTile, this.endTile);
       this.setCollisionMap(collisionMap);
-      eventBus.emit('mapManager:cannonPlaced', tile);
+      eventBus.emit('mapManager:cannonPlaced', { tile, cannonType });
       return true;
     } catch {
       // No path exists, revert the change
@@ -72,14 +91,15 @@ class PathManager {
 
   private addEventListeners() {
     this.unsubscribe = eventBus.on('mapManager:tryAddCannon', payload => {
-      this.trySetCollisionMap(payload.cannonTile, payload.collisionMap);
+      this.trySetCollisionMap(
+        payload.cannonTile,
+        payload.collisionMap,
+        payload.cannonType
+      );
     });
   }
 
-  private async findPath(
-    startPoint: { x: number; y: number; id: string },
-    endPoint: { x: number; y: number; id: string }
-  ): Promise<Tile[]> {
+  private async findPath(startPoint: Tile, endPoint: Tile): Promise<Tile[]> {
     return new Promise((resolve, reject) => {
       this.easyStar.findPath(
         startPoint.x,

@@ -64,6 +64,39 @@
 
 Все ваши PR будут автоматически деплоиться на vercel. URL вам предоставит деплоящий бот
 
+## AssetsManager
+
+Менеджер для загрузки и управления игровыми ресурсами (изображениями).
+
+### Основные возможности
+
+- Предзагрузка всех игровых изображений при старте
+- Типобезопасный доступ к загруженным ресурсам
+- Централизованное управление путями к изображениям
+
+### Использование
+
+```typescript
+import { assetsManager } from '@/pages/Game/core/managers/assetsManager';
+
+// Загрузка всех ресурсов
+await assetsManager.loadAll();
+
+// Получение изображения
+const cannonImage = assetsManager.get('/basic.png');
+```
+
+### Доступные изображения
+
+- `/basic.png` - базовая пушка
+- `/fast.png` - быстрая пушка
+- `/dumb.png` - тупая пушка
+- `/freeze.png` - замораживающая пушка
+- `/rocket.png` - ракетная пушка
+- `/sniper.png` - снайперская пушка
+
+Расположение: [packages/client/src/pages/Game/core/managers/assetsManager.ts](packages/client/src/pages/Game/core/managers/assetsManager.ts)
+
 ## Production окружение в докере
 Перед первым запуском выполните `node init.js`
 

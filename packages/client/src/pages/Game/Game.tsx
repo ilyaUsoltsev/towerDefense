@@ -1,18 +1,31 @@
 import { useEffect, useRef } from 'react';
 import GameEngine from './core/gameEngine';
+import { GameEngineAdapter } from './adapters/GameEngineAdapter';
+import { useStore } from '../../store';
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const gameRef = useRef<GameEngine | null>(null);
+  const store = useStore();
 
   useEffect(() => {
-    if (canvasRef.current) {
-      gameRef.current = new GameEngine(canvasRef.current);
-      gameRef.current.start();
+    if (!canvasRef.current) {
+      return;
     }
 
+    const gameEngine = new GameEngine(canvasRef.current);
+    const adapter = new GameEngineAdapter(gameEngine, store);
+
+    const unsubscribeFromStore = store.subscribe(() => {
+      adapter.syncState(store.getState());
+    });
+
+    adapter.init();
+    gameEngine.start();
+
     return () => {
-      gameRef.current?.stop();
+      adapter.removeSubscriptions();
+      gameEngine.stop();
+      unsubscribeFromStore();
     };
   }, []);
 
