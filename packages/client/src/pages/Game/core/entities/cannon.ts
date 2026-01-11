@@ -63,7 +63,7 @@ class Cannon {
   }
 
   getSellValue(): number {
-    return Math.floor(this.cost * 0.7);
+    return Math.floor(this.cost * GameConfig.sellValue);
   }
 
   getUpgradeCost(): number {
@@ -82,8 +82,8 @@ class Cannon {
     const cannonCenter = this.getCenter();
     const dx = enemyPos.x - cannonCenter.x;
     const dy = enemyPos.y - cannonCenter.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    return distance <= this.range;
+    const distanceSquared = dx * dx + dy * dy;
+    return distanceSquared <= this.range * this.range;
   }
 
   canFire(currentTime: number): boolean {

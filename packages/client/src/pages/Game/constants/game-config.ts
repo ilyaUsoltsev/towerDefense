@@ -13,4 +13,5 @@ export const GameConfig = {
     radius: 3,
     color: 'orange',
   },
+  sellValue: 0.7,
 } as const;
