@@ -10,7 +10,7 @@ class CannonManager {
   context: CanvasRenderingContext2D;
   cannons: Cannon[] = [];
   private projectileManager: ProjectileManager;
-  private unsubscribe!: () => void;
+  private unsubscribe: (() => void) | null = null;
   private player: Player;
 
   constructor(context: CanvasRenderingContext2D, player: Player) {
@@ -83,7 +83,9 @@ class CannonManager {
   }
 
   removeEventListeners(): void {
-    this.unsubscribe();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   private addEventListeners(): void {

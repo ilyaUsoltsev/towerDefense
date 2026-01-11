@@ -16,7 +16,7 @@ class EnemyManager {
   isSpawning: boolean;
   waveIndex = 0;
   currentWaveEnemiesSpawned = 0;
-  private unsubscribe!: () => void;
+  private unsubscribe: (() => void) | null = null;
 
   constructor(
     context: CanvasRenderingContext2D,
@@ -112,7 +112,9 @@ class EnemyManager {
   }
 
   removeEventListeners(): void {
-    this.unsubscribe();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   // Часть логики update. Запускается каждый кадр для управления волнами врагов

@@ -11,7 +11,7 @@ class PathManager {
   endTile: Tile;
   statFinishPath: Tile[] = [];
   private easyStar: EasyStar.js;
-  private unsubscribe!: () => void;
+  private unsubscribe: (() => void) | null = null;
   private player: Player;
 
   constructor(
@@ -48,7 +48,9 @@ class PathManager {
   }
 
   public removeEventListeners() {
-    this.unsubscribe();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   // Temprorary method for rendering tiles (for debugging)
