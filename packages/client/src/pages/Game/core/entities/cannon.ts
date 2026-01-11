@@ -63,7 +63,7 @@ class Cannon {
   }
 
   getSellValue(): number {
-    return Math.floor(this.cost * GameConfig.sellValue);
+    return Math.floor(this.cost * GameConfig.sellValue * this.level);
   }
 
   getUpgradeCost(): number {

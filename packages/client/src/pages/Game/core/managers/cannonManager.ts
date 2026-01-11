@@ -28,11 +28,8 @@ class CannonManager {
     this.cannons.push(cannon);
   }
 
-  removeCannon(position: Tile): void {
-    this.cannons = this.cannons.filter(
-      cannon =>
-        cannon.position.x !== position.x || cannon.position.y !== position.y
-    );
+  removeCannonById(id: string): void {
+    this.cannons = this.cannons.filter(c => c.id !== id);
   }
 
   update(enemies: Enemy[], timestamp: number): void {
@@ -72,17 +69,13 @@ class CannonManager {
 
   sellCannon(id: string): [Cannon | null, number] {
     const cannon = this.getCannonById(id);
-    if (!cannon) return [null, 0];
+    if (!cannon) {
+      return [null, 0];
+    }
     const sellValue = cannon.getSellValue();
-    this.cannons = this.cannons.filter(c => c.id !== id);
+    this.removeCannonById(id);
 
     return [cannon, sellValue];
-  }
-
-  destroy(tile: Tile): void {
-    this.cannons = this.cannons.filter(
-      cannon => cannon.position.x !== tile.x || cannon.position.y !== tile.y
-    );
   }
 
   removeEventListeners(): void {
