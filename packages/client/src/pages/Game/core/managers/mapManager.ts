@@ -14,7 +14,7 @@ class MapManager {
   collisionMap: number[][];
   cursorTile: Point | null = null;
   placingCannonType: CannonType | null = null;
-  private mapDataCache = new Map<string, Tile[]>();
+  readonly mapDataCache = new Map<string, Tile[]>();
   private boundClickOnMap: (event: MouseEvent) => void;
   private boundMouseMoveOnMap: (event: MouseEvent) => void;
   private player: Player;
@@ -37,11 +37,17 @@ class MapManager {
 
   getStartTile(): Tile {
     const tiles = this.getTiles('Start');
+    if (tiles.length === 0) {
+      throw new Error('Start tile not found in map data');
+    }
     return tiles[0];
   }
 
   getFinishTile(): Tile {
     const tiles = this.getTiles('Finish');
+    if (tiles.length === 0) {
+      throw new Error('Finish tile not found in map data');
+    }
     return tiles[0];
   }
 
