@@ -65,22 +65,15 @@ class CannonManager {
     return undefined;
   }
 
-  upgradeCannon(id: string): boolean {
-    const cannon = this.getCannonById(id);
-    if (!cannon) return false;
-    cannon.upgrade();
-    return true;
-  }
-
-  sellCannon(id: string): [Cannon | null, number] {
+  sellCannon(id: string): { cannon: Cannon | null; sellValue: number } {
     const cannon = this.getCannonById(id);
     if (!cannon) {
-      return [null, 0];
+      return { cannon: null, sellValue: 0 };
     }
     const sellValue = cannon.getSellValue();
     this.removeCannonById(id);
 
-    return [cannon, sellValue];
+    return { cannon, sellValue };
   }
 
   removeEventListeners(): void {

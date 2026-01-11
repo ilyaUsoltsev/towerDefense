@@ -85,9 +85,9 @@ class GameEngine {
   }
 
   sellCannon(cannonId: string) {
-    const [cannon, soldFor] = this.cannonManager.sellCannon(cannonId);
+    const { cannon, sellValue } = this.cannonManager.sellCannon(cannonId);
     if (cannon) {
-      this.player.addMoney(soldFor);
+      this.player.addMoney(sellValue);
       const collisionMap = this.mapManager.collisionMap;
       collisionMap[cannon.position.y][cannon.position.x] = 0; // Free the tile
       this.pathManager.setCollisionMap(this.mapManager.collisionMap);
@@ -97,19 +97,23 @@ class GameEngine {
 
   upgradeCannon(cannonId: string): number | null {
     const cannon = this.cannonManager.getCannonById(cannonId);
-    if (cannon) {
-      // Проверяем, хватает ли денег у игрока на улучшение.
-      if (this.player.haveEnoughMoney(cannon.getUpgradeCost()) === false) {
-        return null;
-      }
-      // Вычитаем деньги игрока за улучшение.
-      this.player.subtractMoney(cannon.getUpgradeCost());
-
-      this.cannonManager.upgradeCannon(cannonId);
-      return this.player.getMoney();
+    if (!cannon) {
+      return null;
+    }
+    // Проверяем, хватает ли денег у игрока на улучшение.
+    if (this.player.haveEnoughMoney(cannon.getUpgradeCost()) === false) {
+      return null;
+    }
+    // Проверяем, достигла ли пушка максимального уровня.
+    if (cannon.level >= GameConfig.maxCannonLevel) {
+      return null;
     }
 
-    return null;
+    // Вычитаем деньги игрока за улучшение и обновляем
+    this.player.subtractMoney(cannon.getUpgradeCost());
+    cannon.upgrade();
+
+    return this.player.getMoney();
   }
 
   private loop = (timestamp: number) => {
