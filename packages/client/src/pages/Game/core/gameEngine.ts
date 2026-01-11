@@ -46,6 +46,12 @@ class GameEngine {
       this.player
     );
 
+    // Инициализируем менеджеры после создания всех зависимостей
+    this.mapManager.initialize();
+    this.cannonManager.initialize();
+    this.pathManager.initialize();
+    this.enemyManager.initialize();
+
     // Начать спавн врагов
     // TODO: Запускать спавн с началом игры
     this.enemyManager.startSpawning();

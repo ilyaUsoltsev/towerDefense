@@ -29,6 +29,9 @@ class MapManager {
     this.collisionMap = this.createCollisionGrid();
     this.boundClickOnMap = this.clickOnMap.bind(this);
     this.boundMouseMoveOnMap = this.mouseMoveOnMap.bind(this);
+  }
+
+  initialize(): void {
     this.addEventListeners();
   }
 

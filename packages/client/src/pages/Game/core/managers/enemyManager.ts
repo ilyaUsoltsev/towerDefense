@@ -30,6 +30,9 @@ class EnemyManager {
     this.player = player;
     this.lastSpawnTime = 0;
     this.isSpawning = false;
+  }
+
+  initialize(): void {
     this.addEventListeners();
   }
 

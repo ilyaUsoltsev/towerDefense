@@ -28,6 +28,9 @@ class PathManager {
     this.easyStar.disableCornerCutting();
     this.easyStar.enableDiagonals();
     this.easyStar.setAcceptableTiles([0]);
+  }
+
+  initialize(): void {
     this.addEventListeners();
   }
 

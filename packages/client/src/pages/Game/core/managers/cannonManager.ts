@@ -17,6 +17,9 @@ class CannonManager {
     this.context = context;
     this.projectileManager = new ProjectileManager(context);
     this.player = player;
+  }
+
+  initialize(): void {
     this.addEventListeners();
   }
 
