@@ -15,14 +15,17 @@ const WaveCard: FC<{
   waveNumber: number;
 }> = ({ title, wave, isNext, waveNumber }) => {
   // Длина анимации рассчитывается исходя из времени задержки предыдущей волны
-  const animationTime = isNext
-    ? GameConfig.waveDelay +
-      wavesConfig[waveNumber - 1].spawnInterval *
-        wavesConfig[waveNumber - 1].count
-    : 0;
+  const animationTime =
+    isNext && waveNumber > 0
+      ? GameConfig.waveDelay +
+        wavesConfig[waveNumber - 1].spawnInterval *
+          wavesConfig[waveNumber - 1].count
+      : 0;
 
   return (
     <Card
+      // Добавляем уникальный ключ, чтобы анимация срабатывала при смене волны
+      key={isNext ? `next-${waveNumber}` : `current-${waveNumber}`}
       view="outlined"
       className={`${styles.card} ${
         isNext ? styles.cardNext : styles.cardCurrent
