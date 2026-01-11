@@ -36,18 +36,20 @@ class CannonManager {
     this.cannons.forEach(cannon => {
       cannon.update(enemies, timestamp);
     });
-    this.projectileManager.update(enemies);
   }
 
   render(): void {
     this.cannons.forEach(cannon => {
       cannon.render(this.context);
     });
-    this.projectileManager.render();
   }
 
   getCannons(): Cannon[] {
     return this.cannons;
+  }
+
+  getProjectileManager(): ProjectileManager {
+    return this.projectileManager;
   }
 
   getCannonById(id: string): Cannon | undefined {

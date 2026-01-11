@@ -132,7 +132,11 @@ class GameEngine {
     this.pathManager.renderPathStartFinish();
     this.enemyManager.update(timestamp, deltaTime);
     this.cannonManager.update(this.enemyManager.getEnemies(), timestamp);
+    this.cannonManager
+      .getProjectileManager()
+      .update(this.enemyManager.getEnemies());
     this.cannonManager.render();
+    this.cannonManager.getProjectileManager().render();
     this.enemyManager.render();
     this.mapManager.renderCursorTile();
   }
