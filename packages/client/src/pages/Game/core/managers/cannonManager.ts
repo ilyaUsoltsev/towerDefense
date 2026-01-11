@@ -88,7 +88,6 @@ class CannonManager {
       ({ tile, cannonType }: { tile: Tile; cannonType: CannonType }) => {
         this.addCannon(tile, cannonType);
         this.player.subtractMoney(CannonsConfig[cannonType].cost);
-        eventBus.emit('redux:setMoney', { money: this.player.getMoney() });
       }
     );
   }

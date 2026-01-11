@@ -1,4 +1,5 @@
 import { GameConfig } from '../../constants/game-config';
+import { eventBus } from '../utils/eventBus';
 
 class Player {
   private playerHealth = GameConfig.hp;
@@ -6,6 +7,7 @@ class Player {
 
   takeDamage() {
     this.playerHealth -= 1;
+    eventBus.emit('redux:setPlayerHp', { hp: this.playerHealth });
     return this.playerHealth;
   }
 
@@ -19,10 +21,12 @@ class Player {
 
   addMoney(amount: number) {
     this.money += amount;
+    eventBus.emit('redux:setMoney', { money: this.money });
   }
 
   subtractMoney(amount: number) {
     this.money -= amount;
+    eventBus.emit('redux:setMoney', { money: this.money });
   }
 
   getMoney() {

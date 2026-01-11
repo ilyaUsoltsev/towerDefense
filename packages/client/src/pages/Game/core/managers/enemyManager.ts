@@ -157,18 +157,10 @@ class EnemyManager {
 
   private handleEnemyDestroyed(enemy: Enemy) {
     this.player.addMoney(enemy.reward);
-
-    eventBus.emit('redux:setMoney', {
-      money: this.player.getMoney(),
-    });
   }
 
   private handleEnemyReachedEnd() {
-    const remainingHp = this.player.takeDamage();
-
-    eventBus.emit('redux:setPlayerHp', {
-      hp: remainingHp,
-    });
+    this.player.takeDamage();
   }
 
   private addEventListeners() {
