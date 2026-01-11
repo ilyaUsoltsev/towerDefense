@@ -1,4 +1,7 @@
 export function startServiceWorker() {
+  if (import.meta.env.DEV) {
+    return;
+  }
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker
@@ -9,8 +12,8 @@ export function startServiceWorker() {
             registration.scope
           );
         })
-        .catch((error: string) => {
-          console.log('ServiceWorker registration failed: ', error);
+        .catch((error: Error) => {
+          console.log('ServiceWorker registration failed: ', error.message);
         });
     });
   }

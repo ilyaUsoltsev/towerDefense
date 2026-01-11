@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-site-cache-v1';
+const CACHE_NAME = 'ya-practicum-tower-defence-cache-v1';
 
 const URLS = [
     '/',
@@ -16,7 +16,7 @@ self.addEventListener("install", event => {
           return cache.addAll(URLS);
         })
         .catch(err => { 
-          throw err;
+          console.log(err);
         })
     );
 });
