@@ -45,7 +45,7 @@ class CannonManager {
   }
 
   getCannons(): Cannon[] {
-    return this.cannons;
+    return [...this.cannons];
   }
 
   getProjectileManager(): ProjectileManager {
