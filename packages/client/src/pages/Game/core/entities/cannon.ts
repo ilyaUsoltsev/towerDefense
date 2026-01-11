@@ -9,6 +9,7 @@ import {
 } from '../../constants/cannons-config';
 import { Effect, EffectsConfig } from '../../constants/effects-config';
 import { SelectedEntity } from '../../../../slices/gameSlice';
+import { assetsManager } from '../managers/assetsManager';
 
 class Cannon {
   id: string;
@@ -27,7 +28,6 @@ class Cannon {
   upgradeCost: number;
   effect: Effect | null;
   private projectileManager: ProjectileManager;
-  private image: HTMLImageElement;
 
   constructor(
     position: Tile,
@@ -49,8 +49,6 @@ class Cannon {
     this.effect = EffectsConfig[cannonType];
     this.projectileManager = projectileManager;
     this.cannonType = cannonType;
-    this.image = new Image();
-    this.image.src = this.cannonConfig.imagePath;
   }
 
   upgrade(): void {
@@ -124,9 +122,10 @@ class Cannon {
   render(context: CanvasRenderingContext2D): void {
     const center = this.getCenter();
 
-    if (this.image.complete) {
+    const image = assetsManager.get(this.cannonConfig.imagePath);
+    if (image.complete) {
       context.drawImage(
-        this.image,
+        image,
         this.position.x * this.tileSize,
         this.position.y * this.tileSize,
         this.tileSize,

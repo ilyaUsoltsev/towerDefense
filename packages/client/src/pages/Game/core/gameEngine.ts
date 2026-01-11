@@ -5,6 +5,7 @@ import { eventBus } from './utils/eventBus';
 import EnemyManager from './managers/enemyManager';
 import Player from './entities/player';
 import { GameConfig } from '../constants/game-config';
+import { assetsManager } from './managers/assetsManager';
 
 class GameEngine {
   mapManager!: MapManager;
@@ -26,6 +27,7 @@ class GameEngine {
 
   async initialize() {
     this.player = new Player();
+    await assetsManager.loadAll();
     this.mapManager = new MapManager(this.context, this.player);
     this.cannonManager = new CannonManager(this.context, this.player);
     this.pathManager = new PathManager(
@@ -57,8 +59,12 @@ class GameEngine {
   }
 
   async start() {
-    await this.initialize();
-    this.loop(0);
+    try {
+      await this.initialize();
+      this.loop(0);
+    } catch (error) {
+      console.error('Failed to start the game engine:', error);
+    }
   }
 
   stop() {
