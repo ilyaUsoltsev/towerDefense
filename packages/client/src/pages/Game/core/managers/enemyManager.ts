@@ -50,13 +50,6 @@ class EnemyManager {
     this.enemies.push(enemy);
   }
 
-  removeEnemy(enemy: Enemy): void {
-    const index = this.enemies.indexOf(enemy);
-    if (index > -1) {
-      this.enemies.splice(index, 1);
-    }
-  }
-
   startSpawning(): void {
     this.isSpawning = true;
   }
@@ -69,21 +62,23 @@ class EnemyManager {
     // Создание врагов в зависимости от времени и волны
     this.handleWave(currentTime);
 
-    // Update all enemies
-    this.enemies.forEach(enemy => {
+    // Update all enemies and filter out destroyed/finished ones in a single pass
+    const remainingEnemies: Enemy[] = [];
+
+    for (const enemy of this.enemies) {
       enemy.update(deltaTime);
+
       if (enemy.hasReachedEnd()) {
         this.handleEnemyReachedEnd();
-      }
-      if (enemy.destroyed()) {
+      } else if (enemy.destroyed()) {
         this.handleEnemyDestroyed(enemy);
+      } else {
+        // Enemy is still active, keep it
+        remainingEnemies.push(enemy);
       }
-    });
+    }
 
-    // Remove destroyed or finished entities
-    this.enemies = this.enemies.filter(
-      enemy => !enemy.destroyed() && !enemy.hasReachedEnd()
-    );
+    this.enemies = remainingEnemies;
 
     // Проверка на завершение игры
     if (
