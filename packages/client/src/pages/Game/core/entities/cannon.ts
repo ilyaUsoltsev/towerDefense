@@ -101,13 +101,15 @@ class Cannon {
   }
 
   update(enemies: Enemy[], currentTime: number): void {
-    const enemiesInRange = enemies.filter(
-      enemy => this.isEnemyInRange(enemy) && !enemy.hasReachedEnd()
-    );
-
-    if (enemiesInRange.length > 0 && this.canFire(currentTime)) {
-      const target = enemiesInRange[0].getPosition();
-      this.shootAt(target, currentTime);
+    for (const enemy of enemies) {
+      if (
+        this.isEnemyInRange(enemy) &&
+        !enemy.hasReachedEnd() &&
+        this.canFire(currentTime)
+      ) {
+        this.shootAt(enemy.getPosition(), currentTime);
+        break;
+      }
     }
   }
 
