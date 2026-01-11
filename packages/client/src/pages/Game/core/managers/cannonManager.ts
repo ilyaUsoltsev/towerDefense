@@ -8,7 +8,7 @@ import { CannonsConfig, CannonType } from '../../constants/cannons-config';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
-  cannons: Cannon[] = [];
+  cannons: Map<string, Cannon> = new Map();
   private projectileManager: ProjectileManager;
   private unsubscribe: (() => void) | null = null;
   private player: Player;
@@ -25,11 +25,11 @@ class CannonManager {
 
   addCannon(position: Tile, cannonType: CannonType): void {
     const cannon = new Cannon(position, cannonType, this.projectileManager);
-    this.cannons.push(cannon);
+    this.cannons.set(cannon.id, cannon);
   }
 
   removeCannonById(id: string): void {
-    this.cannons = this.cannons.filter(c => c.id !== id);
+    this.cannons.delete(id);
   }
 
   update(enemies: Enemy[], timestamp: number): void {
@@ -45,7 +45,7 @@ class CannonManager {
   }
 
   getCannons(): Cannon[] {
-    return [...this.cannons];
+    return Array.from(this.cannons.values());
   }
 
   getProjectileManager(): ProjectileManager {
@@ -53,13 +53,16 @@ class CannonManager {
   }
 
   getCannonById(id: string): Cannon | undefined {
-    return this.cannons.find(cannon => cannon.id === id);
+    return this.cannons.get(id);
   }
 
   getCannonAtPosition(tile: Point): Cannon | undefined {
-    return this.cannons.find(
-      cannon => cannon.position.x === tile.x && cannon.position.y === tile.y
-    );
+    for (const cannon of this.cannons.values()) {
+      if (cannon.position.x === tile.x && cannon.position.y === tile.y) {
+        return cannon;
+      }
+    }
+    return undefined;
   }
 
   upgradeCannon(id: string): boolean {
