@@ -52,23 +52,19 @@ class MapManager {
   }
 
   renderGameField() {
-    const tiles = this.getTiles('Game');
-    this.renderTiles(tiles, 'lightblue');
+    this.renderTiles(this.getTiles('Game'), 'lightblue');
   }
 
   renderWalls() {
-    const walls = this.getTiles('Walls');
-    this.renderTiles(walls, 'gray');
+    this.renderTiles(this.getTiles('Walls'), 'gray');
   }
 
   renderStart() {
-    const startTiles = this.getTiles('Start');
-    this.renderTiles(startTiles, 'green');
+    this.renderTiles(this.getTiles('Start'), 'green');
   }
 
   renderFinish() {
-    const finishTiles = this.getTiles('Finish');
-    this.renderTiles(finishTiles, 'red');
+    this.renderTiles(this.getTiles('Finish'), 'red');
   }
 
   renderCursorTile() {
