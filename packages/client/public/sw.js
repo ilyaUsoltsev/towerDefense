@@ -9,6 +9,13 @@ const URLS = [
     '/assets/',
 ];
 
+const excludePaths = [
+    '@vite/',
+    '@react-refresh',
+    '/vite.svg',
+    '/src/main.tsx?'
+  ];
+
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
@@ -23,12 +30,6 @@ self.addEventListener("install", event => {
 
 self.addEventListener('fetch', event => {
 
-  const excludePaths = [
-    '@vite/',
-    '@react-refresh',
-    '/vite.svg',
-    '/src/main.tsx?' // Vite добавляет ?t=... к исходникам
-  ];
 
   if (excludePaths.some(path => event.request.url.includes(path))) {
     // Пропускаем через сеть без кэширования
