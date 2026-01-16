@@ -22,7 +22,6 @@ jest.mock('../managers/assetsManager', () => ({
 describe('Cannon', () => {
   let cannon: Cannon;
   let mockProjectileManager: jest.Mocked<ProjectileManager>;
-  let mockContext: CanvasRenderingContext2D;
   const mockImage = {
     complete: true,
   } as HTMLImageElement;
@@ -34,15 +33,6 @@ describe('Cannon', () => {
     } as unknown as jest.Mocked<ProjectileManager>;
 
     MockProjectileManager.mockImplementation(() => mockProjectileManager);
-
-    // Мокаем Canvas context
-    mockContext = {
-      drawImage: jest.fn(),
-      strokeStyle: '',
-      beginPath: jest.fn(),
-      arc: jest.fn(),
-      stroke: jest.fn(),
-    } as unknown as CanvasRenderingContext2D;
 
     // Мокаем assetsManager.get
     (assetsManager.get as jest.Mock).mockReturnValue(mockImage);
@@ -181,12 +171,9 @@ describe('Cannon', () => {
 
   describe('isEnemyInRange', () => {
     test('должен возвращать true когда враг в радиусе', () => {
-      const enemy = createMockEnemy({ x: 100, y: 100 });
       const cannon = createCannonAtPosition({ x: 0, y: 0 }, 'basic');
 
-      // Расстояние примерно 141, range = 60, но range^2 = 3600
-      // Расстояние^2 = 20000, что больше 3600, так что false
-      // Создадим врага ближе
+      // Создадим врага в пределах радиуса
       const closeEnemy = createMockEnemy({ x: 50, y: 50 });
       expect(cannon.isEnemyInRange(closeEnemy)).toBe(true);
     });
@@ -199,14 +186,11 @@ describe('Cannon', () => {
     });
 
     test('должен учитывать увеличение радиуса после upgrade', () => {
-      const enemy = createMockEnemy({ x: 80, y: 80 });
       const cannon = createCannonAtPosition({ x: 0, y: 0 }, 'basic');
 
-      const inRangeBefore = cannon.isEnemyInRange(enemy);
       cannon.upgrade(); // Увеличивает range на 10%
-      const inRangeAfter = cannon.isEnemyInRange(enemy);
 
-      // Если враг был на границе, после upgrade он должен быть в радиусе
+      // После upgrade радиус должен увеличиться
       expect(cannon.range).toBeGreaterThan(CannonsConfig.basic.range);
     });
   });

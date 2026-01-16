@@ -1,8 +1,8 @@
 import Enemy from './enemy';
 import { GameConfig } from '../../constants/game-config';
-import { Tile, Point } from '../utils/types';
+import { Tile } from '../utils/types';
 import PathManager from '../managers/pathManager';
-import { EnemiesConfig, EnemyType } from '../../constants/enemies-config';
+import { EnemiesConfig } from '../../constants/enemies-config';
 import { Effect } from '../../constants/effects-config';
 
 // Мокаем PathManager
@@ -69,7 +69,6 @@ describe('Enemy', () => {
   describe('moveAlongPath', () => {
     test('должен двигаться к следующему тайлу', () => {
       const initialPosition = { ...enemy.currentPosition };
-      const initialIndex = enemy.currentIndex;
 
       // Устанавливаем достаточно большую скорость для достижения следующего тайла
       enemy.speed = 100;
@@ -88,6 +87,7 @@ describe('Enemy', () => {
 
       // Если враг достиг следующего тайла, индекс должен увеличиться
       expect(enemy.currentIndex).toBeGreaterThanOrEqual(initialIndex);
+      expect(enemy.currentIndex).toBeGreaterThanOrEqual(0);
     });
 
     test('не должен двигаться если путь пуст', () => {
@@ -221,6 +221,7 @@ describe('Enemy', () => {
 
       expect(enemy.activeEffects).toHaveLength(1);
       expect(enemy.activeEffects[0].duration).toBe(2000);
+      expect(enemy.activeEffects[0].duration).toBeGreaterThan(initialDuration);
     });
   });
 
@@ -246,6 +247,7 @@ describe('Enemy', () => {
       enemy.update(100); // Прошло 100мс
 
       expect(enemy.activeEffects[0].duration).toBeLessThan(initialDuration);
+      expect(enemy.activeEffects[0].duration).toBe(initialDuration - 100);
     });
   });
 
