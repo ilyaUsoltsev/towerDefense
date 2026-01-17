@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GameStatsItem Снапшот-тест должен соответствовать снапшоту 1`] = `
+<span
+  className="g-text g-text_variant_body-3 g-color-text g-color-text_color_info"
+  style={Object {}}
+>
+  Wave
+  : 
+  <span
+    className="g-text g-text_variant_subheader-3"
+    style={Object {}}
+  >
+    1/10
+  </span>
+</span>
+`;
+
+exports[`GameStatsItem Снапшот-тест должен соответствовать снапшоту с positive-heavy color 1`] = `
+<span
+  className="g-text g-text_variant_body-3 g-color-text g-color-text_color_positive-heavy"
+  style={Object {}}
+>
+  Lives
+  : 
+  <span
+    className="g-text g-text_variant_subheader-3"
+    style={Object {}}
+  >
+    5
+  </span>
+</span>
+`;
+
+exports[`GameStatsItem Снапшот-тест должен соответствовать снапшоту с другим color 1`] = `
+<span
+  className="g-text g-text_variant_body-3 g-color-text g-color-text_color_warning"
+  style={Object {}}
+>
+  Gold
+  : 
+  <span
+    className="g-text g-text_variant_subheader-3"
+    style={Object {}}
+  >
+    100
+  </span>
+</span>
+`;
