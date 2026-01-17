@@ -5,6 +5,7 @@ import PageWrapper from '../../components/PageWrapper';
 import styles from './Game.module.css';
 import GameScreen from './GameScreen';
 import StartScreen from './StartScreen';
+import EndScreen from './EndScreen';
 
 const CurrentScreen: FC<{ screen: 'start' | 'game' | 'end' }> = ({
   screen,
@@ -16,7 +17,9 @@ const CurrentScreen: FC<{ screen: 'start' | 'game' | 'end' }> = ({
     case 'game': {
       return <GameScreen />;
     }
-    case 'end':
+    case 'end': {
+      return <EndScreen />;
+    }
     default: {
       return <StartScreen />;
     }
@@ -29,7 +32,7 @@ export const GamePage: FC = () => {
   return (
     <PageWrapper description="Tower defense">
       <div className={styles.gameWrapper}>
-        <CurrentScreen screen="game" />
+        <CurrentScreen screen="end" />
       </div>
     </PageWrapper>
   );
