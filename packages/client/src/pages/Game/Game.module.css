@@ -5,3 +5,12 @@
   justify-content: center;
   align-items: center;
 }
+
+.startButton {
+  width: 300px;
+  height: 84px;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 24px;
+}
