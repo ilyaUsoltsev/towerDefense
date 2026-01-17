@@ -32,7 +32,7 @@ export const GamePage: FC = () => {
   return (
     <PageWrapper description="Tower defense">
       <div className={styles.gameWrapper}>
-        <CurrentScreen screen="end" />
+        <CurrentScreen screen="game" />
       </div>
     </PageWrapper>
   );
