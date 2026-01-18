@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tile } from '../pages/Game/core/utils/types';
 import { CannonType } from '../pages/Game/constants/cannons-config';
 import { isUpgradable } from './utils/is-upgradable';
+import { GAME_STATE } from '../constants/GAME_STATE';
 
 export interface SelectedEntity {
   type: CannonType;
@@ -14,7 +15,14 @@ export interface SelectedEntity {
   upgradeCost: number;
 }
 
+interface ResultGame {
+  isWin: boolean;
+  score: number;
+}
+
 export interface UserState {
+  gameState: GAME_STATE;
+  result: ResultGame;
   hp: number;
   money: number;
   selectedEntity: SelectedEntity | null;
@@ -26,6 +34,11 @@ export interface UserState {
 }
 
 const initialState: UserState = {
+  gameState: GAME_STATE.START,
+  result: {
+    isWin: false,
+    score: 0,
+  },
   hp: 0, // инициализируется при старте игры
   money: 0, // инициализируется при старте игры
   selectedEntity: null,
@@ -88,6 +101,13 @@ export const gameSlice = createSlice({
     gameClearUpgradeCommand: state => {
       state.pendingUpgradeCannonId = null;
     },
+    gameSetState: (state, action: PayloadAction<GAME_STATE>) => {
+      state.gameState = action.payload;
+    },
+    gameOver: (state, action: PayloadAction<ResultGame>) => {
+      state.result = action.payload;
+      state.gameState = GAME_STATE.END;
+    },
   },
 });
 
@@ -103,6 +123,8 @@ export const {
   gameSetWaveNumber,
   gameClearSellCommand,
   gameClearUpgradeCommand,
+  gameSetState,
+  gameOver,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

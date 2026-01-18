@@ -1,9 +1,9 @@
 import { FC } from 'react';
+import { useSelector } from '../../store';
 import { GameStats } from './components/GameStats';
+import { WaveInfo } from './components/WaveInfo';
 import Game from './Game';
 import GameMenu from './GameMenu';
-import { WaveInfo } from './components/WaveInfo';
-import { useSelector } from '../../store';
 
 const GameScreen: FC = () => {
   const money = useSelector(state => state.game.money);

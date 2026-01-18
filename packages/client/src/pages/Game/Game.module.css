@@ -50,3 +50,9 @@
   color: var(--g-color-base-brand);
   font-weight: 600;
 }
+
+.countdown {
+  text-align: center;
+  color: var(--g-color-base-brand);
+  font-size: 50px;
+}
