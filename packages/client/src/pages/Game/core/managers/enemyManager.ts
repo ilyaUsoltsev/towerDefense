@@ -16,7 +16,6 @@ class EnemyManager {
   isSpawning: boolean;
   waveIndex = 0;
   currentWaveEnemiesSpawned = 0;
-  score = 0;
   private unsubscribe: (() => void) | null = null;
 
   constructor(
@@ -73,7 +72,6 @@ class EnemyManager {
         this.handleEnemyReachedEnd();
       } else if (enemy.destroyed()) {
         this.handleEnemyDestroyed(enemy);
-        this.score += enemy.maxHealth;
       } else {
         // Enemy is still active, keep it
         remainingEnemies.push(enemy);
@@ -90,7 +88,10 @@ class EnemyManager {
     ) {
       // Игра завершена, все волны пройдены
       // console.log('Game Over: All waves completed!');
-      eventBus.emit('redux:gameOver', { isWin: true, score: this.score });
+      eventBus.emit('redux:gameOver', {
+        isWin: true,
+        score: this.player.getScore(),
+      });
     }
   }
 
@@ -155,6 +156,7 @@ class EnemyManager {
 
   private handleEnemyDestroyed(enemy: Enemy) {
     this.player.addMoney(enemy.reward);
+    this.player.addScore(enemy.maxHealth);
   }
 
   private handleEnemyReachedEnd() {

@@ -1,16 +1,18 @@
 import { FC } from 'react';
-import { usePage } from '../../hooks/usePage';
 import PageWrapper from '../../components/PageWrapper';
+import { usePage } from '../../hooks/usePage';
 
-import styles from './Game.module.css';
-import GameScreen from './GameScreen';
-import StartScreen from './StartScreen';
-import EndScreen from './EndScreen';
 import { GAME_STATE } from '../../constants/GAME_STATE';
 import { useSelector } from '../../store';
+import EndScreen from './EndScreen';
+import styles from './Game.module.css';
+import GameScreen from './GameScreen';
 import LoadingScreen from './LoadingScreen';
+import StartScreen from './StartScreen';
 
-const CurrentScreen: FC<{ gameState: GAME_STATE }> = ({ gameState }) => {
+const CurrentScreen: FC = () => {
+  const gameState = useSelector(state => state.game.gameState);
+
   switch (gameState) {
     case GAME_STATE.START: {
       return <StartScreen />;
@@ -32,13 +34,11 @@ const CurrentScreen: FC<{ gameState: GAME_STATE }> = ({ gameState }) => {
 
 export const GamePage: FC = () => {
   usePage({ initPage: initGamePage });
-  const gameState = useSelector(state => state.game.state);
-  console.log(gameState);
 
   return (
     <PageWrapper description="Tower defense">
       <div className={styles.gameWrapper}>
-        <CurrentScreen gameState={gameState} />
+        <CurrentScreen />
       </div>
     </PageWrapper>
   );

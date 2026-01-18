@@ -11,7 +11,7 @@ import {
   gameSetWaveNumber,
   gameClearSellCommand,
   gameClearUpgradeCommand,
-  gameSetResult,
+  gameOver,
 } from '../../../slices/gameSlice';
 import { eventBus } from '../core/utils/eventBus';
 import { CannonType } from '../constants/cannons-config';
@@ -71,7 +71,7 @@ export class GameEngineAdapter {
     this.unsubSink.push(unsubCannonClick);
 
     const unsubGameOver = eventBus.on('redux:gameOver', ({ isWin, score }) => {
-      this.store.dispatch(gameSetResult({ isWin, score }));
+      this.store.dispatch(gameOver({ isWin, score }));
     });
     this.unsubSink.push(unsubGameOver);
   }

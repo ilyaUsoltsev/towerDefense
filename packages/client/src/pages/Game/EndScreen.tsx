@@ -4,7 +4,7 @@ import styles from './Game.module.css';
 import { ROUTE } from '../../constants/ROUTE';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from '../../store';
-import { gameSetResult, gameSetState } from '../../slices/gameSlice';
+import { gameSetState } from '../../slices/gameSlice';
 import { GAME_STATE } from '../../constants/GAME_STATE';
 
 const EndScreen: FC = () => {
@@ -13,11 +13,9 @@ const EndScreen: FC = () => {
   const gameResult = useSelector(state => state.game.result);
 
   const onRepeatGame = () => {
-    dispatch(gameSetResult({ isWin: null, score: 0 }));
     dispatch(gameSetState(GAME_STATE.LOADING));
   };
   const onClickToMain = () => {
-    dispatch(gameSetResult({ isWin: null, score: 0 }));
     dispatch(gameSetState(GAME_STATE.START));
   };
 

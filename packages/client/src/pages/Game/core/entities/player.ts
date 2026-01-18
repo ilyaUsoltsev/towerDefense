@@ -4,6 +4,7 @@ import { eventBus } from '../utils/eventBus';
 class Player {
   private playerHealth = GameConfig.hp;
   private money = GameConfig.initialMoney;
+  private score = 0;
 
   takeDamage() {
     this.playerHealth -= 1;
@@ -34,6 +35,14 @@ class Player {
 
   getMoney() {
     return this.money;
+  }
+
+  addScore(amount: number) {
+    this.score += amount;
+  }
+
+  getScore() {
+    return this.score;
   }
 
   haveEnoughMoney(amount: number) {

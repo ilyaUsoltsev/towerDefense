@@ -16,12 +16,12 @@ export interface SelectedEntity {
 }
 
 interface ResultGame {
-  isWin: boolean | null;
+  isWin: boolean;
   score: number;
 }
 
 export interface UserState {
-  state: GAME_STATE;
+  gameState: GAME_STATE;
   result: ResultGame;
   hp: number;
   money: number;
@@ -34,9 +34,9 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  state: GAME_STATE.START,
+  gameState: GAME_STATE.START,
   result: {
-    isWin: null,
+    isWin: false,
     score: 0,
   },
   hp: 0, // инициализируется при старте игры
@@ -102,11 +102,11 @@ export const gameSlice = createSlice({
       state.pendingUpgradeCannonId = null;
     },
     gameSetState: (state, action: PayloadAction<GAME_STATE>) => {
-      state.state = action.payload;
+      state.gameState = action.payload;
     },
-    gameSetResult: (state, action: PayloadAction<ResultGame>) => {
+    gameOver: (state, action: PayloadAction<ResultGame>) => {
       state.result = action.payload;
-      state.state = GAME_STATE.END;
+      state.gameState = GAME_STATE.END;
     },
   },
 });
@@ -124,7 +124,7 @@ export const {
   gameClearSellCommand,
   gameClearUpgradeCommand,
   gameSetState,
-  gameSetResult,
+  gameOver,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
