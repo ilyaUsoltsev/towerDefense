@@ -8,6 +8,9 @@ class Player {
   takeDamage() {
     this.playerHealth -= 1;
     eventBus.emit('redux:setPlayerHp', { hp: this.playerHealth });
+    if (this.playerHealth <= 0) {
+      eventBus.emit('redux:gameOver', { isWin: false, score: 0 });
+    }
     return this.playerHealth;
   }
 

@@ -3,30 +3,43 @@ import { FC } from 'react';
 import styles from './Game.module.css';
 import { ROUTE } from '../../constants/ROUTE';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from '../../store';
+import { gameSetResult, gameSetState } from '../../slices/gameSlice';
+import { GAME_STATE } from '../../constants/GAME_STATE';
 
 const EndScreen: FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const onRepeatGame = () => {};
+  const dispatch = useDispatch();
+
+  const gameResult = useSelector(state => state.game.result);
+
+  const onRepeatGame = () => {
+    dispatch(gameSetResult({ isWin: null, score: 0 }));
+    dispatch(gameSetState(GAME_STATE.LOADING));
+  };
+  const onClickToMain = () => {
+    dispatch(gameSetResult({ isWin: null, score: 0 }));
+    dispatch(gameSetState(GAME_STATE.START));
+  };
 
   return (
     <Card className={styles.resultCard__wrapper}>
-      <h2 className={styles.resultCard__title}>Победа</h2>
+      <h2 className={styles.resultCard__title}>
+        {gameResult?.isWin ? 'Победа' : 'Поражение'}
+      </h2>
       <img src="/divider.svg" />
       <div className={styles.resultCard__infoBlock}>
         <div className={styles.resultCard__infoRow}>
-          <span>Нанесенный урон</span>
-          <span className={styles.resultCard__value}>100</span>
-        </div>
-        <div className={styles.resultCard__infoRow}>
-          <span>Убито врагов</span>
-          <span className={styles.resultCard__value}>10</span>
+          <span>Счет</span>
+          <span className={styles.resultCard__value}>
+            {gameResult?.score || 0}
+          </span>
         </div>
       </div>
       <div className={styles.resultCard__buttonWrapper}>
         <Button view="action" size="xl" onClick={onRepeatGame}>
           Повторить
         </Button>
-        <Link to={ROUTE.ROOT}>
+        <Link to={ROUTE.ROOT} onClick={onClickToMain}>
           <Button view="action" size="xl">
             На главную
           </Button>
