@@ -1,23 +1,29 @@
 import { FC } from 'react';
-import { usePage } from '../../hooks/usePage';
 import PageWrapper from '../../components/PageWrapper';
+import { usePage } from '../../hooks/usePage';
 
+import { GAME_STATE } from '../../constants/GAME_STATE';
+import { useSelector } from '../../store';
+import EndScreen from './EndScreen';
 import styles from './Game.module.css';
 import GameScreen from './GameScreen';
+import StartDelayScreen from './StartDelayScreen';
 import StartScreen from './StartScreen';
-import EndScreen from './EndScreen';
 
-const CurrentScreen: FC<{ screen: 'start' | 'game' | 'end' }> = ({
-  screen,
-}) => {
-  switch (screen) {
-    case 'start': {
+const CurrentScreen: FC = () => {
+  const gameState = useSelector(state => state.game.gameState);
+
+  switch (gameState) {
+    case GAME_STATE.START: {
       return <StartScreen />;
     }
-    case 'game': {
+    case GAME_STATE.LOADING: {
+      return <StartDelayScreen />;
+    }
+    case GAME_STATE.GAME: {
       return <GameScreen />;
     }
-    case 'end': {
+    case GAME_STATE.END: {
       return <EndScreen />;
     }
     default: {
@@ -32,7 +38,7 @@ export const GamePage: FC = () => {
   return (
     <PageWrapper description="Tower defense">
       <div className={styles.gameWrapper}>
-        <CurrentScreen screen="game" />
+        <CurrentScreen />
       </div>
     </PageWrapper>
   );

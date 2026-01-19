@@ -88,6 +88,10 @@ class EnemyManager {
     ) {
       // Игра завершена, все волны пройдены
       // console.log('Game Over: All waves completed!');
+      eventBus.emit('redux:gameOver', {
+        isWin: true,
+        score: this.player.getScore(),
+      });
     }
   }
 
@@ -152,6 +156,7 @@ class EnemyManager {
 
   private handleEnemyDestroyed(enemy: Enemy) {
     this.player.addMoney(enemy.reward);
+    this.player.addScore(enemy.maxHealth);
   }
 
   private handleEnemyReachedEnd() {

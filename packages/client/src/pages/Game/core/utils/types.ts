@@ -30,6 +30,7 @@ export interface GameEvents {
   'redux:selectedCannon': { x: number; y: number };
   'redux:setMoney': { money: number };
   'redux:setPlayerHp': { hp: number };
+  'redux:gameOver': { isWin: boolean; score: number };
 }
 
 export type GameEventName = keyof GameEvents;
