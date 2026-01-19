@@ -14,4 +14,5 @@ export const GameConfig = {
     color: 'orange',
   },
   sellValue: 0.7,
+  gameStartDelay: 5, // в секундах
 } as const;

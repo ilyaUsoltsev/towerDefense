@@ -7,7 +7,7 @@ import { useSelector } from '../../store';
 import EndScreen from './EndScreen';
 import styles from './Game.module.css';
 import GameScreen from './GameScreen';
-import LoadingScreen from './LoadingScreen';
+import StartDelayScreen from './StartDelayScreen';
 import StartScreen from './StartScreen';
 
 const CurrentScreen: FC = () => {
@@ -18,7 +18,7 @@ const CurrentScreen: FC = () => {
       return <StartScreen />;
     }
     case GAME_STATE.LOADING: {
-      return <LoadingScreen />;
+      return <StartDelayScreen />;
     }
     case GAME_STATE.GAME: {
       return <GameScreen />;
