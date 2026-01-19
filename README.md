@@ -1,55 +1,61 @@
+## Видео с описанием задач и игры
+
+[Посмотреть видео](https://disk.yandex.ru/i/MYjitxRMnymmdw)
+
+### Описание игры
+
+Подробное описание движка и логики Tower Defense игры: [Game Engine Documentation](packages/client/src/pages/Game/core/README.md)
+
 ### Как запускать?
 
 1. Убедитесь что у вас установлен `node` и `docker`
 2. Выполните команду `yarn bootstrap` - это обязательный шаг, без него ничего работать не будет :)
 3. Выполните команду `yarn dev`
-3. Выполните команду `yarn dev --scope=client` чтобы запустить только клиент
-4. Выполните команду `yarn dev --scope=server` чтобы запустить только server
-
+4. Выполните команду `yarn dev --scope=client` чтобы запустить только клиент
+5. Выполните команду `yarn dev --scope=server` чтобы запустить только server
 
 ### Как добавить зависимости?
+
 В этом проекте используется `monorepo` на основе [`lerna`](https://github.com/lerna/lerna)
 
-Чтобы добавить зависимость для клиента 
-```yarn lerna add {your_dep} --scope client```
+Чтобы добавить зависимость для клиента
+`yarn lerna add {your_dep} --scope client`
 
 Для сервера
-```yarn lerna add {your_dep} --scope server```
+`yarn lerna add {your_dep} --scope server`
 
 И для клиента и для сервера
-```yarn lerna add {your_dep}```
-
+`yarn lerna add {your_dep}`
 
 Если вы хотите добавить dev зависимость, проделайте то же самое, но с флагом `dev`
-```yarn lerna add {your_dep} --dev --scope server```
-
+`yarn lerna add {your_dep} --dev --scope server`
 
 ### Тесты
 
 Для клиента используется [`react-testing-library`](https://testing-library.com/docs/react-testing-library/intro/)
 
-```yarn test```
+`yarn test`
 
 ### Линтинг
 
-```yarn lint```
-```yarn lintfix```
+`yarn lint`
+`yarn lintfix`
 
 ### Форматирование prettier
 
-```yarn format```
+`yarn format`
 
 ### Production build
 
-```yarn build```
+`yarn build`
 
 И чтобы посмотреть что получилось
-
 
 `yarn preview --scope client`
 `yarn preview --scope server`
 
 ## Хуки
+
 В проекте используется [lefthook](https://github.com/evilmartians/lefthook)
 Если очень-очень нужно пропустить проверки, используйте `--no-verify` (но не злоупотребляйте :)
 
@@ -58,53 +64,23 @@
 Откройте issue, я приду :)
 
 ## Автодеплой статики на vercel
+
 Зарегистрируйте аккаунт на [vercel](https://vercel.com/)
 Следуйте [инструкции](https://vitejs.dev/guide/static-deploy.html#vercel-for-git)
 В качестве `root directory` укажите `packages/client`
 
 Все ваши PR будут автоматически деплоиться на vercel. URL вам предоставит деплоящий бот
 
-## AssetsManager
-
-Менеджер для загрузки и управления игровыми ресурсами (изображениями).
-
-### Основные возможности
-
-- Предзагрузка всех игровых изображений при старте
-- Типобезопасный доступ к загруженным ресурсам
-- Централизованное управление путями к изображениям
-
-### Использование
-
-```typescript
-import { assetsManager } from '@/pages/Game/core/managers/assetsManager';
-
-// Загрузка всех ресурсов
-await assetsManager.loadAll();
-
-// Получение изображения
-const cannonImage = assetsManager.get('/basic.png');
-```
-
-### Доступные изображения
-
-- `/basic.png` - базовая пушка
-- `/fast.png` - быстрая пушка
-- `/dumb.png` - тупая пушка
-- `/freeze.png` - замораживающая пушка
-- `/rocket.png` - ракетная пушка
-- `/sniper.png` - снайперская пушка
-
-Расположение: [packages/client/src/pages/Game/core/managers/assetsManager.ts](packages/client/src/pages/Game/core/managers/assetsManager.ts)
-
 ## Production окружение в докере
+
 Перед первым запуском выполните `node init.js`
 
-
 `docker compose up` - запустит три сервиса
+
 1. nginx, раздающий клиентскую статику (client)
 2. node, ваш сервер (server)
 3. postgres, вашу базу данных (postgres)
 
 Если вам понадобится только один сервис, просто уточните какой в команде
 `docker compose up {sevice_name}`, например `docker compose up server`
+

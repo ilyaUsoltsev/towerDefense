@@ -18,24 +18,24 @@ export const RegisterPage = () => {
     const errors: Record<string, string> = {};
 
     if (!values.first_name) {
-      errors.login = 'Поле обязательно для заполнения';
+      errors.first_name = 'Поле обязательно для заполнения';
     }
     if (!values.second_name) {
-      errors.password = 'Поле обязательно для заполнения';
+      errors.second_name = 'Поле обязательно для заполнения';
     }
     if (!values.login) {
       errors.login = 'Поле обязательно для заполнения';
     }
 
     if (!values.email) {
-      errors.password = 'Поле обязательно для заполнения';
+      errors.email = 'Поле обязательно для заполнения';
     }
     if (!values.password) {
-      errors.login = 'Поле обязательно для заполнения';
+      errors.password = 'Поле обязательно для заполнения';
     }
 
     if (!values.phone) {
-      errors.password = 'Поле обязательно для заполнения';
+      errors.phone = 'Поле обязательно для заполнения';
     }
 
     return errors;
@@ -65,7 +65,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -81,7 +81,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -97,7 +97,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -113,7 +113,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -129,7 +129,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -144,7 +144,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
