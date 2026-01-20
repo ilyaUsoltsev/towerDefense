@@ -1,0 +1,31 @@
+.profilePage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  text-align: center;
+  color: var(--g-color-text-primary);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Используем значение из constants/styles.ts: BREAKPOINTS.mobile = 768px */
+@media (max-width: 768px) {
+  .profilePage {
+    padding: 20px 16px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+}
