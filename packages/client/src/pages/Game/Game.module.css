@@ -1,0 +1,58 @@
+.gameWrapper {
+  height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.startButton {
+  width: 300px;
+  height: 84px;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 24px;
+}
+
+.resultCard__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+}
+
+.resultCard__title {
+  text-align: center;
+  color: var(--g-color-base-brand);
+  font-size: 32px;
+}
+
+.resultCard__buttonWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.resultCard__infoBlock {
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.resultCard__infoRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.resultCard__value {
+  color: var(--g-color-base-brand);
+  font-weight: 600;
+}
+
+.countdown {
+  text-align: center;
+  color: var(--g-color-base-brand);
+  font-size: 50px;
+}

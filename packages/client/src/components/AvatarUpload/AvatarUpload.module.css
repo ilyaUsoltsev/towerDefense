@@ -1,0 +1,70 @@
+.card {
+  padding: 24px;
+  background: var(--g-color-base-background);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--g-color-text-primary);
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.avatar {
+  border: 3px solid var(--g-color-base-brand);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatarActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--g-color-text-secondary);
+  margin: 0;
+}
+
+/* Используем значение из constants/styles.ts: BREAKPOINTS.mobile = 768px */
+@media (max-width: 768px) {
+  .card {
+    padding: 16px;
+  }
+
+  .avatarSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .avatarWrapper {
+    align-self: center;
+  }
+}
