@@ -5,6 +5,7 @@ import { GamePage, initGamePage } from './pages/Game';
 import { initLoginPage, LoginPage } from './pages/Login';
 import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
+import { initError500Page, Error500Page } from './pages/Error500';
 import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
 
@@ -51,6 +52,12 @@ export const routes = [
     fetchData: initRegisterPage,
   },
   {
+    path: ROUTE.ERROR_500,
+    Component: Error500Page,
+    fetchData: initError500Page,
+  },
+  {
+    path: '*',
     path: ROUTE.LEADERBOARD,
     Component: LeaderboardPage,
     fetchData: initLeaderboardPage,
