@@ -32,6 +32,7 @@
   overflow: scroll;
   align-items: start;
   margin-top: 4vh;
+  padding-top: 0.5vh;
 }
 .topic h1 {
   margin-bottom: 1.6vh;
@@ -44,7 +45,7 @@
   width: 100%;
   height: fit-content;
   max-height: 71%;
-  margin: 2vh 0;
+  margin: 6vh 0 2vh 0;
   overflow: hidden;
   mask-image: linear-gradient(to top, transparent, black 15%);
 }
@@ -72,7 +73,7 @@
   background: linear-gradient(
     to top,
     transparent,
-    var(--g-color-private-blue-200-solid) 20% 80%,
+    var(--g-color-base-brand) 15% 85%,
     transparent
   );
 }

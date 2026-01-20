@@ -25,15 +25,15 @@ export const Forum = ({ topics }: ForumProps) => {
   return (
     <div className={`${ux.forum} ${ux.flex_col}`}>
       <Helmet>
-        <title>Forum</title>
+        <title>Форум</title>
       </Helmet>
 
       <div className={ux.blur_layer}></div>
 
       <header className={`${ux.forum_header} ${ux.flex_row}`}>
         <div className={ux.flex_col}>
-          <h1>War Room</h1>
-          <h3>Community strategies & discussions</h3>
+          <h1>Военный штаб</h1>
+          <h3>Стратегии и обсуждения</h3>
         </div>
         <img
           src="./tower-defence.png"
@@ -54,22 +54,21 @@ export const Forum = ({ topics }: ForumProps) => {
         <div className={`${ux.body_header} ${ux.flex_row}`}>
           <Link to={ROUTE.FORUM_NEW}>
             <Button view="action" size="l">
-              New Post
+              Создать тему
             </Button>
           </Link>
           <input
             type="text"
-            placeholder="Search topic/post"
+            placeholder="Поиск по темам..."
             className={ux.topic_search}
             onInput={e => {
               searchTopics((e.target as HTMLInputElement).value);
             }}
           />
         </div>
-        <h2>All Topics</h2>
+        <h2>Все темы</h2>
 
         <div className={`${bodyUx.topics} ${ux.flex_col}`}>
-          {/* {topics} */}
           <Topic
             title="Top maps"
             message="A veryyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy looooooooooooooooooooooooooooooooooooooooooooooooooooooong message yuhoooooooooooooooooooooo"
