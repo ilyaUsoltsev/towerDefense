@@ -1,5 +1,6 @@
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
+import { startServiceWorker } from './utils/ServiceWorker';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -18,3 +19,5 @@ ReactDOM.hydrateRoot(
     </Provider>
   </ThemeProvider>
 );
+
+startServiceWorker();

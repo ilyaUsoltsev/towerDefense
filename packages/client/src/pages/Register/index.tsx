@@ -1,4 +1,3 @@
-import { useSelector } from '../../store';
 import { fetchUserThunk, selectUser } from '../../slices/userSlice';
 import { TextInput } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
@@ -6,48 +5,56 @@ import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
 import { Field } from 'react-final-form';
 import SectionLog from '../../components/SectionLog';
+import { useAuth } from '../../hooks/useAuth';
+import { CreateUser } from '../../api/type';
+import Loader from '../../components/Loader';
+import ErrorText from '../../components/ErrorText';
+import { ROUTE } from '../../constants/ROUTE';
 
 export const RegisterPage = () => {
-  const user = useSelector(selectUser);
+  const { register, isLoading, error } = useAuth();
   usePage({ initPage: initRegisterPage });
   const validate = (values: Record<string, unknown>) => {
     const errors: Record<string, string> = {};
 
     if (!values.first_name) {
-      errors.login = 'Поле обязательно для заполнения';
+      errors.first_name = 'Поле обязательно для заполнения';
     }
     if (!values.second_name) {
-      errors.password = 'Поле обязательно для заполнения';
+      errors.second_name = 'Поле обязательно для заполнения';
     }
     if (!values.login) {
       errors.login = 'Поле обязательно для заполнения';
     }
 
     if (!values.email) {
-      errors.password = 'Поле обязательно для заполнения';
+      errors.email = 'Поле обязательно для заполнения';
     }
     if (!values.password) {
-      errors.login = 'Поле обязательно для заполнения';
+      errors.password = 'Поле обязательно для заполнения';
     }
 
     if (!values.phone) {
-      errors.password = 'Поле обязательно для заполнения';
+      errors.phone = 'Поле обязательно для заполнения';
     }
 
     return errors;
   };
 
   const handleSubmit = (data: Record<string, unknown>) => {
+    register(data as CreateUser);
     console.log('Валидация');
     console.log('Данные формы:', data);
   };
   return (
     <SectionLog>
+      <Loader isLoading={isLoading}></Loader>
       <FormLog
         validate={validate}
         onSubmit={handleSubmit}
         text="Регистрация"
-        titleLink="Уже есть аккаунт ?">
+        titleLink="Уже есть аккаунт ?"
+        hrefLink={ROUTE.LOGIN}>
         <Field name="first_name">
           {({ input, meta }) => (
             <TextInput
@@ -58,7 +65,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -74,7 +81,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -90,7 +97,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -106,7 +113,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -122,7 +129,7 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
@@ -137,11 +144,12 @@ export const RegisterPage = () => {
               validationState={
                 meta.error && meta.touched ? 'invalid' : undefined
               }
-              errorMessage={meta.touched ? meta.error || '' : ''}
+              errorMessage={(meta.touched && meta.error) || ''}
               errorPlacement="outside"
             />
           )}
         </Field>
+        <ErrorText>{error}</ErrorText>
       </FormLog>
     </SectionLog>
   );

@@ -1,0 +1,33 @@
+.headerWrapper {
+  width: 100%;
+  height: var(--header-height);
+  padding: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.avatarWrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.userLink {
+  text-decoration: none;
+  color: var(--g-color-text-brand);
+}
+
+.iconButton {
+  width: 40px;
+  height: 40px;
+  padding: 12px;
+  border: 1px solid var(--g-color-base-brand);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+
+  & svg path {
+    fill: var(--g-color-base-brand);
+  }
+}
