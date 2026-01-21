@@ -15,6 +15,7 @@ import {
 } from '../../../slices/gameSlice';
 import { eventBus } from '../core/utils/eventBus';
 import { CannonType } from '../constants/cannons-config';
+import { GameConfig } from '../constants/game-config';
 import { NotificationService } from '../../../utils/NotificationService';
 
 /**
@@ -78,7 +79,7 @@ export class GameEngineAdapter {
 
     if (NotificationService.isSupported()) {
       const unsubHpNotif = eventBus.on('redux:setPlayerHp', ({ hp }) => {
-        if (hp <= 3 && hp > 0) {
+        if (hp <= GameConfig.lowHpThreshold && hp > 0) {
           NotificationService.notifyLowHP(hp);
         }
       });

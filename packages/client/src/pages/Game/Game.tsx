@@ -3,6 +3,7 @@ import GameEngine from './core/gameEngine';
 import { GameEngineAdapter } from './adapters/GameEngineAdapter';
 import { useStore } from '../../store';
 import { NotificationService } from '../../utils/NotificationService';
+import { FullscreenService } from '../../utils/FullscreenService';
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -29,6 +30,10 @@ const Game = () => {
       adapter.removeSubscriptions();
       gameEngine.stop();
       unsubscribeFromStore();
+
+      if (FullscreenService.isFullscreen()) {
+        FullscreenService.exitFullscreen().catch(console.warn);
+      }
     };
   }, []);
 

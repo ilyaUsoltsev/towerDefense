@@ -6,7 +6,7 @@ import {
 export class FullscreenService {
   static isSupported(): boolean {
     const doc = document as DocumentWithFullscreen;
-    return !!(
+    return (
       doc.fullscreenEnabled ||
       doc.webkitFullscreenElement !== undefined ||
       doc.mozFullScreenElement !== undefined ||
@@ -58,11 +58,11 @@ export class FullscreenService {
 
   static isFullscreen(): boolean {
     const doc = document as DocumentWithFullscreen;
-    return !!(
-      doc.fullscreenElement ||
-      doc.webkitFullscreenElement ||
-      doc.mozFullScreenElement ||
-      doc.msFullscreenElement
+    return (
+      !!doc.fullscreenElement ||
+      !!doc.webkitFullscreenElement ||
+      !!doc.mozFullScreenElement ||
+      !!doc.msFullscreenElement
     );
   }
 

@@ -68,7 +68,6 @@ export class NotificationService {
 
     this.showNotification('⚠️ Низкий уровень здоровья!', {
       body: `Осталось всего ${hp} жизней! Срочно требуется ваше внимание!`,
-      icon: '/favicon.ico',
       tag: 'low-hp',
     });
   }
@@ -81,13 +80,11 @@ export class NotificationService {
     if (isWin) {
       this.showNotification('🎉 Победа!', {
         body: 'Поздравляем! Вы прошли все волны!',
-        icon: '/favicon.ico',
         tag: 'game-over',
       });
     } else {
       this.showNotification('💀 Поражение', {
         body: 'Игра окончена. Попробуйте еще раз!',
-        icon: '/favicon.ico',
         tag: 'game-over',
       });
     }

@@ -110,7 +110,7 @@ export const gameSlice = createSlice({
       state.result = action.payload;
       state.gameState = GAME_STATE.END;
     },
-    gameToggleFullscreen: (state, action: PayloadAction<boolean>) => {
+    gameSetFullscreen: (state, action: PayloadAction<boolean>) => {
       state.isFullscreen = action.payload;
     },
   },
@@ -130,7 +130,7 @@ export const {
   gameClearUpgradeCommand,
   gameSetState,
   gameOver,
-  gameToggleFullscreen,
+  gameSetFullscreen,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

@@ -1,6 +1,6 @@
 export interface DocumentWithFullscreen extends Document {
   readonly fullscreenElement: Element | null;
-  exitFullscreen(): Promise<void>;
+  exitFullscreen: () => Promise<void>;
 
   readonly webkitFullscreenElement?: Element | null;
   webkitExitFullscreen?: () => Promise<void>;
@@ -13,7 +13,7 @@ export interface DocumentWithFullscreen extends Document {
 }
 
 export interface HTMLElementWithFullscreen extends HTMLElement {
-  requestFullscreen(): Promise<void>;
+  requestFullscreen: () => Promise<void>;
 
   webkitRequestFullscreen?: () => Promise<void>;
   mozRequestFullScreen?: () => Promise<void>;

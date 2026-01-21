@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector, RootState } from '../store';
-import { gameToggleFullscreen } from '../slices/gameSlice';
+import { gameSetFullscreen } from '../slices/gameSlice';
 import { FullscreenService } from '../utils/FullscreenService';
 
 export function useFullscreen() {
@@ -13,10 +13,10 @@ export function useFullscreen() {
     try {
       if (FullscreenService.isFullscreen()) {
         await FullscreenService.exitFullscreen();
-        dispatch(gameToggleFullscreen(false));
+        dispatch(gameSetFullscreen(false));
       } else {
         await FullscreenService.requestFullscreen(document.documentElement);
-        dispatch(gameToggleFullscreen(true));
+        dispatch(gameSetFullscreen(true));
       }
     } catch (error) {
       console.error('Ошибка при переключении полноэкранного режима:', error);
@@ -27,7 +27,7 @@ export function useFullscreen() {
   useEffect(() => {
     const handleFullscreenChange = () => {
       const isCurrentlyFullscreen = FullscreenService.isFullscreen();
-      dispatch(gameToggleFullscreen(isCurrentlyFullscreen));
+      dispatch(gameSetFullscreen(isCurrentlyFullscreen));
     };
 
     const cleanup = FullscreenService.addEventListener(handleFullscreenChange);
