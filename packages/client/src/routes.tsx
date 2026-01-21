@@ -13,8 +13,6 @@ import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
-import { ROUTE } from './constants/ROUTE';
-import { Component } from 'react';
 import { Forum } from './pages/Forum/pages/Forum';
 import { ForumNew } from './pages/Forum/pages/NewPost';
 import { ForumDiscussion } from './pages/Forum/pages/Discussion';
@@ -62,18 +60,18 @@ export const routes = [
     path: ROUTE.ERROR_400,
     Component: Error400Page,
     fetchData: initError400Page,
+  },
+  {
     path: ROUTE.ERROR_500,
     Component: Error500Page,
     fetchData: initError500Page,
   },
   {
-    path: '*',
     path: ROUTE.LEADERBOARD,
     Component: LeaderboardPage,
     fetchData: initLeaderboardPage,
   },
   {
-    path: '*',
     path: ROUTE.USER,
     Component: ProfilePage,
     fetchData: initProfilePage,
