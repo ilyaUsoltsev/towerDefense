@@ -9,4 +9,6 @@ export enum ROUTE {
   FORUM = '/forum',
   FORUM_NEW = '/forum/new',
   FORUM_TOPIC = '/forum/topic',
+  ERROR_400 = '/400',
+  ERROR_500 = '/500',
 }

@@ -1,16 +1,48 @@
-import { useSelector } from '../../store';
-import { fetchUserThunk, selectUser } from '../../slices/userSlice';
+import {
+  fetchUserThunk,
+  selectIsLoading,
+  selectUser,
+} from '../../slices/userSlice';
 import { TextInput } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
 import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
 import { Field } from 'react-final-form';
 import SectionLog from '../../components/SectionLog';
+import { useAuth } from '../../hooks/useAuth';
+import { LoginRequestData } from '../../api/type';
+import Loader from '../../components/Loader';
+import ErrorText from '../../components/ErrorText';
+import { ROUTE } from '../../constants/ROUTE';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useSelector } from '../../store';
 
 export const LoginPage = () => {
-  const user = useSelector(selectUser);
+  const { checkLoginUser, login, isLoading, error } = useAuth();
+  const userData = useSelector(selectUser);
+  const [hasAttemptedAuthCheck, setHasAttemptedAuthCheck] = useState(false);
+  // Читаем данные пользователя из глобального state
+
+  const navigate = useNavigate(); // Hook для навигации
+
+  // Читаем данные пользователя из глобального state
   usePage({ initPage: initLoginPage });
-  const validate = (values: Record<string, unknown>) => {
+
+  useEffect(() => {
+    if (!hasAttemptedAuthCheck) {
+      checkLoginUser(); // Инициируем проверку
+      setHasAttemptedAuthCheck(true);
+    }
+  }, [checkLoginUser, hasAttemptedAuthCheck]);
+
+  useEffect(() => {
+    if (!isLoading && hasAttemptedAuthCheck && userData) {
+      navigate(ROUTE.ROOT, { replace: true });
+    }
+  }, [isLoading, hasAttemptedAuthCheck, userData, navigate]);
+
+  const validate = (values: LoginRequestData) => {
     const errors: Record<string, string> = {};
 
     if (!values.login) {
@@ -25,16 +57,19 @@ export const LoginPage = () => {
   };
 
   const handleSubmit = (data: Record<string, unknown>) => {
+    login(data as LoginRequestData);
     console.log('Валидация');
     console.log('Данные формы:', data);
   };
   return (
     <SectionLog>
+      <Loader isLoading={isLoading}></Loader>
       <FormLog
         validate={validate}
         onSubmit={handleSubmit}
         text="Войти"
-        titleLink="Нет аккаунта ?">
+        titleLink="Нет аккаунта ?"
+        hrefLink={ROUTE.REGISTER}>
         <Field name="login">
           {({ input, meta }) => (
             <TextInput
@@ -66,13 +101,19 @@ export const LoginPage = () => {
             />
           )}
         </Field>
+        <ErrorText>{error}</ErrorText>
       </FormLog>
     </SectionLog>
   );
 };
 
 export const initLoginPage = async ({ dispatch, state }: PageInitArgs) => {
-  if (!selectUser(state)) {
-    return dispatch(fetchUserThunk());
+  const user = selectUser(state);
+  if (!user) {
+    // Только если нет пользователя И не идёт загрузка
+    const isLoading = selectIsLoading(state);
+    if (!isLoading) {
+      return dispatch(fetchUserThunk());
+    }
   }
 };

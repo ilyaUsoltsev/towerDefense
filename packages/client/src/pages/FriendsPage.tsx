@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 
 import { useSelector } from '../store';
-import { Header } from '../components/Header';
+import Header from '../components/Header';
 import {
   fetchFriendsThunk,
   selectFriends,
@@ -32,7 +32,7 @@ export const FriendsPage = () => {
         <>
           <h3>Информация о пользователе:</h3>{' '}
           <p>
-            {user.name} {user.secondName}
+            {user.first_name} {user.second_name}
           </p>
         </>
       ) : (
@@ -43,8 +43,8 @@ export const FriendsPage = () => {
       ) : (
         <ul>
           {friends.map(friend => (
-            <li key={friend.name}>
-              {friend.name} {friend.secondName}
+            <li key={friend.first_name}>
+              {friend.first_name} {friend.second_name}
             </li>
           ))}
         </ul>
