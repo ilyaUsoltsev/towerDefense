@@ -12,7 +12,9 @@ import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
-import { ROUTE } from './constants/ROUTE';
+import { Forum } from './pages/Forum/pages/Forum';
+import { ForumNew } from './pages/Forum/pages/NewPost';
+import { ForumDiscussion } from './pages/Forum/pages/Discussion';
 
 export type PageInitContext = {
   clientToken?: string;
@@ -77,5 +79,17 @@ export const routes = [
     path: ROUTE.ANY,
     element: <NotFoundPage />,
     fetchData: initNotFoundPage,
+  },
+  {
+    path: ROUTE.FORUM,
+    Component: Forum,
+  },
+  {
+    path: ROUTE.FORUM_NEW,
+    Component: ForumNew,
+  },
+  {
+    path: ROUTE.FORUM_TOPIC,
+    Component: ForumDiscussion,
   },
 ];

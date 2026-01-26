@@ -1,0 +1,60 @@
+.topics {
+  height: 80%;
+  background: none;
+  margin-top: 1.3vh;
+  padding-bottom: 5vh;
+  justify-content: start;
+  overflow-y: scroll;
+  overflow-x: visible;
+  mask-image: linear-gradient(to top, transparent, white 10%);
+}
+.topics::-webkit-scrollbar {
+  display: none;
+}
+.topic {
+  --elements-rad: var(--g-border-radius-xl);
+  box-sizing: border-box;
+  width: 100%;
+  height: 8vh;
+  border-radius: calc(var(--elements-rad) + 1vh);
+  background: var(--g-color-private-blue-50-solid);
+  margin-bottom: 1vh;
+  padding: 1vh;
+  transition: 0.3s;
+}
+.topic:hover {
+  background: var(--g-color-private-blue-200-solid);
+  transform: scale(0.98);
+}
+.topic_image {
+  --size: 4vh;
+  margin-right: 1.3vh;
+  padding: 1vh;
+  background: var(--g-color-text-primary);
+  border-radius: var(--elements-rad);
+}
+.topic_image img {
+  width: var(--size);
+  height: var(--size);
+  object-fit: contain;
+}
+.topic_header {
+  box-sizing: border-box;
+  width: fit-content;
+  margin-right: auto;
+  padding: 0 1vw;
+  gap: 0.5vh;
+}
+.topic_header p {
+  width: 100%;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.last_activity {
+  white-space: nowrap;
+  width: fit-content;
+  margin: 0 5vh;
+}

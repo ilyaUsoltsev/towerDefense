@@ -1,0 +1,120 @@
+* {
+  --ld-theme: var(--g-color-base-background);
+  --theme-color: var(--g-color-base-brand);
+  --theme-color-hover: var(--g-color-base-brand-hover);
+  box-sizing: border-box;
+  font-family: var(--g-text-body-font-family);
+}
+.flex_row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.flex_col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.blur_layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  mask-image: linear-gradient(to right, white, transparent 25% 75%, white);
+  pointer-events: none;
+  z-index: 999;
+}
+.hidden {
+  display: none;
+}
+
+.forum {
+  --children-width: 60%;
+  --borrad: 2vh;
+  height: 100%;
+  width: 100%;
+  background: url(/tower-defence.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  justify-content: end;
+  align-items: center;
+}
+
+.forum_header {
+  --horizontal-offset: 2vw;
+  position: relative;
+  width: var(--children-width);
+  height: 13vh;
+  background: var(--ld-theme);
+  box-shadow: 0 0 15vh gray;
+  border-radius: var(--borrad);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding-left: var(--horizontal-offset);
+  overflow: hidden;
+  justify-content: space-between;
+  z-index: 0;
+}
+.forum_header div.flex_col {
+  gap: 1vh;
+}
+.forum_header_inline_image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 33%;
+  min-height: 100%;
+  height: auto;
+  transform: translatey(-17%);
+  mask-image: linear-gradient(to right, transparent, white 50%);
+}
+
+.forum_header_image {
+  position: absolute;
+  top: 50%;
+  right: 11%;
+  transform: translateY(-50%);
+  width: auto;
+  height: 40%;
+  filter: drop-shadow(0 0 5vh var(--theme-color));
+}
+.forum_header_image:hover {
+  cursor: pointer;
+}
+
+.forum_body {
+  --elements-rad: var(--g-border-radius-xl);
+  --blur: 10px;
+  width: var(--children-width);
+  height: 65%;
+  margin-top: 1.2vh;
+  padding: 0 2vh;
+  border-top-left-radius: var(--borrad);
+  border-top-right-radius: var(--borrad);
+  background: var(--ld-theme);
+  overflow: hidden;
+  z-index: 1;
+  /* background: var(--g-color-private-yellow-200);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur)); */
+}
+.body_header {
+  width: 100%;
+  height: fit-content;
+  gap: 0.7vw;
+  padding: 2vh 0;
+  margin-bottom: 1.6vh;
+  justify-content: space-between;
+}
+.topic_search {
+  padding: 0.8vh 0.6vw;
+  border: solid 1.5px lightgray;
+  border-radius: var(--elements-rad);
+  font-size: small;
+  outline: none;
+}
