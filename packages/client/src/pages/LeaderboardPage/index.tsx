@@ -1,6 +1,6 @@
 import { Table } from '@gravity-ui/uikit';
 import { useSelector } from '../../store';
-import { Header } from '../../components/Header';
+import Header from '../../components/Header';
 import { PageHelmet } from '../../components/PageHelmet';
 import { fetchUserThunk, selectUser } from '../../slices/userSlice';
 import { PageInitArgs } from '../../routes';
