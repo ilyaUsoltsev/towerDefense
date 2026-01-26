@@ -12,7 +12,6 @@ import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
-import { ROUTE } from './constants/ROUTE';
 
 export type PageInitContext = {
   clientToken?: string;
