@@ -5,6 +5,18 @@ const imagesConfig = [
   '/freeze.png',
   '/rocket.png',
   '/sniper.png',
+  '/mapBase.png',
+  '/mapBorder.png',
+  '/gameStart.png',
+  '/gameFinish.png',
+  '/path.png',
+  '/pointer.png',
+  '/boss/humanoid.png',
+  '/boss/golem.png',
+  '/boss/skeleton.png',
+  '/soldier/black.png',
+  '/soldier/purple.png',
+  '/soldier/blue.png',
 ] as const;
 
 export type ImageKey = typeof imagesConfig[number];
