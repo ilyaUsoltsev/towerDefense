@@ -7,7 +7,6 @@ import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 import { initError400Page, Error400Page } from './pages/Error400';
 
-import { ROUTE } from './constants/ROUTE';
 import { initError500Page, Error500Page } from './pages/Error500';
 import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
@@ -16,6 +15,7 @@ import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
 import { Forum } from './pages/Forum/pages/Forum';
 import { ForumNew } from './pages/Forum/pages/NewPost';
 import { ForumDiscussion } from './pages/Forum/pages/Discussion';
+import { ROUTE } from './constants/ROUTE';
 
 export type PageInitContext = {
   clientToken?: string;
