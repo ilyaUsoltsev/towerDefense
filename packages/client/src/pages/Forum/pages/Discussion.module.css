@@ -61,6 +61,11 @@
   width: 70%;
   padding-bottom: 6.8vh;
 }
+.comments_filler {
+  margin-top: 10vh;
+  color: var(--g-color-text-hint);
+  text-align: center;
+}
 
 .vertical_separator,
 .write_comment_section {

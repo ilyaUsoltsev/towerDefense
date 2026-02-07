@@ -4,18 +4,16 @@ import { ROUTE } from '../../../constants/ROUTE';
 import ux from '../main.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import bodyUx from './NewPost.module.css';
+import { PageHelmet } from '../../../components/PageHelmet';
 
 export const ForumNew = () => {
   const navigate = useNavigate();
   return (
     <div className={`${ux.forum} ${ux.flex_col}`}>
-      <Helmet>
-        <title>Новая тема</title>
-        <meta
-          name="description"
-          content="Create a new forum post and start a discussion."
-        />
-      </Helmet>
+      <PageHelmet
+        title="Новая тема"
+        description="Create a new forum post and start a discussion."
+      />
 
       <div className={ux.blur_layer}></div>
 

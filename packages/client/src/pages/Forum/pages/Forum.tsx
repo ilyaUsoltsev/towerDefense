@@ -5,6 +5,7 @@ import ux from '../main.module.css';
 import bodyUx from './forum.module.css';
 import { Link } from 'react-router-dom';
 import { ForumTopic, Topic } from '../components/topic';
+import { PageHelmet } from '../../../components/PageHelmet';
 
 interface ForumProps {
   topics?: ForumTopic[] | null;
@@ -24,13 +25,10 @@ export const Forum = ({ topics }: ForumProps) => {
   };
   return (
     <div className={`${ux.forum} ${ux.flex_col}`}>
-      <Helmet>
-        <title>Форум</title>
-        <meta
-          name="description"
-          content="This is forum. Create, read, and comment on content."
-        />
-      </Helmet>
+      <PageHelmet
+        title="Форум"
+        description="This is forum. Create, read, and comment on content."
+      />
 
       <div className={ux.blur_layer}></div>
 

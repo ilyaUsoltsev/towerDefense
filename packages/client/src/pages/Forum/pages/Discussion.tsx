@@ -1,11 +1,11 @@
-import { Helmet } from 'react-helmet';
-import { Button, ButtonView, TextArea, TextInput } from '@gravity-ui/uikit';
+import { Button, TextArea } from '@gravity-ui/uikit';
 import { ROUTE } from '../../../constants/ROUTE';
 import ux from '../main.module.css';
 import { Link } from 'react-router-dom';
 import discUx from './Discussion.module.css';
 import { Comment, CommentProps } from '../components/comment';
 import { useState } from 'react';
+import { PageHelmet } from '../../../components/PageHelmet';
 
 export const ForumDiscussion = () => {
   const [commentText, setCommentText] = useState('');
@@ -33,7 +33,9 @@ export const ForumDiscussion = () => {
       commentText: 'Just a normal comment text content',
     },
   ];
+
   const [comments, setComments] = useState<CommentProps[]>(demoComments);
+  console.log(comments);
 
   const [sendCommentBtnState, updateSendCommentBtnState] = useState(false);
 
@@ -50,13 +52,10 @@ export const ForumDiscussion = () => {
 
   return (
     <div className={`${ux.forum} ${ux.flex_col}`}>
-      <Helmet>
-        <title>Discussion</title>
-        <meta
-          name="description"
-          content="Read discussion and leave comments."
-        />
-      </Helmet>
+      <PageHelmet
+        title="Тема"
+        description="Read discussion and leave comments."
+      />
 
       <div className={ux.blur_layer}></div>
 
@@ -85,13 +84,20 @@ export const ForumDiscussion = () => {
             <h2>Комментарии</h2>
             <div className={`${ux.flex_row} ${discUx.comments_wrapper}`}>
               <div className={discUx.comments_section}>
-                {comments.map(comment => (
-                  <Comment
-                    avatar={comment.avatar}
-                    userLogin={comment.userLogin}
-                    commentText={comment.commentText}
-                  />
-                ))}
+                {comments.length === 0 ? (
+                  <div className={discUx.comments_filler}>
+                    Здесь пока нет комментариев
+                  </div>
+                ) : (
+                  comments.map(comment => (
+                    <Comment
+                      key={comment.commentText.length}
+                      avatar={comment.avatar}
+                      userLogin={comment.userLogin}
+                      commentText={comment.commentText}
+                    />
+                  ))
+                )}
               </div>
 
               <div className={discUx.vertical_separator}></div>
