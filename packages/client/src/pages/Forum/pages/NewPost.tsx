@@ -2,14 +2,19 @@ import { Helmet } from 'react-helmet';
 import { Button, TextArea, TextInput } from '@gravity-ui/uikit';
 import { ROUTE } from '../../../constants/ROUTE';
 import ux from '../main.module.css';
-import { Outlet, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import bodyUx from './NewPost.module.css';
 
 export const ForumNew = () => {
+  const navigate = useNavigate();
   return (
     <div className={`${ux.forum} ${ux.flex_col}`}>
       <Helmet>
         <title>Новая тема</title>
+        <meta
+          name="description"
+          content="Create a new forum post and start a discussion."
+        />
       </Helmet>
 
       <div className={ux.blur_layer}></div>
@@ -41,11 +46,9 @@ export const ForumNew = () => {
               Назад
             </Button>
           </Link>
-          <Link to={ROUTE.FORUM}>
-            <Button view="action" size="l">
-              Опубликовать
-            </Button>
-          </Link>
+          <Button view="action" size="l" onClick={() => navigate(ROUTE.FORUM)}>
+            Опубликовать
+          </Button>
         </div>
         <div className={`${bodyUx.topic_fields}`}>
           <h3>Заголовок</h3>
@@ -65,8 +68,6 @@ export const ForumNew = () => {
             hasClear
           />
         </div>
-
-        <Outlet />
       </div>
     </div>
   );

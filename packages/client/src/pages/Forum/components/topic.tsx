@@ -1,5 +1,7 @@
-import ux from '../../pages/Forum/main.module.css';
-import bodyUx from '../../pages/Forum/pages/forum.module.css';
+import { useNavigate } from 'react-router-dom';
+import ux from '../main.module.css';
+import bodyUx from '../pages/Forum.module.css';
+import { ROUTE } from '../../../constants/ROUTE';
 
 export interface ForumTopic {
   title: string;
@@ -14,8 +16,14 @@ export const Topic = ({
   message,
   lastActivityMinutes = 0,
 }: ForumTopic) => {
+  const nav = useNavigate(); // временная мера чтобы переходить на страницу темы
+
   return (
-    <div className={`${bodyUx.topic} ${ux.flex_row}`}>
+    <div
+      className={`${bodyUx.topic} ${ux.flex_row}`}
+      onClick={() => {
+        nav(ROUTE.FORUM_TOPIC);
+      }}>
       <div className={bodyUx.topic_image}>
         <img src={image} alt="topic image" />
       </div>
@@ -24,10 +32,10 @@ export const Topic = ({
         <p>{message}</p>
       </div>
 
-      <span className={bodyUx.last_activity}>
+      <div className={bodyUx.last_activity}>
         <h4>Last Activity:</h4>
         <p>{lastActivityMinutes} minutes ago</p>
-      </span>
+      </div>
     </div>
   );
 };

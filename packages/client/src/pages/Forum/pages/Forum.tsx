@@ -3,11 +3,11 @@ import { Button } from '@gravity-ui/uikit';
 import { ROUTE } from '../../../constants/ROUTE';
 import ux from '../main.module.css';
 import bodyUx from './forum.module.css';
-import { Outlet, Link } from 'react-router-dom';
-import { ForumTopic, Topic } from '../../../components/ForumTopic';
+import { Link } from 'react-router-dom';
+import { ForumTopic, Topic } from '../components/topic';
 
 interface ForumProps {
-  topics: ForumTopic[] | null;
+  topics?: ForumTopic[] | null;
 }
 
 export const Forum = ({ topics }: ForumProps) => {
@@ -26,6 +26,10 @@ export const Forum = ({ topics }: ForumProps) => {
     <div className={`${ux.forum} ${ux.flex_col}`}>
       <Helmet>
         <title>Форум</title>
+        <meta
+          name="description"
+          content="This is forum. Create, read, and comment on content."
+        />
       </Helmet>
 
       <div className={ux.blur_layer}></div>
@@ -80,7 +84,6 @@ export const Forum = ({ topics }: ForumProps) => {
             lastActivityMinutes={Math.floor(Math.random() * 60)}
           />
         </div>
-        <Outlet />
       </div>
     </div>
   );

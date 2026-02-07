@@ -1,8 +1,7 @@
-import ux from '../../pages/Forum/main.module.css';
+import ux from '../main.module.css';
 import comUx from './Comment.module.css';
 
 export interface CommentProps {
-  id?: number;
   avatar?: string;
   userLogin?: string;
   commentText: string;

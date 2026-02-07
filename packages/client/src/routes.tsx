@@ -83,14 +83,26 @@ export const routes = [
   },
   {
     path: ROUTE.FORUM,
-    Component: Forum,
+    element: (
+      <ProtectedRoute>
+        <Forum />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTE.FORUM_NEW,
-    Component: ForumNew,
+    element: (
+      <ProtectedRoute>
+        <ForumNew />
+      </ProtectedRoute>
+    ),
   },
   {
     path: ROUTE.FORUM_TOPIC,
-    Component: ForumDiscussion,
+    element: (
+      <ProtectedRoute>
+        <ForumDiscussion />
+      </ProtectedRoute>
+    ),
   },
 ];

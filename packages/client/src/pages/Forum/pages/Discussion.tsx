@@ -1,52 +1,49 @@
 import { Helmet } from 'react-helmet';
-import { Button, TextArea, TextInput } from '@gravity-ui/uikit';
+import { Button, ButtonView, TextArea, TextInput } from '@gravity-ui/uikit';
 import { ROUTE } from '../../../constants/ROUTE';
 import ux from '../main.module.css';
-import { Outlet, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import discUx from './Discussion.module.css';
-import { Comment, CommentProps } from '../../../components/ForumTopicComment';
+import { Comment, CommentProps } from '../components/comment';
 import { useState } from 'react';
 
 export const ForumDiscussion = () => {
   const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState<CommentProps[]>([
+
+  const demoComments = [
     {
       // default clear comment
-      id: 1,
       commentText: 'Comment content...',
     },
     {
       // anonymoius comment
-      id: 2,
       avatar: '/logo1.png',
       commentText: 'Comment text content...',
     },
     {
       // comment with long text
-      id: 3,
       avatar: '/logo1.png',
       userLogin: 'RandomGuy111',
       commentText:
         'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui porro nesciunt delectus, harum laboriosam laborum obcaecati numquam sed asperiores aut. Obcaecati consequatur nostrum reiciendis harum, sint reprehenderit impedit fuga quam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui porro nesciunt delectus, harum laboriosam laborum obcaecati numquam sed asperiores aut. Obcaecati consequatur nostrum reiciendis harum, sint reprehenderit impedit fuga quam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui porro nesciunt delectus, harum laboriosam laborum obcaecati numquam sed asperiores aut. Obcaecati consequatur nostrum reiciendis harum, sint reprehenderit impedit fuga quam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui porro nesciunt delectus, harum laboriosam laborum obcaecati numquam sed asperiores aut. Obcaecati consequatur nostrum reiciendis harum, sint reprehenderit impedit fuga quam.',
     },
     {
-      id: 4,
       avatar: '/logo2.png',
       userLogin: 'Killer2012',
       commentText: 'Just a normal comment text content',
     },
-  ]);
+  ];
+  const [comments, setComments] = useState<CommentProps[]>(demoComments);
+
+  const [sendCommentBtnState, updateSendCommentBtnState] = useState(false);
 
   function sendComment() {
-    if (!commentText.trim()) return;
+    if (!commentText.trim()) {
+      updateSendCommentBtnState(true);
+      return;
+    }
 
-    setComments(prev => [
-      {
-        id: Date.now(),
-        commentText: commentText,
-      },
-      ...prev,
-    ]);
+    setComments(prev => [{ commentText: commentText }, ...prev]);
 
     setCommentText('');
   }
@@ -54,7 +51,11 @@ export const ForumDiscussion = () => {
   return (
     <div className={`${ux.forum} ${ux.flex_col}`}>
       <Helmet>
-        <title>New Post</title>
+        <title>Discussion</title>
+        <meta
+          name="description"
+          content="Read discussion and leave comments."
+        />
       </Helmet>
 
       <div className={ux.blur_layer}></div>
@@ -86,7 +87,6 @@ export const ForumDiscussion = () => {
               <div className={discUx.comments_section}>
                 {comments.map(comment => (
                   <Comment
-                    key={comment.id}
                     avatar={comment.avatar}
                     userLogin={comment.userLogin}
                     commentText={comment.commentText}
@@ -106,17 +106,22 @@ export const ForumDiscussion = () => {
                   maxRows={18}
                   hasClear
                   value={commentText}
-                  onChange={e => setCommentText(e.target.value)}
+                  onChange={e => {
+                    updateSendCommentBtnState(false);
+                    setCommentText(e.target.value);
+                  }}
                 />
-                <Button view="action" size="l" onClick={sendComment}>
+                <Button
+                  view="action"
+                  size="l"
+                  onClick={sendComment}
+                  disabled={sendCommentBtnState}>
                   Отправить
                 </Button>
               </div>
             </div>
           </div>
         </div>
-
-        <Outlet />
       </div>
     </div>
   );
