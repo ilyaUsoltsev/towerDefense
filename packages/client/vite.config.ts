@@ -18,7 +18,6 @@ export default defineConfig({
   },
   ssr: {
     format: 'cjs',
-    noExternal: ['@gravity-ui/uikit'],
   },
   plugins: [react()],
 });
