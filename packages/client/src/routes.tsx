@@ -1,5 +1,4 @@
 import { AppDispatch, RootState } from './store';
-import { ROUTE } from './constants/ROUTE';
 
 import { initNotFoundPage, NotFoundPage } from './pages/ErrorsPage/NotFound';
 import { GamePage, initGamePage } from './pages/Game';

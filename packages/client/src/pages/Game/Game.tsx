@@ -2,16 +2,12 @@ import { useEffect, useRef } from 'react';
 import GameEngine from './core/gameEngine';
 import { GameEngineAdapter } from './adapters/GameEngineAdapter';
 import { useStore } from '../../store';
-import { NotificationService } from '../../utils/NotificationService';
-import { fullscreenService } from '../../utils/FullscreenService';
 
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const store = useStore();
 
   useEffect(() => {
-    NotificationService.requestPermission().catch(console.warn);
-
     if (!canvasRef.current) {
       return;
     }
@@ -30,10 +26,6 @@ const Game = () => {
       adapter.removeSubscriptions();
       gameEngine.stop();
       unsubscribeFromStore();
-
-      if (fullscreenService.isFullscreen()) {
-        fullscreenService.exitFullscreen().catch(console.warn);
-      }
     };
   }, []);
 
