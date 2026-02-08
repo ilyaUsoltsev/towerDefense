@@ -31,6 +31,7 @@ export interface UserState {
   waveNumber: number | null;
   pendingSellCannonId: string | null;
   pendingUpgradeCannonId: string | null;
+  isFullscreen: boolean;
 }
 
 const initialState: UserState = {
@@ -47,6 +48,7 @@ const initialState: UserState = {
   waveNumber: null,
   pendingSellCannonId: null,
   pendingUpgradeCannonId: null,
+  isFullscreen: false,
 };
 
 export const gameSlice = createSlice({
@@ -108,6 +110,9 @@ export const gameSlice = createSlice({
       state.result = action.payload;
       state.gameState = GAME_STATE.END;
     },
+    gameSetFullscreen: (state, action: PayloadAction<boolean>) => {
+      state.isFullscreen = action.payload;
+    },
   },
 });
 
@@ -125,6 +130,10 @@ export const {
   gameClearUpgradeCommand,
   gameSetState,
   gameOver,
+  gameSetFullscreen,
 } = gameSlice.actions;
+
+export const selectIsFullscreen = (state: { game: UserState }) =>
+  state.game.isFullscreen;
 
 export default gameSlice.reducer;
