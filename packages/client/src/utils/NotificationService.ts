@@ -1,7 +1,37 @@
+type NotificationType = 'low-hp' | 'game-over';
+
+interface NotificationConfig {
+  title: string;
+  body: string;
+}
+
+type NotificationPayload =
+  | { type: 'low-hp'; hp: number }
+  | { type: 'game-over'; isWin: boolean };
+
+const NOTIFICATION_TEMPLATES: Record<
+  NotificationType,
+  (payload: never) => NotificationConfig
+> = {
+  'low-hp': (payload: { hp: number }) => ({
+    title: '⚠️ Низкий уровень здоровья!',
+    body: `Осталось всего ${payload.hp} жизней! Срочно требуется ваше внимание!`,
+  }),
+  'game-over': (payload: { isWin: boolean }) =>
+    payload.isWin
+      ? { title: '🎉 Победа!', body: 'Поздравляем! Вы прошли все волны!' }
+      : { title: '💀 Поражение', body: 'Игра окончена. Попробуйте еще раз!' },
+};
+
 export class NotificationService {
-  private static permissionGranted = false;
-  private static lastNotificationTime: Record<string, number> = {};
+  private static lastNotificationTime: Partial<
+    Record<NotificationType, number>
+  > = {};
   private static readonly RATE_LIMIT_MS = 60000;
+
+  private static get hasPermission(): boolean {
+    return this.isSupported() && Notification.permission === 'granted';
+  }
 
   static isSupported(): boolean {
     return 'Notification' in window;
@@ -14,21 +44,31 @@ export class NotificationService {
 
     try {
       const permission = await Notification.requestPermission();
-      this.permissionGranted = permission === 'granted';
-      return this.permissionGranted;
+      return permission === 'granted';
     } catch (error) {
       console.warn('Ошибка при запросе разрешения на уведомления:', error);
       return false;
     }
   }
 
-  private static canNotify(type: string): boolean {
-    if (!this.permissionGranted || Notification.permission !== 'granted') {
+  static notify(payload: NotificationPayload): void {
+    if (!this.canNotify(payload.type)) {
+      return;
+    }
+
+    const template = NOTIFICATION_TEMPLATES[payload.type];
+    const { title, body } = template(payload as never);
+
+    this.showNotification(title, { body, tag: payload.type });
+  }
+
+  private static canNotify(type: NotificationType): boolean {
+    if (!this.hasPermission) {
       return false;
     }
 
     const now = Date.now();
-    const lastTime = this.lastNotificationTime[type] || 0;
+    const lastTime = this.lastNotificationTime[type] ?? 0;
     if (now - lastTime < this.RATE_LIMIT_MS) {
       return false;
     }
@@ -39,12 +79,8 @@ export class NotificationService {
 
   private static showNotification(
     title: string,
-    options?: NotificationOptions
+    options: NotificationOptions
   ): void {
-    if (!this.isSupported()) {
-      return;
-    }
-
     try {
       const notification = new Notification(title, options);
 
@@ -58,35 +94,6 @@ export class NotificationService {
       };
     } catch (error) {
       console.warn('Ошибка при показе уведомления:', error);
-    }
-  }
-
-  static notifyLowHP(hp: number): void {
-    if (!this.canNotify('low-hp')) {
-      return;
-    }
-
-    this.showNotification('⚠️ Низкий уровень здоровья!', {
-      body: `Осталось всего ${hp} жизней! Срочно требуется ваше внимание!`,
-      tag: 'low-hp',
-    });
-  }
-
-  static notifyGameOver(isWin: boolean): void {
-    if (!this.canNotify('game-over')) {
-      return;
-    }
-
-    if (isWin) {
-      this.showNotification('🎉 Победа!', {
-        body: 'Поздравляем! Вы прошли все волны!',
-        tag: 'game-over',
-      });
-    } else {
-      this.showNotification('💀 Поражение', {
-        body: 'Игра окончена. Попробуйте еще раз!',
-        tag: 'game-over',
-      });
     }
   }
 }

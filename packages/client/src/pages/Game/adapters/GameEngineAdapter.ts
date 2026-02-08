@@ -80,13 +80,13 @@ export class GameEngineAdapter {
     if (NotificationService.isSupported()) {
       const unsubHpNotif = eventBus.on('redux:setPlayerHp', ({ hp }) => {
         if (hp <= GameConfig.lowHpThreshold && hp > 0) {
-          NotificationService.notifyLowHP(hp);
+          NotificationService.notify({ type: 'low-hp', hp });
         }
       });
       this.unsubSink.push(unsubHpNotif);
 
       const unsubGameOverNotif = eventBus.on('redux:gameOver', ({ isWin }) => {
-        NotificationService.notifyGameOver(isWin);
+        NotificationService.notify({ type: 'game-over', isWin });
       });
       this.unsubSink.push(unsubGameOverNotif);
     }

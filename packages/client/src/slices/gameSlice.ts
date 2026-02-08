@@ -133,4 +133,7 @@ export const {
   gameSetFullscreen,
 } = gameSlice.actions;
 
+export const selectIsFullscreen = (state: { game: UserState }) =>
+  state.game.isFullscreen;
+
 export default gameSlice.reducer;

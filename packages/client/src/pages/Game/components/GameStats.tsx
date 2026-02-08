@@ -6,7 +6,7 @@ import {
 } from '@gravity-ui/icons';
 import { wavesConfig } from '../constants/waves-config';
 import GameStatsItem from './GameStatsItem';
-import { useFullscreen } from '../../../hooks/useFullscreen';
+import { useFullscreenToggle } from '../../../hooks/useFullscreenToggle';
 
 interface GameStatsProps {
   waveNumber: number | null;
@@ -15,7 +15,7 @@ interface GameStatsProps {
 }
 
 export const GameStats: FC<GameStatsProps> = ({ waveNumber, lives, money }) => {
-  const { isFullscreen, toggleFullscreen, isSupported } = useFullscreen();
+  const { isFullscreen, toggleFullscreen, isSupported } = useFullscreenToggle();
 
   return (
     <div className="flex justify-around">

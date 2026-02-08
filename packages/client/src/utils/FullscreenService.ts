@@ -3,8 +3,45 @@ import {
   HTMLElementWithFullscreen,
 } from './webApiTypes';
 
-export class FullscreenService {
-  static isSupported(): boolean {
+export interface IFullscreenService {
+  isSupported(): boolean;
+  requestFullscreen(element: HTMLElement): Promise<void>;
+  exitFullscreen(): Promise<void>;
+  isFullscreen(): boolean;
+  subscribe(handler: () => void): () => void;
+}
+
+const FULLSCREEN_EVENTS = [
+  'fullscreenchange',
+  'webkitfullscreenchange',
+  'mozfullscreenchange',
+  'MSFullscreenChange',
+];
+
+function getRequestMethod(
+  elem: HTMLElementWithFullscreen
+): (() => Promise<void>) | undefined {
+  return (
+    elem.requestFullscreen ??
+    elem.webkitRequestFullscreen ??
+    elem.mozRequestFullScreen ??
+    elem.msRequestFullscreen
+  );
+}
+
+function getExitMethod(
+  doc: DocumentWithFullscreen
+): (() => Promise<void>) | undefined {
+  return (
+    doc.exitFullscreen ??
+    doc.webkitExitFullscreen ??
+    doc.mozCancelFullScreen ??
+    doc.msExitFullscreen
+  );
+}
+
+export class FullscreenService implements IFullscreenService {
+  isSupported(): boolean {
     const doc = document as DocumentWithFullscreen;
     return (
       doc.fullscreenEnabled ||
@@ -14,49 +51,23 @@ export class FullscreenService {
     );
   }
 
-  static async requestFullscreen(element: HTMLElement): Promise<void> {
-    const elem = element as HTMLElementWithFullscreen;
-
-    try {
-      if (elem.requestFullscreen) {
-        await elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) {
-        await elem.webkitRequestFullscreen();
-      } else if (elem.mozRequestFullScreen) {
-        await elem.mozRequestFullScreen();
-      } else if (elem.msRequestFullscreen) {
-        await elem.msRequestFullscreen();
-      } else {
-        throw new Error('Fullscreen API не поддерживается');
-      }
-    } catch (error) {
-      console.error('Ошибка при входе в полноэкранный режим:', error);
-      throw error;
+  async requestFullscreen(element: HTMLElement): Promise<void> {
+    const request = getRequestMethod(element as HTMLElementWithFullscreen);
+    if (!request) {
+      throw new Error('Fullscreen API не поддерживается');
     }
+    await request.call(element);
   }
 
-  static async exitFullscreen(): Promise<void> {
-    const doc = document as DocumentWithFullscreen;
-
-    try {
-      if (doc.exitFullscreen) {
-        await doc.exitFullscreen();
-      } else if (doc.webkitExitFullscreen) {
-        await doc.webkitExitFullscreen();
-      } else if (doc.mozCancelFullScreen) {
-        await doc.mozCancelFullScreen();
-      } else if (doc.msExitFullscreen) {
-        await doc.msExitFullscreen();
-      } else {
-        throw new Error('Fullscreen API не поддерживается');
-      }
-    } catch (error) {
-      console.error('Ошибка при выходе из полноэкранного режима:', error);
-      throw error;
+  async exitFullscreen(): Promise<void> {
+    const exit = getExitMethod(document as DocumentWithFullscreen);
+    if (!exit) {
+      throw new Error('Fullscreen API не поддерживается');
     }
+    await exit.call(document);
   }
 
-  static isFullscreen(): boolean {
+  isFullscreen(): boolean {
     const doc = document as DocumentWithFullscreen;
     return (
       !!doc.fullscreenElement ||
@@ -66,22 +77,17 @@ export class FullscreenService {
     );
   }
 
-  static addEventListener(handler: () => void): () => void {
-    const events = [
-      'fullscreenchange',
-      'webkitfullscreenchange',
-      'mozfullscreenchange',
-      'MSFullscreenChange',
-    ];
-
-    events.forEach(event => {
+  subscribe(handler: () => void): () => void {
+    FULLSCREEN_EVENTS.forEach(event => {
       document.addEventListener(event, handler);
     });
 
     return () => {
-      events.forEach(event => {
+      FULLSCREEN_EVENTS.forEach(event => {
         document.removeEventListener(event, handler);
       });
     };
   }
 }
+
+export const fullscreenService = new FullscreenService();
