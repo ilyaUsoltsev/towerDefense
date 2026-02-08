@@ -1,6 +1,5 @@
 import { Form } from 'react-final-form';
 import { Button, Card } from '@gravity-ui/uikit';
-import { User } from '../../slices/userSlice';
 import { FormField } from '../FormField';
 import {
   isNotEmpty,
@@ -9,6 +8,7 @@ import {
   VALIDATION_MESSAGES,
 } from '../../utils/validation';
 import styles from './ProfileForm.module.css';
+import { User } from '../../api/type';
 
 interface ProfileFormProps {
   user: User | null;

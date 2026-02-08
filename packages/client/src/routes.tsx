@@ -7,7 +7,6 @@ import { initMainPage, MainPage } from './pages/MainMenu';
 import { initRegisterPage, RegisterPage } from './pages/Register';
 import { initError400Page, Error400Page } from './pages/Error400';
 
-import { ROUTE } from './constants/ROUTE';
 import { initError500Page, Error500Page } from './pages/Error500';
 import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
