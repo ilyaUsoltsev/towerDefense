@@ -3,6 +3,7 @@ import { RootState } from '../store';
 import { SERVER_HOST } from '../constants';
 import { User, LoginRequestData, CreateUser, APIError } from '../api/type';
 import AuthApi from '../api/auth';
+import OauthApi from '../api/oauth';
 import { isApiError } from '../api/isApiError';
 
 export interface UserState {
@@ -18,6 +19,7 @@ const initialState: UserState = {
 };
 
 const authApi = new AuthApi();
+const oauthApi = new OauthApi();
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetchUserThunk',
@@ -51,6 +53,35 @@ export const loginThunk = createAsyncThunk(
       return userResult as User; // Возвращаем пользователя
     } catch (err) {
       return rejectWithValue({ reason: 'Произошла ошибка' } as APIError);
+    }
+  }
+);
+
+// Thunk для OAuth-входа через Яндекс
+export const oauthLoginThunk = createAsyncThunk(
+  'user/oauthLogin',
+  async (
+    { code, redirectUri }: { code: string; redirectUri: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const signInResult = await oauthApi.signIn(code, redirectUri);
+
+      if (isApiError(signInResult)) {
+        return rejectWithValue(signInResult as APIError);
+      }
+
+      const userResult = await authApi.me();
+
+      if (isApiError(userResult)) {
+        return rejectWithValue(userResult as APIError);
+      }
+
+      return userResult as User;
+    } catch (err) {
+      return rejectWithValue({
+        reason: 'Ошибка OAuth-авторизации',
+      } as APIError);
     }
   }
 );
@@ -134,6 +165,21 @@ export const userSlice = createSlice({
       .addCase(loginThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = (action.payload as APIError).reason || 'Ошибка входа';
+      })
+
+      // oauthLoginThunk
+      .addCase(oauthLoginThunk.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(oauthLoginThunk.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(oauthLoginThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          (action.payload as APIError).reason || 'Ошибка OAuth-авторизации';
       })
 
       // registerThunk

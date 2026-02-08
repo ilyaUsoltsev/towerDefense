@@ -1,15 +1,25 @@
 import { useNavigate } from 'react-router-dom';
-import { CreateUser, LoginRequestData, APIError } from '../api/type';
+import {
+  CreateUser,
+  LoginRequestData,
+  APIError,
+  OauthServiceIdResponse,
+} from '../api/type';
+import OauthApi from '../api/oauth';
+import { isApiError } from '../api/isApiError';
 import { ROUTE } from '../constants/ROUTE';
 import { useDispatch, useSelector } from '../store';
 import {
   checkUserThunk,
   loginThunk,
   logoutThunk,
+  oauthLoginThunk,
   registerThunk,
   selectError,
   selectIsLoading,
 } from '../slices/userSlice';
+
+const oauthApi = new OauthApi();
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -63,12 +73,37 @@ export const useAuth = () => {
     navigate(ROUTE.LOGIN, { replace: true });
   };
 
+  const oauthLogin = async (code: string) => {
+    const redirectUri = window.location.origin;
+    const result = await dispatch(oauthLoginThunk({ code, redirectUri }));
+
+    if (result.meta.requestStatus === 'fulfilled') {
+      navigate(ROUTE.ROOT, { replace: true });
+    }
+  };
+
+  const redirectToYandexOAuth = async () => {
+    const redirectUri = window.location.origin;
+    const result = await oauthApi.getServiceId(redirectUri);
+
+    if (isApiError(result)) {
+      return;
+    }
+
+    const serviceId = (result as OauthServiceIdResponse).service_id;
+    window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${serviceId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}`;
+  };
+
   return {
     login,
     register,
     logout,
     checkLoginUser,
+    oauthLogin,
+    redirectToYandexOAuth,
     isLoading,
-    error, // Теперь это состояние из стора
+    error,
   };
 };
