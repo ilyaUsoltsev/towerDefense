@@ -1,10 +1,17 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { SERVER_HOST } from '../constants';
-import { User, LoginRequestData, CreateUser, APIError } from '../api/type';
+import {
+  User,
+  LoginRequestData,
+  CreateUser,
+  APIError,
+  OauthServiceIdResponse,
+} from '../api/type';
 import AuthApi from '../api/auth';
 import OauthApi from '../api/oauth';
 import { isApiError } from '../api/isApiError';
+import { HttpClient } from '../utils/httpClient';
 
 export interface UserState {
   data: User | null;
@@ -18,8 +25,11 @@ const initialState: UserState = {
   error: null,
 };
 
-const authApi = new AuthApi();
-const oauthApi = new OauthApi();
+const httpClient = new HttpClient({
+  baseUrl: 'https://ya-praktikum.tech/api/v2',
+});
+const authApi = new AuthApi(httpClient);
+const oauthApi = new OauthApi(httpClient);
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetchUserThunk',
@@ -81,6 +91,26 @@ export const oauthLoginThunk = createAsyncThunk(
     } catch (err) {
       return rejectWithValue({
         reason: 'Ошибка OAuth-авторизации',
+      } as APIError);
+    }
+  }
+);
+
+// Thunk для получения service_id для OAuth
+export const getOauthServiceIdThunk = createAsyncThunk(
+  'user/getOauthServiceId',
+  async (redirectUri: string, { rejectWithValue }) => {
+    try {
+      const result = await oauthApi.getServiceId(redirectUri);
+
+      if (isApiError(result)) {
+        return rejectWithValue(result as APIError);
+      }
+
+      return result as OauthServiceIdResponse;
+    } catch (err) {
+      return rejectWithValue({
+        reason: 'Ошибка получения service_id',
       } as APIError);
     }
   }
