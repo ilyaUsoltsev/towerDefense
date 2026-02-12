@@ -5,6 +5,7 @@ import { Tile } from '../utils/types';
 import { eventBus } from '../utils/eventBus';
 import Player from '../entities/player';
 import { wavesConfig } from '../../constants/waves-config';
+import { SoundLib } from '../../../../audio/audio';
 
 class EnemyManager {
   enemies: Enemy[] = [];
@@ -155,6 +156,7 @@ class EnemyManager {
   }
 
   private handleEnemyDestroyed(enemy: Enemy) {
+    SoundLib.enemyDeath.play();
     this.player.addMoney(enemy.reward);
     this.player.addScore(enemy.maxHealth);
   }
