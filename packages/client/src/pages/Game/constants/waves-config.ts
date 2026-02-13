@@ -9,6 +9,8 @@ export type Wave = {
   reward: number;
 };
 
+const bosses = ['humanoidBoss', 'golemBoss', 'skeletonBoss'] as const;
+
 export const wavesConfig: readonly Wave[] = [
   {
     enemyType: 'normal',

@@ -3,14 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "dev:ssr": "yarn build:server && cross-env NODE_ENV=development EXTERNAL_SERVER_URL='http://localhost:3001' INTERNAL_SERVER_URL='http://localhost:3001' node server/index.js",
-    "build": "yarn build:server && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server",
+    "dev:server": "tsc --project tsconfig.server.json && cross-env NODE_ENV=development EXTERNAL_SERVER_URL='http://localhost:3001' INTERNAL_SERVER_URL='http://localhost:3001' node server/index.js",
+    "build": "tsc --project tsconfig.server.json && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server",
     "preview": "node server/index.js",
-    "lint": "tsc --noEmit && eslint .",
+    "lint": "eslint .",
     "lintfix": "eslint . --fix",
     "format": "prettier --write .",
-    "test": "jest ./",
-    "build:server": "tsc server/index.ts --module commonjs --esModuleInterop true --declaration"
+    "test": "jest ./"
   },
   "dependencies": {
     "@gravity-ui/uikit": "^7.28.0",

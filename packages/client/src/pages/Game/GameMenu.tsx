@@ -13,6 +13,7 @@ import {
 import { EffectsConfig } from './constants/effects-config';
 import { getFireFreq } from './utils/get-fire-freq';
 import { isUpgradable } from '../../slices/utils/is-upgradable';
+import { SoundLib } from '../../audio/audio';
 
 const GameMenu = () => {
   const selectedEntity = useSelector(state => state.game.selectedEntity);
@@ -39,7 +40,10 @@ const GameMenu = () => {
           <span
             key={cannonType}
             className="cursor-pointer"
-            onClick={() => chooseCannon(cannonType)}>
+            onClick={() => {
+              chooseCannon(cannonType);
+              SoundLib('click');
+            }}>
             <img
               src={CannonsConfig[cannonType].imagePath}
               alt={cannonType}
@@ -52,7 +56,12 @@ const GameMenu = () => {
         <Card className="p-2 flex-col gap-2">
           <p>{CannonsConfig[gameSelectedCannon].name}</p>
           <p>Урон: {CannonsConfig[gameSelectedCannon].damage}</p>
-          <p>Эффект: {EffectsConfig[gameSelectedCannon]?.name || 'Нет'}</p>
+          <p>
+            Эффект:{' '}
+            {EffectsConfig[gameSelectedCannon]
+              ? EffectsConfig[gameSelectedCannon].name
+              : 'Нет'}
+          </p>
           <p>Дальность: {CannonsConfig[gameSelectedCannon].range}</p>
           <p>
             Частота:&nbsp;

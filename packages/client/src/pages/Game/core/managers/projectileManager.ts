@@ -3,6 +3,7 @@ import Enemy from '../entities/enemy';
 import { Point } from '../utils/types';
 import Cannon from '../entities/cannon';
 import { projectileConfig } from './constants/projectile-config';
+import { SoundLib } from '../../../../audio/audio';
 
 class ProjectileManager {
   private projectiles: Projectile[] = [];
@@ -24,6 +25,8 @@ class ProjectileManager {
     );
 
     this.projectiles.push(projectile);
+
+    if (cannon.cannonType !== 'dumb') SoundLib(cannon.cannonType, 0.3);
   }
 
   update(enemies: Enemy[]): void {

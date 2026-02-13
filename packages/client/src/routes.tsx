@@ -1,5 +1,4 @@
 import { AppDispatch, RootState } from './store';
-import { ROUTE } from './constants/ROUTE';
 
 import { initNotFoundPage, NotFoundPage } from './pages/ErrorsPage/NotFound';
 import { GamePage, initGamePage } from './pages/Game';
@@ -13,6 +12,10 @@ import { initLeaderboardPage, LeaderboardPage } from './pages/LeaderboardPage';
 import { initProfilePage, ProfilePage } from './pages/Profile';
 
 import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { Forum } from './pages/Forum/pages/Forum';
+import { ForumNew } from './pages/Forum/pages/NewPost';
+import { ForumDiscussion } from './pages/Forum/pages/Discussion';
+import { ROUTE } from './constants/ROUTE';
 
 export type PageInitContext = {
   clientToken?: string;
@@ -77,5 +80,29 @@ export const routes = [
     path: ROUTE.ANY,
     element: <NotFoundPage />,
     fetchData: initNotFoundPage,
+  },
+  {
+    path: ROUTE.FORUM,
+    element: (
+      <ProtectedRoute>
+        <Forum />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTE.FORUM_NEW,
+    element: (
+      <ProtectedRoute>
+        <ForumNew />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTE.FORUM_TOPIC,
+    element: (
+      <ProtectedRoute>
+        <ForumDiscussion />
+      </ProtectedRoute>
+    ),
   },
 ];
