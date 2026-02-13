@@ -43,7 +43,7 @@ describe('Enemy', () => {
       expect(enemy.reward).toBe(reward);
       expect(enemy.immune).toBe(EnemiesConfig.normal.immune);
       expect(enemy.radius).toBe(EnemiesConfig.normal.radius);
-      expect(enemy.color).toBe(EnemiesConfig.normal.color);
+      expect(enemy.imagePath).toBe(EnemiesConfig.normal.imagePath);
       expect(enemy.isDestroyed).toBe(false);
       expect(enemy.currentIndex).toBe(0);
     });
