@@ -35,7 +35,11 @@ export const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
   // Если пользователь не авторизован (нет данных)
   if (!userData || error) {
     return (
-      <Navigate to={ROUTE.LOGIN} state={{ from: location.pathname }} replace />
+      <Navigate
+        to={`${ROUTE.LOGIN}${location.search}`}
+        state={{ from: location.pathname }}
+        replace
+      />
     );
   }
 
