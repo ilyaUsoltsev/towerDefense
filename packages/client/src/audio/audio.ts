@@ -20,6 +20,8 @@ export function SoundLib(name: string, vol?: number) {
   const audio = lib[name];
   if (!audio) throw new Error(`Sound "${name}" not found`);
 
+  if (name === 'backgroundMusic') audio.autoplay = true;
+
   audio.volume = vol ? vol : 1;
 
   audio.currentTime = 0;
