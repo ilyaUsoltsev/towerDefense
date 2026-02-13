@@ -3,6 +3,7 @@ import PathManager from '../managers/pathManager';
 import { Tile, Point } from '../utils/types';
 import { EnemiesConfig, EnemyType } from '../../constants/enemies-config';
 import { Effect } from '../../constants/effects-config';
+import { assetsManager, ImagePath } from '../managers/assetsManager';
 
 class Enemy {
   path: Tile[] = [];
@@ -10,6 +11,7 @@ class Enemy {
   baseSpeed: number;
   speed: number;
   immune: boolean;
+  imagePath: ImagePath;
   currentIndex: number;
   pathManager: PathManager;
   health: number;
@@ -17,7 +19,6 @@ class Enemy {
   isDestroyed: boolean;
   radius: number;
   reward: number;
-  color: string;
   activeEffects: Effect[] = [];
 
   constructor(
@@ -36,11 +37,11 @@ class Enemy {
     this.health = hp;
     this.maxHealth = hp;
     this.immune = EnemiesConfig[type].immune;
+    this.imagePath = EnemiesConfig[type].imagePath as ImagePath;
     // Каждый враг получает случайную скорость в диапазоне 90%-110% от базовой скорости
     this.baseSpeed = EnemiesConfig[type].speed * (Math.random() * 0.2 + 0.9);
     this.speed = this.baseSpeed;
     this.radius = EnemiesConfig[type].radius;
-    this.color = EnemiesConfig[type].color;
     this.reward = reward;
     this.isDestroyed = false;
     this.path = this.pathManager.getStartFinishPath();
@@ -123,16 +124,15 @@ class Enemy {
 
   render(context: CanvasRenderingContext2D) {
     // Отрисовка врага
-    context.fillStyle = this.color;
-    context.beginPath();
-    context.arc(
-      this.currentPosition.x,
-      this.currentPosition.y,
-      this.radius,
-      0,
-      2 * Math.PI
+    const image = assetsManager.get(this.imagePath);
+
+    context.drawImage(
+      image,
+      this.currentPosition.x - this.radius,
+      this.currentPosition.y - this.radius,
+      this.radius * 2,
+      this.radius * 2
     );
-    context.fill();
 
     // Отрисовка эффекта (например, ледяной эффект)
     // синяя полупрозрачная оболочка вокруг врага
@@ -176,7 +176,6 @@ class Enemy {
     );
 
     // Отрисовка пути врага (для дебага)
-
     context.strokeStyle = 'rgba(0, 0, 255, 0.3)';
     context.beginPath();
     for (let i = this.currentIndex; i < this.path.length; i++) {

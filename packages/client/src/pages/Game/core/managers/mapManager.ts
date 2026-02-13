@@ -4,6 +4,7 @@ import mapData from '../utils/map.json';
 import Player from '../entities/player';
 import { Point, Tile } from '../utils/types';
 import { TileType } from '../utils/constants';
+import { assetsManager, ImagePath } from './assetsManager';
 
 class MapManager {
   context: CanvasRenderingContext2D;
@@ -52,19 +53,27 @@ class MapManager {
   }
 
   renderGameField() {
-    this.renderTiles(this.getTiles('Game'), 'lightblue');
+    this.renderTiles(this.getTiles('Game'), ['/mapBase.png'], 'lightblue');
   }
 
   renderWalls() {
-    this.renderTiles(this.getTiles('Walls'), 'gray');
+    this.renderTiles(this.getTiles('Walls'), ['/mapBorder.png'], 'gray');
   }
 
   renderStart() {
-    this.renderTiles(this.getTiles('Start'), 'green');
+    this.renderTiles(
+      this.getTiles('Start'),
+      ['/mapBorder.png', '/gameStart.png'],
+      'green'
+    );
   }
 
   renderFinish() {
-    this.renderTiles(this.getTiles('Finish'), 'red');
+    this.renderTiles(
+      this.getTiles('Finish'),
+      ['/mapBorder.png', '/gameFinish.png'],
+      'red'
+    );
   }
 
   renderCursorTile() {
@@ -164,27 +173,44 @@ class MapManager {
     return { x: tileX, y: tileY };
   }
 
-  private renderTiles(tiles: Tile[], color: string) {
-    this.context.fillStyle = color;
-    tiles.forEach(tile => {
-      this.addTileToContext(tile.x, tile.y);
-    });
-  }
-
-  private _renderCursorTile() {
-    if (this.cursorTile) {
-      this.context.fillStyle = 'rgba(19, 147, 96, 0.75)';
-      this.addTileToContext(this.cursorTile.x, this.cursorTile.y);
-    }
-  }
-
-  private addTileToContext(x: number, y: number) {
-    this.context.fillRect(
+  private drawImage(img: HTMLImageElement, x: number, y: number) {
+    this.context.drawImage(
+      img,
       x * this.tileSize,
       y * this.tileSize,
       this.tileSize,
       this.tileSize
     );
+  }
+
+  private renderTiles(
+    tiles: Tile[],
+    images: ImagePath[],
+    fallbackColor: string
+  ) {
+    const image = assetsManager.get(images[0]);
+    if (image.complete) {
+      tiles.forEach(tile => {
+        this.drawImage(image, tile.x, tile.y);
+      });
+    } else {
+      this.context.fillStyle = fallbackColor;
+      tiles.forEach(tile => {
+        this.context.fillRect(
+          tile.x * this.tileSize,
+          tile.y * this.tileSize,
+          this.tileSize,
+          this.tileSize
+        );
+      });
+    }
+  }
+
+  private _renderCursorTile() {
+    if (this.cursorTile) {
+      const image = assetsManager.get('/pointer.png');
+      this.drawImage(image, this.cursorTile.x, this.cursorTile.y);
+    }
   }
 
   private createCollisionGrid(): number[][] {

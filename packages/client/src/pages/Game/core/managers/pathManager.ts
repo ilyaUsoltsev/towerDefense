@@ -4,11 +4,13 @@ import { eventBus } from '../utils/eventBus';
 import { GameConfig } from '../../constants/game-config';
 import Player from '../entities/player';
 import { CannonType } from '../../constants/cannons-config';
+import { assetsManager } from './assetsManager';
 
 class PathManager {
   context: CanvasRenderingContext2D;
   startTile: Tile;
   endTile: Tile;
+  tileSize: number;
   statFinishPath: Tile[] = [];
   private easyStar: EasyStar.js;
   private unsubscribe: (() => void) | null = null;
@@ -26,8 +28,8 @@ class PathManager {
     this.player = player;
     this.easyStar = new EasyStar.js();
     this.easyStar.disableCornerCutting();
-    this.easyStar.enableDiagonals();
     this.easyStar.setAcceptableTiles([0]);
+    this.tileSize = GameConfig.tileSize;
   }
 
   initialize(): void {
@@ -56,16 +58,19 @@ class PathManager {
     }
   }
 
-  // Temprorary method for rendering tiles (for debugging)
   public renderPathStartFinish() {
-    this.context.fillStyle = 'yellow';
+    const image = assetsManager.get('/path.png');
+
     this.statFinishPath.forEach(tile => {
-      this.context.fillRect(
-        tile.x * GameConfig.tileSize,
-        tile.y * GameConfig.tileSize,
-        GameConfig.tileSize,
-        GameConfig.tileSize
-      );
+      if (tile.x !== 0 && tile.x !== 24) {
+        this.context.drawImage(
+          image,
+          tile.x * this.tileSize,
+          tile.y * this.tileSize,
+          this.tileSize,
+          this.tileSize
+        );
+      }
     });
   }
 

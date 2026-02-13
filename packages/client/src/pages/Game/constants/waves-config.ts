@@ -35,7 +35,7 @@ export const wavesConfig: readonly Wave[] = [
     reward: 1,
   },
   {
-    enemyType: 'normalBoss',
+    enemyType: 'skeletonBoss',
     name: 'Boss',
     count: 3,
     spawnInterval: 900,
@@ -67,7 +67,7 @@ export const wavesConfig: readonly Wave[] = [
     reward: 2,
   },
   {
-    enemyType: 'normalBoss',
+    enemyType: 'golemBoss',
     name: 'Boss',
     count: 4,
     spawnInterval: 800,
