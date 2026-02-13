@@ -1,3 +1,4 @@
+import { SoundLib } from '../../../../audio/audio';
 import { GameConfig } from '../../constants/game-config';
 import { eventBus } from '../utils/eventBus';
 
@@ -11,6 +12,7 @@ class Player {
     eventBus.emit('redux:setPlayerHp', { hp: this.playerHealth });
     if (this.playerHealth <= 0) {
       eventBus.emit('redux:gameOver', { isWin: false, score: 0 });
+      SoundLib('lose');
     }
     return this.playerHealth;
   }

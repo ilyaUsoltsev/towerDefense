@@ -49,6 +49,7 @@ class EnemyManager {
       reward
     );
     this.enemies.push(enemy);
+    SoundLib('enemySpawn');
   }
 
   startSpawning(): void {
@@ -93,6 +94,7 @@ class EnemyManager {
         isWin: true,
         score: this.player.getScore(),
       });
+      SoundLib('win');
     }
   }
 
@@ -156,12 +158,13 @@ class EnemyManager {
   }
 
   private handleEnemyDestroyed(enemy: Enemy) {
-    SoundLib.enemyDeath.play();
+    SoundLib('enemyDeath');
     this.player.addMoney(enemy.reward);
     this.player.addScore(enemy.maxHealth);
   }
 
   private handleEnemyReachedEnd() {
+    SoundLib('enemyDespawn');
     this.player.takeDamage();
   }
 
