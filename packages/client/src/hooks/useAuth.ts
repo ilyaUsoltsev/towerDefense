@@ -5,6 +5,7 @@ import {
   OauthServiceIdResponse,
 } from '../api/type';
 import { ROUTE } from '../constants/ROUTE';
+import { YANDEX_OAUTH_AUTHORIZE_URL } from '../constants/oauth';
 import { useDispatch, useSelector } from '../store';
 import {
   checkUserThunk,
@@ -75,6 +76,9 @@ export const useAuth = () => {
 
     if (result.meta.requestStatus === 'fulfilled') {
       navigate(ROUTE.ROOT, { replace: true });
+    } else if (result.meta.requestStatus === 'rejected') {
+      console.error('OAuth login failed:', result.payload);
+      // Ошибка уже сохранена в Redux store и отобразится через ErrorText
     }
   };
 
@@ -84,9 +88,14 @@ export const useAuth = () => {
 
     if (result.meta.requestStatus === 'fulfilled') {
       const serviceId = (result.payload as OauthServiceIdResponse).service_id;
-      window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${serviceId}&redirect_uri=${encodeURIComponent(
-        redirectUri
-      )}`;
+      const authUrl = new URL(YANDEX_OAUTH_AUTHORIZE_URL);
+      authUrl.searchParams.set('response_type', 'code');
+      authUrl.searchParams.set('client_id', serviceId);
+      authUrl.searchParams.set('redirect_uri', redirectUri);
+      window.location.href = authUrl.toString();
+    } else if (result.meta.requestStatus === 'rejected') {
+      console.error('Failed to get OAuth service ID:', result.payload);
+      // Ошибка уже сохранена в Redux store и отобразится через ErrorText
     }
   };
 
