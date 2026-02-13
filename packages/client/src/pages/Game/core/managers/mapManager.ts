@@ -4,7 +4,7 @@ import mapData from '../utils/map.json';
 import Player from '../entities/player';
 import { Point, Tile } from '../utils/types';
 import { TileType } from '../utils/constants';
-import { assetsManager, ImageKey } from './assetsManager';
+import { assetsManager, ImagePath } from './assetsManager';
 
 class MapManager {
   context: CanvasRenderingContext2D;
@@ -175,10 +175,10 @@ class MapManager {
 
   private renderTiles(
     tiles: Tile[],
-    imageRoot: ImageKey[],
+    images: ImagePath[],
     fallbackColor: string
   ) {
-    const image = assetsManager.get(imageRoot[0]);
+    const image = assetsManager.get(images[0]);
     if (image.complete) {
       tiles.forEach(tile => {
         this.context.drawImage(
@@ -188,18 +188,6 @@ class MapManager {
           this.tileSize,
           this.tileSize
         );
-        if (imageRoot.length > 1) {
-          for (let o = 1; o < imageRoot.length; o++) {
-            const overlayImage = assetsManager.get(imageRoot[o]);
-            this.context.drawImage(
-              overlayImage,
-              tile.x * this.tileSize,
-              tile.y * this.tileSize,
-              this.tileSize,
-              this.tileSize
-            );
-          }
-        } else return;
       });
     } else {
       this.context.fillStyle = fallbackColor;

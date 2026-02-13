@@ -61,8 +61,7 @@ class PathManager {
     const tileSize = GameConfig.tileSize;
 
     this.statFinishPath.forEach(tile => {
-      const x = tile.x;
-      if (x !== 0 && x !== 24) {
+      if (tile.x !== 0 && tile.x !== 24) {
         this.context.drawImage(
           image,
           tile.x * tileSize,
