@@ -173,6 +173,16 @@ class MapManager {
     return { x: tileX, y: tileY };
   }
 
+  private drawImage(img: HTMLImageElement, x: number, y: number) {
+    this.context.drawImage(
+      img,
+      x * this.tileSize,
+      y * this.tileSize,
+      this.tileSize,
+      this.tileSize
+    );
+  }
+
   private renderTiles(
     tiles: Tile[],
     images: ImagePath[],
@@ -181,13 +191,7 @@ class MapManager {
     const image = assetsManager.get(images[0]);
     if (image.complete) {
       tiles.forEach(tile => {
-        this.context.drawImage(
-          image,
-          tile.x * this.tileSize,
-          tile.y * this.tileSize,
-          this.tileSize,
-          this.tileSize
-        );
+        this.drawImage(image, tile.x, tile.y);
       });
     } else {
       this.context.fillStyle = fallbackColor;
@@ -205,13 +209,7 @@ class MapManager {
   private _renderCursorTile() {
     if (this.cursorTile) {
       const image = assetsManager.get('/pointer.png');
-      this.context.drawImage(
-        image,
-        this.cursorTile.x * this.tileSize,
-        this.cursorTile.y * this.tileSize,
-        this.tileSize,
-        this.tileSize
-      );
+      this.drawImage(image, this.cursorTile.x, this.cursorTile.y);
     }
   }
 

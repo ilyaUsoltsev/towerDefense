@@ -10,6 +10,7 @@ class PathManager {
   context: CanvasRenderingContext2D;
   startTile: Tile;
   endTile: Tile;
+  tileSize: number;
   statFinishPath: Tile[] = [];
   private easyStar: EasyStar.js;
   private unsubscribe: (() => void) | null = null;
@@ -28,6 +29,7 @@ class PathManager {
     this.easyStar = new EasyStar.js();
     this.easyStar.disableCornerCutting();
     this.easyStar.setAcceptableTiles([0]);
+    this.tileSize = GameConfig.tileSize;
   }
 
   initialize(): void {
@@ -58,16 +60,15 @@ class PathManager {
 
   public renderPathStartFinish() {
     const image = assetsManager.get('/path.png');
-    const tileSize = GameConfig.tileSize;
 
     this.statFinishPath.forEach(tile => {
       if (tile.x !== 0 && tile.x !== 24) {
         this.context.drawImage(
           image,
-          tile.x * tileSize,
-          tile.y * tileSize,
-          tileSize,
-          tileSize
+          tile.x * this.tileSize,
+          tile.y * this.tileSize,
+          this.tileSize,
+          this.tileSize
         );
       }
     });
