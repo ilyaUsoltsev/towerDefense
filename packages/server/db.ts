@@ -1,27 +1,51 @@
 import { Client } from 'pg';
 
-const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
-  process.env;
+const {
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_DB,
+  POSTGRES_PORT,
+  POSTGRES_HOST,
+} = process.env;
 
-export const createClientAndConnect = async (): Promise<Client | null> => {
-  try {
-    const client = new Client({
-      user: POSTGRES_USER,
-      host: 'localhost',
-      database: POSTGRES_DB,
-      password: POSTGRES_PASSWORD,
-      port: Number(POSTGRES_PORT),
-    });
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    await client.connect();
+export const createClientAndConnect = async (
+  maxRetries = 5,
+  retryDelay = 3000
+): Promise<Client | null> => {
+  const config = {
+    user: POSTGRES_USER,
+    host: POSTGRES_HOST || 'localhost',
+    database: POSTGRES_DB,
+    password: POSTGRES_PASSWORD,
+    port: Number(POSTGRES_PORT),
+  };
 
-    const res = await client.query('SELECT NOW()');
-    console.log('  ➜ 🎸 Connected to the database at:', res?.rows?.[0].now);
-    client.end();
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const client = new Client(config);
+      await client.connect();
 
-    return client;
-  } catch (e) {
-    console.error(e);
+      const res = await client.query('SELECT NOW()');
+      console.log('  ➜ 🎸 Connected to the database at:', res?.rows?.[0].now);
+      client.end();
+
+      return client;
+    } catch (e) {
+      console.error(
+        `Database connection attempt ${attempt}/${maxRetries} failed:`,
+        (e as Error).message
+      );
+
+      if (attempt < maxRetries) {
+        console.log(`Retrying in ${retryDelay / 1000}s...`);
+        await sleep(retryDelay);
+      } else {
+        console.error('Max retries reached. Could not connect to database.');
+        console.error(e);
+      }
+    }
   }
 
   return null;
