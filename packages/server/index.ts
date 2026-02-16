@@ -1,15 +1,31 @@
 import dotenv from 'dotenv';
 import cors from 'cors';
-dotenv.config();
-
 import express from 'express';
-import { createClientAndConnect } from './db';
+import { sequelize, connectToDatabase } from './db';
+import apiRoutes from './routes';
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
-const port = Number(process.env.SERVER_PORT) || 3001;
+app.use(express.json());
+app.use('/api', apiRoutes);
 
-createClientAndConnect();
+const PORT = Number(process.env.SERVER_PORT) || 3001;
+
+(async () => {
+  try {
+    await connectToDatabase();
+    await sequelize.sync({ force: false, alter: true });
+
+    app.listen(PORT, () => {
+      console.log(`  ➜ 🎸 Server запущен на порту: ${PORT}`);
+    });
+  } catch (err) {
+    console.error('Не удалось запустить сервер из-за проблем с БД');
+    process.exit(1);
+  }
+})();
 
 app.get('/friends', (_, res) => {
   res.json([
@@ -25,8 +41,4 @@ app.get('/user', (_, res) => {
 
 app.get('/', (_, res) => {
   res.json('👋 Howdy from the server :)');
-});
-
-app.listen(port, () => {
-  console.log(`  ➜ 🎸 Server is listening on port: ${port}`);
 });
