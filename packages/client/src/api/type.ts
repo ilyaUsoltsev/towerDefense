@@ -27,3 +27,7 @@ export type LoginRequestData = {
   login: string;
   password: string;
 };
+
+export type OauthServiceIdResponse = {
+  service_id: string;
+};

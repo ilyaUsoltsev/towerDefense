@@ -3,7 +3,7 @@ import PathManager from '../managers/pathManager';
 import { Tile, Point } from '../utils/types';
 import { EnemiesConfig, EnemyType } from '../../constants/enemies-config';
 import { Effect } from '../../constants/effects-config';
-import { assetsManager, ImageKey } from '../managers/assetsManager';
+import { assetsManager, ImagePath } from '../managers/assetsManager';
 
 class Enemy {
   path: Tile[] = [];
@@ -11,7 +11,7 @@ class Enemy {
   baseSpeed: number;
   speed: number;
   immune: boolean;
-  imageRoot: ImageKey;
+  imagePath: ImagePath;
   currentIndex: number;
   pathManager: PathManager;
   health: number;
@@ -37,7 +37,7 @@ class Enemy {
     this.health = hp;
     this.maxHealth = hp;
     this.immune = EnemiesConfig[type].immune;
-    this.imageRoot = EnemiesConfig[type].imageRoot;
+    this.imagePath = EnemiesConfig[type].imagePath as ImagePath;
     // Каждый враг получает случайную скорость в диапазоне 90%-110% от базовой скорости
     this.baseSpeed = EnemiesConfig[type].speed * (Math.random() * 0.2 + 0.9);
     this.speed = this.baseSpeed;
@@ -124,7 +124,7 @@ class Enemy {
 
   render(context: CanvasRenderingContext2D) {
     // Отрисовка врага
-    const image = assetsManager.get(this.imageRoot);
+    const image = assetsManager.get(this.imagePath);
 
     context.drawImage(
       image,

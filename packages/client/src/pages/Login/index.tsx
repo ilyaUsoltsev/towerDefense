@@ -3,7 +3,7 @@ import {
   selectIsLoading,
   selectUser,
 } from '../../slices/userSlice';
-import { TextInput } from '@gravity-ui/uikit';
+import { TextInput, Button } from '@gravity-ui/uikit';
 import { usePage } from '../../hooks/usePage';
 import { PageInitArgs } from '../../routes';
 import FormLog from '../../components/FormLog';
@@ -14,24 +14,39 @@ import { LoginRequestData } from '../../api/type';
 import Loader from '../../components/Loader';
 import ErrorText from '../../components/ErrorText';
 import { ROUTE } from '../../constants/ROUTE';
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from '../../store';
 
 export const LoginPage = () => {
-  const { checkLoginUser, login, isLoading, error } = useAuth();
+  const {
+    checkLoginUser,
+    login,
+    oauthLogin,
+    redirectToYandexOAuth,
+    isLoading,
+    error,
+  } = useAuth();
   const userData = useSelector(selectUser);
   const [hasAttemptedAuthCheck, setHasAttemptedAuthCheck] = useState(false);
-  // Читаем данные пользователя из глобального state
+  const [searchParams] = useSearchParams();
+  const oauthHandledRef = useRef(false);
 
-  const navigate = useNavigate(); // Hook для навигации
+  const navigate = useNavigate();
 
-  // Читаем данные пользователя из глобального state
   usePage({ initPage: initLoginPage });
 
   useEffect(() => {
+    const code = searchParams.get('code');
+    if (code && !oauthHandledRef.current) {
+      oauthHandledRef.current = true;
+      oauthLogin(code);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     if (!hasAttemptedAuthCheck) {
-      checkLoginUser(); // Инициируем проверку
+      checkLoginUser();
       setHasAttemptedAuthCheck(true);
     }
   }, [checkLoginUser, hasAttemptedAuthCheck]);
@@ -103,6 +118,14 @@ export const LoginPage = () => {
         </Field>
         <ErrorText>{error}</ErrorText>
       </FormLog>
+      <Button
+        width="max"
+        view="outlined"
+        size="xl"
+        onClick={redirectToYandexOAuth}
+        style={{ maxWidth: 500, width: '100%' }}>
+        Войти через Яндекс
+      </Button>
     </SectionLog>
   );
 };

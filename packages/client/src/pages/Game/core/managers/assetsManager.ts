@@ -11,7 +11,6 @@ const imagesConfig = [
   '/gameFinish.png',
   '/path.png',
   '/pointer.png',
-  '/boss/humanoid.png',
   '/boss/golem.png',
   '/boss/skeleton.png',
   '/soldier/black.png',
@@ -19,10 +18,10 @@ const imagesConfig = [
   '/soldier/blue.png',
 ] as const;
 
-export type ImageKey = typeof imagesConfig[number];
+export type ImagePath = typeof imagesConfig[number];
 
 export class AssetManager {
-  private images: Partial<Record<ImageKey, HTMLImageElement>> = {};
+  private images: Partial<Record<ImagePath, HTMLImageElement>> = {};
 
   async loadAll(): Promise<void> {
     const promises = imagesConfig.map(url =>
@@ -34,7 +33,7 @@ export class AssetManager {
     await Promise.all(promises);
   }
 
-  get(key: ImageKey): HTMLImageElement {
+  get(key: ImagePath): HTMLImageElement {
     const img = this.images[key];
     if (!img) throw new Error(`Image not loaded: ${key}`);
     return img;

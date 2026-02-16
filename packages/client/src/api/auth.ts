@@ -10,25 +10,23 @@ import {
 export default class AuthApi {
   private httpClient: HttpClient;
 
-  constructor() {
-    this.httpClient = new HttpClient({
-      baseUrl: 'https://ya-praktikum.tech/api/v2/auth',
-    });
+  constructor(httpClient: HttpClient) {
+    this.httpClient = httpClient;
   }
 
   async create(data: CreateUser): Promise<SignUpResponse | APIError> {
-    return this.httpClient.post<SignUpResponse>('/signup', data);
+    return this.httpClient.post<SignUpResponse>('/auth/signup', data);
   }
 
   async login(data: LoginRequestData): Promise<void | APIError> {
-    return this.httpClient.post<void>('/signin', data);
+    return this.httpClient.post<void>('/auth/signin', data);
   }
 
   async me(): Promise<User | APIError> {
-    return this.httpClient.get<User>('/user');
+    return this.httpClient.get<User>('/auth/user');
   }
 
   async logout(): Promise<void | APIError> {
-    return this.httpClient.post<void>('/logout');
+    return this.httpClient.post<void>('/auth/logout');
   }
 }
