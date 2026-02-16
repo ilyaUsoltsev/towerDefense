@@ -5,7 +5,7 @@ import { Tile } from '../utils/types';
 import { eventBus } from '../utils/eventBus';
 import Player from '../entities/player';
 import { wavesConfig } from '../../constants/waves-config';
-import { SoundLib } from '../../../../audio/audio';
+import { SoundLib, StopSound } from '../../../../audio/audio';
 
 class EnemyManager {
   enemies: Enemy[] = [];
@@ -49,6 +49,7 @@ class EnemyManager {
       reward
     );
     this.enemies.push(enemy);
+    SoundLib('enemySpawn');
   }
 
   startSpawning(): void {
@@ -93,6 +94,8 @@ class EnemyManager {
         isWin: true,
         score: this.player.getScore(),
       });
+      StopSound('backgroundMusic');
+      SoundLib('win');
     }
   }
 
@@ -156,12 +159,13 @@ class EnemyManager {
   }
 
   private handleEnemyDestroyed(enemy: Enemy) {
-    SoundLib.enemyDeath.play();
+    SoundLib('enemyDeath');
     this.player.addMoney(enemy.reward);
     this.player.addScore(enemy.maxHealth);
   }
 
   private handleEnemyReachedEnd() {
+    SoundLib('enemyDespawn');
     this.player.takeDamage();
   }
 
