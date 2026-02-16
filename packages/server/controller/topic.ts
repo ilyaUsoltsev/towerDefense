@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import { Topic, Comment, Reply } from '../models';
-import { fn, col } from 'sequelize';
 
 export const topicController = {
   async getAll(req: Request, res: Response) {
@@ -15,19 +14,14 @@ export const topicController = {
       const { page = 1, limit = 10 } = req.query;
       const offset = (Number(page) - 1) * Number(limit);
 
-      const { count, rows } = await Topic.findAndCountAll({
+      const { count, rows: topics } = await Topic.findAndCountAll({
         limit: Number(limit),
         offset,
         order: [['createdAt', 'DESC']],
-        attributes: {
-          include: [[fn('COUNT', col('comments.id')), 'commentCount']],
-        },
-        include: [{ model: Comment, as: 'comments', attributes: [] }],
-        group: ['Topic.id'],
       });
 
       return res.json({
-        topics: rows,
+        topics,
         total: count,
         page: Number(page),
         limit: Number(limit),
