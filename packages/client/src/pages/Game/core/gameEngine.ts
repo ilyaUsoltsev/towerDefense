@@ -6,6 +6,7 @@ import EnemyManager from './managers/enemyManager';
 import Player from './entities/player';
 import { GameConfig } from '../constants/game-config';
 import { assetsManager } from './managers/assetsManager';
+import { SoundLib } from '../../../audio/audio';
 
 class GameEngine {
   mapManager!: MapManager;
@@ -28,6 +29,7 @@ class GameEngine {
   async initialize() {
     this.player = new Player();
     await assetsManager.loadAll();
+    SoundLib('backgroundMusic', 0.2);
     this.mapManager = new MapManager(this.context, this.player);
     this.cannonManager = new CannonManager(this.context, this.player);
     this.pathManager = new PathManager(
