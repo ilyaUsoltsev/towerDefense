@@ -16,4 +16,42 @@ export const GameConfig = {
   },
   sellValue: 0.7,
   gameStartDelay: 5,
+  sound: {
+    click: {
+      src: 'click',
+      vol: 1,
+    },
+    bgMusic: {
+      src: 'backgroundMusic',
+      vol: 0.2,
+    },
+    loss: {
+      src: 'lose',
+      vol: 1,
+    },
+    win: {
+      src: 'win',
+      vol: 1,
+    },
+    upgrade: {
+      src: 'upgrade',
+      vol: 1,
+    },
+    placeCannon: {
+      src: 'placeCannon',
+      vol: 0.3,
+    },
+    enemySpawn: {
+      src: 'enemySpawn',
+      vol: 1,
+    },
+    enemyDespawn: {
+      src: 'enemyDespawn',
+      vol: 1,
+    },
+    enemyDeath: {
+      src: 'enemyDeath',
+      vol: 1,
+    },
+  },
 } as const;

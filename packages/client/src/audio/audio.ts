@@ -16,7 +16,7 @@ const lib: Record<string, HTMLAudioElement> = {
   upgrade: new Audio('/audio/upgrade.wav'),
 };
 
-export function SoundLib(name: string, vol?: number) {
+export function SoundLib(name: keyof typeof lib, vol: number) {
   const audio = lib[name];
   if (!audio) throw new Error(`Sound "${name}" not found`);
 
@@ -28,6 +28,7 @@ export function SoundLib(name: string, vol?: number) {
   audio.play();
 }
 
-export function StopSound(name: string) {
+export function StopSound(name: keyof typeof lib) {
+  if (!lib[name]) throw new Error(`Sound "${name}" not found`);
   lib[name].pause();
 }

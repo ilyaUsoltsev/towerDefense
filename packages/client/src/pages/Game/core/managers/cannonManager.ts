@@ -6,6 +6,7 @@ import ProjectileManager from './projectileManager';
 import Player from '../entities/player';
 import { CannonsConfig, CannonType } from '../../constants/cannons-config';
 import { SoundLib } from '../../../../audio/audio';
+import { GameConfig } from '../../constants/game-config';
 
 class CannonManager {
   context: CanvasRenderingContext2D;
@@ -27,7 +28,10 @@ class CannonManager {
   addCannon(position: Tile, cannonType: CannonType): void {
     const cannon = new Cannon(position, cannonType, this.projectileManager);
     this.cannons.set(cannon.id, cannon);
-    SoundLib('placeCannon', 0.3);
+    SoundLib(
+      GameConfig.sound.placeCannon.src,
+      GameConfig.sound.placeCannon.vol
+    );
   }
 
   removeCannonById(id: string): void {

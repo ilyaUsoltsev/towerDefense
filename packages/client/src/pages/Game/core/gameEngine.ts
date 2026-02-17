@@ -29,7 +29,7 @@ class GameEngine {
   async initialize() {
     this.player = new Player();
     await assetsManager.loadAll();
-    SoundLib('backgroundMusic', 0.2);
+    SoundLib(GameConfig.sound.bgMusic.src, GameConfig.sound.bgMusic.vol);
     this.mapManager = new MapManager(this.context, this.player);
     this.cannonManager = new CannonManager(this.context, this.player);
     this.pathManager = new PathManager(

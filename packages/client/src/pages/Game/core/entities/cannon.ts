@@ -58,7 +58,7 @@ class Cannon {
     this.range = Math.floor(this.range * 1.1);
     this.fireRate = this.fireRate / 1.1;
     this.projectileSpeed = this.projectileSpeed * 1.1;
-    SoundLib('upgrade');
+    SoundLib(GameConfig.sound.upgrade.src, GameConfig.sound.upgrade.vol);
   }
 
   getSellValue(): number {
