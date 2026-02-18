@@ -35,13 +35,13 @@ class Comment
 Comment.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
     content: { type: DataTypes.TEXT, allowNull: false },
-    userid: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
-    topicid: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
+    userid: { type: DataTypes.INTEGER, allowNull: false },
+    topicid: { type: DataTypes.INTEGER, allowNull: false },
   },
   {
     sequelize,

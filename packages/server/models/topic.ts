@@ -33,13 +33,13 @@ class Topic
 Topic.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
     title: { type: DataTypes.STRING(255), allowNull: false },
     content: { type: DataTypes.TEXT, allowNull: false },
-    userid: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
+    userid: { type: DataTypes.INTEGER, allowNull: false },
   },
   {
     sequelize,

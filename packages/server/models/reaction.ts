@@ -39,7 +39,7 @@ class Reaction
 Reaction.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
@@ -49,9 +49,9 @@ Reaction.init(
       ),
       allowNull: false,
     },
-    userid: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
-    commentid: { type: DataTypes.INTEGER.UNSIGNED, allowNull: true },
-    replyid: { type: DataTypes.INTEGER.UNSIGNED, allowNull: true },
+    userid: { type: DataTypes.INTEGER, allowNull: false },
+    commentid: { type: DataTypes.INTEGER, allowNull: true },
+    replyid: { type: DataTypes.INTEGER, allowNull: true },
   },
   {
     sequelize,
