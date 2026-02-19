@@ -1,9 +1,6 @@
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import { sequelize } from '../db';
-import {
-  REACTION_TYPE_VALUES,
-  type ReactionType,
-} from '../models/reactionTypes';
+import { REACTION_TYPE_VALUES, type ReactionType } from '../types/reaction';
 
 interface ReactionAttributes {
   id: number;
