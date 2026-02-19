@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import cors from 'cors';
 import express from 'express';
 import { sequelize, connectToDatabase } from './db';
 import apiRoutes from './routes';
-
-dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -16,8 +16,11 @@ const PORT = Number(process.env.SERVER_PORT) || 3001;
 (async () => {
   try {
     await connectToDatabase();
-    await sequelize.sync({ force: false, alter: true });
-
+    if (process.env.NODE_ENV === 'development') {
+      await sequelize.sync({ force: false, alter: true });
+    } else {
+      await sequelize.sync({ force: false, alter: false });
+    }
     app.listen(PORT, () => {
       console.log(`  ➜ 🎸 Server запущен на порту: ${PORT}`);
     });
@@ -26,19 +29,3 @@ const PORT = Number(process.env.SERVER_PORT) || 3001;
     process.exit(1);
   }
 })();
-
-app.get('/friends', (_, res) => {
-  res.json([
-    { name: 'Саша', secondName: 'Панов' },
-    { name: 'Лёша', secondName: 'Садовников' },
-    { name: 'Серёжа', secondName: 'Иванов' },
-  ]);
-});
-
-app.get('/user', (_, res) => {
-  res.json({ name: 'Степа', secondName: 'Степанов' });
-});
-
-app.get('/', (_, res) => {
-  res.json('👋 Howdy from the server :)');
-});

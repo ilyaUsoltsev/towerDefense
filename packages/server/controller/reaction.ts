@@ -1,37 +1,58 @@
 import type { Request, Response } from 'express';
 import { Reaction } from '../models';
 import { Op, fn, col } from 'sequelize';
+import {
+  REACTION_TYPE_VALUES,
+  type ReactionType,
+} from '../models/reactionTypes';
 
 export const reactionController = {
   // Поставить / убрать реакцию (toggle)
   async toggle(req: Request, res: Response) {
     try {
-      // TODO: middleware авторизации добавит req.user
-      const userid = (req as any).user?.id ?? 1;
-
+      const userid = (req as any).user?.id;
       if (!userid) {
-        return res.status(403).json({ error: 'Требуется авторизация' });
+        return res.status(401).json({ error: 'Требуется авторизация' });
       }
 
-      const { type } = req.body;
       const { commentid, replyid } = req.params;
 
-      // Валидация типа реакции
-      const allowedTypes = [
-        'like',
-        'dislike',
-        'love',
-        'haha',
-        'wow',
-        'sad',
-        'angry',
-      ];
-      if (!type || !allowedTypes.includes(type)) {
-        return res.status(400).json({ error: 'Недопустимый тип реакции' });
+      const rawType = req.body;
+
+      const commentidNum = Number(commentid);
+      if (isNaN(commentidNum) || commentidNum <= 0) {
+        return res.status(400).json({
+          error: 'commentid должен быть положительным числом',
+        });
       }
 
+      const replyidNum = Number(replyid);
+      if (isNaN(replyidNum) || replyidNum <= 0) {
+        return res.status(400).json({
+          error: 'replyid должен быть положительным числом',
+        });
+      }
+
+      let normalizedType: string | null = null;
+      if (rawType != null) {
+        normalizedType = String(rawType).trim().toLowerCase();
+      }
+
+      if (
+        !normalizedType ||
+        !REACTION_TYPE_VALUES.includes(normalizedType as ReactionType)
+      ) {
+        return res.status(400).json({
+          error: 'Недопустимый тип реакции',
+          received: rawType,
+          allowed: REACTION_TYPE_VALUES,
+        });
+      }
+
+      const type = normalizedType as ReactionType;
+
       const whereClause: any = {
-        userid: userid,
+        userid,
         type,
       };
 
@@ -66,9 +87,7 @@ export const reactionController = {
       return res.status(201).json({ action: 'added', type, reaction });
     } catch (error: any) {
       console.error('Ошибка в toggle реакции:', error);
-      return res
-        .status(500)
-        .json({ error: 'Ошибка работы с реакцией', details: error.message });
+      return res.status(500).json({ error: 'Ошибка работы с реакцией' });
     }
   },
 

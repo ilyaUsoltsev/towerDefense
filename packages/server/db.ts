@@ -11,14 +11,21 @@ const {
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: POSTGRES_HOST || 'localhost',
-  port: Number(POSTGRES_PORT),
-  username: POSTGRES_USER,
-  password: POSTGRES_PASSWORD,
+  port: Number(POSTGRES_PORT) || 5432,
+  username: required('username', POSTGRES_USER),
+  password: required('password', POSTGRES_PASSWORD),
   database: POSTGRES_DB,
-  logging: false, // или console.log в dev
+  logging: process.env.NODE_ENV === 'development' ? console.log : false,
   retry: {
     max: 8,
-    match: [/SequelizeConnectionError/, /ECONNREFUSED/, /ETIMEDOUT/],
+    match: [
+      /SequelizeConnectionError/,
+      /SequelizeConnectionRefusedError/,
+      /SequelizeHostNotFoundError/,
+      /SequelizeConnectionTimedOutError/,
+      /ECONNREFUSED/,
+      /ETIMEDOUT/,
+    ],
   },
   pool: {
     max: 10,
@@ -31,12 +38,18 @@ const sequelize = new Sequelize({
 export async function connectToDatabase() {
   try {
     await sequelize.authenticate();
+    await sequelize.sync();
     console.log('→ PostgreSQL подключено успешно');
     return sequelize;
   } catch (err) {
     console.error('❌ Ошибка подключения к PostgreSQL:', err);
     throw err; // чтобы приложение упало, если БД недоступна
   }
+}
+
+function required(name: string, value?: string) {
+  if (!value) throw new Error(`Missing env ${name}`);
+  return value;
 }
 
 // Экспортируем готовый экземпляр (но используем после await initializeDatabase())

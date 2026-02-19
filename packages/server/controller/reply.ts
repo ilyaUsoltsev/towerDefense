@@ -10,11 +10,18 @@ export const replyController = {
       // TODO: middleware авторизации добавит req.user
       const userid = (req as any).user?.id;
 
+      const commentidNum = Number(commentid);
+      if (isNaN(commentidNum) || commentidNum <= 0) {
+        return res.status(400).json({
+          error: 'commentid должен быть положительным числом',
+        });
+      }
+
       if (!userid) {
         return res.status(403).json({ error: 'Требуется авторизация' });
       }
 
-      if (!content?.trim()) {
+      if (!String(content ?? '').trim()) {
         return res.status(400).json({ error: 'Содержимое ответа обязательно' });
       }
 

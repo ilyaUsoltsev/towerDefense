@@ -6,41 +6,41 @@ import { Op } from 'sequelize';
 
 // Topic - Comment
 Topic.hasMany(Comment, {
-  foreignKey: 'topicId',
+  foreignKey: 'topicid',
   as: 'comments',
   onDelete: 'CASCADE',
 });
-Comment.belongsTo(Topic, { foreignKey: 'topicId', as: 'topic' });
+Comment.belongsTo(Topic, { foreignKey: 'topicid', as: 'topic' });
 
 // Comment - Reply
 Comment.hasMany(Reply, {
-  foreignKey: 'commentId',
+  foreignKey: 'commentid',
   as: 'replies',
   onDelete: 'CASCADE',
 });
-Reply.belongsTo(Comment, { foreignKey: 'commentId', as: 'comment' });
+Reply.belongsTo(Comment, { foreignKey: 'commentid', as: 'comment' });
 
 // Реакции
 Comment.hasMany(Reaction, {
-  foreignKey: 'commentId',
+  foreignKey: 'commentid',
   as: 'reactions',
   constraints: false,
-  scope: { commentId: { [Op.ne]: null } },
+  scope: { commentid: { [Op.ne]: null } },
 });
 Reply.hasMany(Reaction, {
-  foreignKey: 'replyId',
+  foreignKey: 'replyid',
   as: 'reactions',
   constraints: false,
-  scope: { replyId: { [Op.ne]: null } },
+  scope: { replyid: { [Op.ne]: null } },
 });
 
 Reaction.belongsTo(Comment, {
-  foreignKey: 'commentId',
+  foreignKey: 'commentid',
   as: 'comment',
   constraints: false,
 });
 Reaction.belongsTo(Reply, {
-  foreignKey: 'replyId',
+  foreignKey: 'replyid',
   as: 'reply',
   constraints: false,
 });

@@ -1,14 +1,9 @@
 import { DataTypes, Model, Optional, Op } from 'sequelize';
 import { sequelize } from '../db';
-
-type ReactionType =
-  | 'like'
-  | 'dislike'
-  | 'love'
-  | 'haha'
-  | 'wow'
-  | 'sad'
-  | 'angry';
+import {
+  REACTION_TYPE_VALUES,
+  type ReactionType,
+} from '../models/reactionTypes';
 
 interface ReactionAttributes {
   id: number;
@@ -44,9 +39,7 @@ Reaction.init(
       primaryKey: true,
     },
     type: {
-      type: DataTypes.ENUM(
-        ...['like', 'dislike', 'love', 'haha', 'wow', 'sad', 'angry']
-      ),
+      type: DataTypes.ENUM(...REACTION_TYPE_VALUES),
       allowNull: false,
     },
     userid: { type: DataTypes.INTEGER, allowNull: false },
