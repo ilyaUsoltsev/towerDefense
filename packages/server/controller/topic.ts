@@ -75,15 +75,25 @@ export const topicController = {
     try {
       const { title, content } = req.body;
 
-      // TODO: middleware авторизации добавит req.user
       const userid = (req as any).user?.id;
-
       if (!userid) {
-        return res.status(403).json({ error: 'Требуется авторизация' });
+        return res.status(401).json({ error: 'Требуется авторизация' });
       }
 
-      if (!title?.trim() || !content?.trim()) {
-        return res.status(400).json({ error: 'title и content обязательны' });
+      if (typeof content !== 'string' || !content.trim()) {
+        return res.status(400).json({ error: 'Содержимое топика обязательно' });
+      }
+
+      if (typeof title !== 'string' || !title.trim()) {
+        return res.status(400).json({ error: 'Заголовок топика обязателен' });
+      }
+
+      const trimmed = content.trim();
+      const MAX_LENGTH = 10000;
+      if (trimmed.length > MAX_LENGTH) {
+        return res.status(400).json({
+          error: `Топик слишком длинный (максимум ${MAX_LENGTH} символов)`,
+        });
       }
 
       const topic = await Topic.create({ title, content, userid });
@@ -98,18 +108,41 @@ export const topicController = {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { title, content } = req.body;
-      // TODO: middleware авторизации добавит req.user
+      const { title } = req.body;
       const userid = (req as any).user?.id;
-      if (!userid)
-        return res.status(403).json({ error: 'Требуется авторизация' });
+
+      if (!userid) {
+        return res.status(401).json({ error: 'Требуется авторизация' });
+      }
+
+      const rawContent = req.body.content;
+      const content = String(rawContent ?? '').trim();
+
+      if (rawContent != null && typeof rawContent !== 'string') {
+        return res
+          .status(400)
+          .json({ error: 'Поле content должно быть строкой' });
+      }
+
+      const MAX_COMMENT_LENGTH = 10000;
+      if (content.length > MAX_COMMENT_LENGTH) {
+        return res.status(400).json({
+          error: `Топик слишком длинный (максимум ${MAX_COMMENT_LENGTH} символов)`,
+        });
+      }
+
+      if (content.length === 0) {
+        return res.status(400).json({ error: 'Топик не может быть пустым' });
+      }
+      // TODO: middleware авторизации добавит req.user
+
       const topic = await Topic.findByPk(id);
       if (!topic) return res.status(404).json({ error: 'Топик не найден' });
       if (topic.userid !== userid)
         return res.status(403).json({ error: 'Нет прав' });
 
       await topic.update({ title, content });
-      return res.json(topic);
+      return res.status(200).json(topic);
     } catch (error: any) {
       return res
         .status(500)

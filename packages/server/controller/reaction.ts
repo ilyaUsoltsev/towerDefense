@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { Reaction } from '../models';
+import { Comment, Reaction, Reply } from '../models';
 import { Op, fn, col } from 'sequelize';
 import {
   REACTION_TYPE_VALUES,
@@ -9,86 +9,82 @@ import {
 export const reactionController = {
   // Поставить / убрать реакцию (toggle)
   async toggle(req: Request, res: Response) {
-    try {
-      const userid = (req as any).user?.id;
-      if (!userid) {
-        return res.status(401).json({ error: 'Требуется авторизация' });
-      }
+    const userId = (req as any).user?.id;
+    if (!userId)
+      return res.status(401).json({ error: 'Требуется авторизация' });
 
-      const { commentid, replyid } = req.params;
+    const { commentid, replyid } = req.params;
+    const typeRaw = req.body?.type; // ← ожидаем { "type": "like" }
 
-      const rawType = req.body;
-
-      const commentidNum = Number(commentid);
-      if (isNaN(commentidNum) || commentidNum <= 0) {
-        return res.status(400).json({
-          error: 'commentid должен быть положительным числом',
-        });
-      }
-
-      const replyidNum = Number(replyid);
-      if (isNaN(replyidNum) || replyidNum <= 0) {
-        return res.status(400).json({
-          error: 'replyid должен быть положительным числом',
-        });
-      }
-
-      let normalizedType: string | null = null;
-      if (rawType != null) {
-        normalizedType = String(rawType).trim().toLowerCase();
-      }
-
-      if (
-        !normalizedType ||
-        !REACTION_TYPE_VALUES.includes(normalizedType as ReactionType)
-      ) {
-        return res.status(400).json({
-          error: 'Недопустимый тип реакции',
-          received: rawType,
-          allowed: REACTION_TYPE_VALUES,
-        });
-      }
-
-      const type = normalizedType as ReactionType;
-
-      const whereClause: any = {
-        userid,
-        type,
-      };
-
-      let targetType: 'comment' | 'reply' | null = null;
-
-      if (commentid) {
-        whereClause.commentid = Number(commentid);
-        whereClause.replyid = { [Op.is]: null };
-        targetType = 'comment';
-      } else if (replyid) {
-        whereClause.replyid = Number(replyid);
-        whereClause.commentid = { [Op.is]: null };
-        targetType = 'reply';
-      } else {
-        return res.status(400).json({ error: 'Укажите commentid или replyid' });
-      }
-
-      const existing = await Reaction.findOne({ where: whereClause });
-
-      if (existing) {
-        await existing.destroy();
-        return res.json({ action: 'removed', type });
-      }
-
-      const reaction = await Reaction.create({
-        type,
-        userid,
-        commentid: targetType === 'comment' ? Number(commentid) : null,
-        replyid: targetType === 'reply' ? Number(replyid) : null,
-      });
-
-      return res.status(201).json({ action: 'added', type, reaction });
-    } catch (error: any) {
-      console.error('Ошибка в toggle реакции:', error);
-      return res.status(500).json({ error: 'Ошибка работы с реакцией' });
+    if (!typeRaw || typeof typeRaw !== 'string') {
+      return res
+        .status(400)
+        .json({ error: 'Поле type обязательно и должно быть строкой' });
     }
+
+    const type = typeRaw.trim().toLowerCase() as ReactionType;
+    if (!REACTION_TYPE_VALUES.includes(type)) {
+      return res.status(400).json({
+        error: 'Недопустимый тип реакции',
+        allowed: REACTION_TYPE_VALUES,
+      });
+    }
+
+    let targetId: number | null = null;
+    let isComment = false;
+
+    if (commentid && !replyid) {
+      targetId = Number(commentid);
+      isComment = true;
+      if (isNaN(targetId) || targetId <= 0) {
+        return res.status(400).json({ error: 'Некорректный commentid' });
+      }
+    } else if (replyid && !commentid) {
+      targetId = Number(replyid);
+      if (isNaN(targetId) || targetId <= 0) {
+        return res.status(400).json({ error: 'Некорректный replyid' });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({
+          error: 'Укажите ровно один из параметров: commentid или replyid',
+        });
+    }
+
+    const where = {
+      userid: userId,
+      type,
+      ...(isComment
+        ? { commentid: targetId, replyid: { [Op.is]: null } }
+        : { replyid: targetId, commentid: { [Op.is]: null } }),
+    };
+
+    const existing = await Reaction.findOne({ where });
+
+    if (existing) {
+      await existing.destroy();
+      return res.json({ action: 'removed', type });
+    }
+
+    // Проверяем существование родителя (очень желательно)
+    if (isComment) {
+      const exists = await Comment.findByPk(targetId, { attributes: ['id'] });
+      if (!exists)
+        return res.status(404).json({ error: 'Комментарий не найден' });
+    } else {
+      const exists = await Reply.findByPk(targetId, { attributes: ['id'] });
+      if (!exists) return res.status(404).json({ error: 'Ответ не найден' });
+    }
+
+    const reaction = await Reaction.create({
+      type,
+      userid: userId,
+      commentid: isComment ? targetId : null,
+      replyid: isComment ? null : targetId,
+    });
+
+    return res.status(201).json({ action: 'added', type, reaction });
   },
 
   async getCounts(req: Request, res: Response) {
@@ -99,7 +95,7 @@ export const reactionController = {
       const userid = (req as any).user?.id;
 
       if (!userid) {
-        return res.status(403).json({ error: 'Требуется авторизация' });
+        return res.status(401).json({ error: 'Требуется авторизация' });
       }
 
       const where: any = {};
