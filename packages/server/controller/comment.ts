@@ -1,5 +1,7 @@
 import type { Request, Response } from 'express';
 import { Comment, Reply, Topic } from '../models';
+import { validateContent } from '../helpers/validateRequest';
+import { AuthRequest } from '../types/auth';
 
 export const commentController = {
   async create(req: Request, res: Response) {
@@ -7,34 +9,26 @@ export const commentController = {
       const { topicid } = req.params;
       const { content } = req.body;
 
-      const userId = (req as any).user?.id;
-      if (!userId) {
+      const userid = (req as AuthRequest).user?.id;
+      if (!userid) {
         return res.status(401).json({ error: 'Требуется авторизация' });
       }
 
-      if (typeof content !== 'string' || !content.trim()) {
-        return res
-          .status(400)
-          .json({ error: 'Содержимое комментария обязательно' });
+      const validationResult = validateContent(content, 'content', 4000);
+
+      if (!validationResult.isValid) {
+        return res.status(400).json({ error: validationResult.errorMessage });
       }
 
-      const trimmed = content.trim();
-      const MAX_LENGTH = 4000;
-      if (trimmed.length > MAX_LENGTH) {
-        return res.status(400).json({
-          error: `Комментарий слишком длинный (максимум ${MAX_LENGTH} символов)`,
-        });
-      }
-
-      const topicIdNum = Number(topicid);
-      if (isNaN(topicIdNum) || topicIdNum <= 0) {
+      const topicidNum = Number(topicid);
+      if (isNaN(topicidNum) || topicidNum <= 0) {
         return res
           .status(400)
           .json({ error: 'topicid должен быть положительным числом' });
       }
 
       // Проверка существования топика (важно!)
-      const topicExists = await Topic.findByPk(topicIdNum, {
+      const topicExists = await Topic.findByPk(topicidNum, {
         attributes: ['id'],
       });
       if (!topicExists) {
@@ -42,9 +36,9 @@ export const commentController = {
       }
 
       const comment = await Comment.create({
-        content: trimmed,
-        userid: userId,
-        topicid: topicIdNum,
+        content: content.trim(),
+        userid: userid,
+        topicid: topicidNum,
       });
 
       return res.status(201).json(comment);
@@ -59,7 +53,14 @@ export const commentController = {
       const { topicid } = req.params;
 
       // TODO: middleware авторизации добавит req.user
-      const userid = (req as any).user?.id;
+      const userid = (req as AuthRequest).user?.id;
+
+      const topicidNum = Number(topicid);
+      if (isNaN(topicidNum) || topicidNum <= 0) {
+        return res.status(400).json({
+          error: 'topicid должен быть положительным числом',
+        });
+      }
 
       if (!userid) {
         return res.status(401).json({ error: 'Требуется авторизация' });
@@ -91,33 +92,24 @@ export const commentController = {
 
   async update(req: Request, res: Response) {
     try {
-      const { id } = req.params;
-      const userId = (req as any).user?.id;
+      const { id, content } = req.params;
+      const userid = (req as AuthRequest).user?.id;
 
-      if (!userId) {
+      if (!userid) {
         return res.status(401).json({ error: 'Требуется авторизация' });
       }
 
-      const rawContent = req.body.content;
-      const content = String(rawContent ?? '').trim();
-
-      if (rawContent != null && typeof rawContent !== 'string') {
-        return res
-          .status(400)
-          .json({ error: 'Поле content должно быть строкой' });
-      }
-
-      const MAX_COMMENT_LENGTH = 4000;
-      if (content.length > MAX_COMMENT_LENGTH) {
+      const idNum = Number(id);
+      if (isNaN(idNum) || idNum <= 0) {
         return res.status(400).json({
-          error: `Комментарий слишком длинный (максимум ${MAX_COMMENT_LENGTH} символов)`,
+          error: 'id должен быть положительным числом',
         });
       }
 
-      if (content.length === 0) {
-        return res
-          .status(400)
-          .json({ error: 'Комментарий не может быть пустым' });
+      const validationResult = validateContent(content, 'content', 4000);
+
+      if (!validationResult.isValid) {
+        return res.status(400).json({ error: validationResult.errorMessage });
       }
 
       const [affectedCount, updatedComments] = await Comment.update(
@@ -125,7 +117,7 @@ export const commentController = {
         {
           where: {
             id: Number(id),
-            userid: userId,
+            userid: userid,
           },
           returning: true,
         }
@@ -151,16 +143,23 @@ export const commentController = {
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const userId = (req as any).user?.id;
+      const userid = (req as AuthRequest).user?.id;
 
-      if (!userId) {
+      if (!userid) {
         return res.status(401).json({ error: 'Требуется авторизация' });
+      }
+
+      const idNum = Number(id);
+      if (isNaN(idNum) || idNum <= 0) {
+        return res.status(400).json({
+          error: 'id должен быть положительным числом',
+        });
       }
 
       const deletedCount = await Comment.destroy({
         where: {
           id: Number(id),
-          userid: userId,
+          userid: userid,
         },
       });
 
