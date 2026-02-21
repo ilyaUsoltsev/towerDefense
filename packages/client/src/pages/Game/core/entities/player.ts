@@ -11,7 +11,7 @@ class Player {
     this.playerHealth -= 1;
     eventBus.emit('redux:setPlayerHp', { hp: this.playerHealth });
     if (this.playerHealth <= 0) {
-      eventBus.emit('redux:gameOver', { isWin: false, score: 0 });
+      eventBus.emit('redux:gameOver', { isWin: false, score: this.getScore() });
       StopSound('backgroundMusic');
       SoundLib('lose');
     }

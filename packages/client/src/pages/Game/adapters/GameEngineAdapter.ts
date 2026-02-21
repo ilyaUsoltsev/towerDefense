@@ -1,6 +1,8 @@
 import type { Store } from '@reduxjs/toolkit';
 
-import { RootState } from '../../../store';
+import { RootState, AppDispatch } from '../../../store';
+
+type AppStore = Store<RootState> & { dispatch: AppDispatch };
 import GameEngine from '../core/gameEngine';
 
 import {
@@ -13,6 +15,7 @@ import {
   gameClearUpgradeCommand,
   gameOver,
 } from '../../../slices/gameSlice';
+import { addLeaderboardResultThunk } from '../../../slices/leaderboardSlice';
 import { eventBus } from '../core/utils/eventBus';
 import { CannonType } from '../constants/cannons-config';
 import { GameConfig } from '../constants/game-config';
@@ -27,10 +30,7 @@ export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
   private prevSelectedCannon: CannonType | null = null;
   private isCleanedUp = false;
-  constructor(
-    private gameEngine: GameEngine,
-    private store: Store<RootState>
-  ) {}
+  constructor(private gameEngine: GameEngine, private store: AppStore) {}
 
   // Этот метод обеспечивает синхронизацию от движка к Redux
   // Все события должны начинаться с "redux:"
@@ -74,6 +74,7 @@ export class GameEngineAdapter {
 
     const unsubGameOver = eventBus.on('redux:gameOver', ({ isWin, score }) => {
       this.store.dispatch(gameOver({ isWin, score }));
+      this.store.dispatch(addLeaderboardResultThunk({ isWin, score }));
     });
     this.unsubSink.push(unsubGameOver);
 

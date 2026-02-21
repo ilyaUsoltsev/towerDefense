@@ -31,3 +31,19 @@ export type LoginRequestData = {
 export type OauthServiceIdResponse = {
   service_id: string;
 };
+
+export type LeaderboardAddRequest = {
+  data: Record<string, unknown>;
+  ratingFieldName: string;
+  teamName: string;
+};
+
+export type LeaderboardGetRequest = {
+  ratingFieldName: string;
+  cursor: number;
+  limit: number;
+};
+
+export type LeaderboardEntry = {
+  data: Record<string, unknown>;
+};
