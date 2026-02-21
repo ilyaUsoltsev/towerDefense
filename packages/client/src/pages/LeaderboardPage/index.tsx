@@ -70,7 +70,9 @@ export const LeaderboardPage = () => {
               <p>{error}</p>
               <Button
                 view="outlined"
-                onClick={() => dispatch(fetchLeaderboardThunk())}>
+                onClick={() =>
+                  dispatch(fetchLeaderboardThunk({ cursor: 0, limit: 10 }))
+                }>
                 Повторить
               </Button>
             </div>
