@@ -49,7 +49,7 @@ class EnemyManager {
       reward
     );
     this.enemies.push(enemy);
-    SoundLib(GameConfig.sound.enemySpawn.src, GameConfig.sound.enemySpawn.vol);
+    SoundLib('enemySpawn');
   }
 
   startSpawning(): void {
@@ -95,7 +95,7 @@ class EnemyManager {
         score: this.player.getScore(),
       });
       StopSound('backgroundMusic');
-      SoundLib(GameConfig.sound.win.src, GameConfig.sound.win.vol);
+      SoundLib('win');
     }
   }
 
@@ -159,16 +159,13 @@ class EnemyManager {
   }
 
   private handleEnemyDestroyed(enemy: Enemy) {
-    SoundLib(GameConfig.sound.enemyDeath.src, GameConfig.sound.enemyDeath.vol);
+    SoundLib('enemyDeath');
     this.player.addMoney(enemy.reward);
     this.player.addScore(enemy.maxHealth);
   }
 
   private handleEnemyReachedEnd() {
-    SoundLib(
-      GameConfig.sound.enemyDespawn.src,
-      GameConfig.sound.enemyDespawn.vol
-    );
+    SoundLib('enemyDespawn');
     this.player.takeDamage();
   }
 

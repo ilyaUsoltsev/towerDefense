@@ -13,7 +13,7 @@ class Player {
     if (this.playerHealth <= 0) {
       eventBus.emit('redux:gameOver', { isWin: false, score: 0 });
       StopSound('backgroundMusic');
-      SoundLib(GameConfig.sound.loss.src, GameConfig.sound.loss.vol);
+      SoundLib('loss');
     }
     return this.playerHealth;
   }

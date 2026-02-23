@@ -43,7 +43,7 @@ const GameMenu = () => {
             className="cursor-pointer"
             onClick={() => {
               chooseCannon(cannonType);
-              SoundLib(GameConfig.sound.click.src, GameConfig.sound.click.vol);
+              SoundLib('click');
             }}>
             <img
               src={CannonsConfig[cannonType].imagePath}

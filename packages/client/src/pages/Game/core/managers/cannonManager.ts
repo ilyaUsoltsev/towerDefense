@@ -28,10 +28,7 @@ class CannonManager {
   addCannon(position: Tile, cannonType: CannonType): void {
     const cannon = new Cannon(position, cannonType, this.projectileManager);
     this.cannons.set(cannon.id, cannon);
-    SoundLib(
-      GameConfig.sound.placeCannon.src,
-      GameConfig.sound.placeCannon.vol
-    );
+    SoundLib('placeCannon');
   }
 
   removeCannonById(id: string): void {
