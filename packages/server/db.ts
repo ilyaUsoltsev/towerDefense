@@ -1,28 +1,56 @@
-import { Client } from 'pg';
+import { Sequelize } from 'sequelize';
 
-const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
-  process.env;
+const {
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_DB,
+  POSTGRES_PORT,
+  POSTGRES_HOST,
+} = process.env;
 
-export const createClientAndConnect = async (): Promise<Client | null> => {
+const sequelize = new Sequelize({
+  dialect: 'postgres',
+  host: POSTGRES_HOST || 'localhost',
+  port: Number(POSTGRES_PORT) || 5432,
+  username: required('username', POSTGRES_USER),
+  password: required('password', POSTGRES_PASSWORD),
+  database: POSTGRES_DB,
+  logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  retry: {
+    max: 8,
+    match: [
+      /SequelizeConnectionError/,
+      /SequelizeConnectionRefusedError/,
+      /SequelizeHostNotFoundError/,
+      /SequelizeConnectionTimedOutError/,
+      /ECONNREFUSED/,
+      /ETIMEDOUT/,
+    ],
+  },
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
+});
+
+export async function connectToDatabase() {
   try {
-    const client = new Client({
-      user: POSTGRES_USER,
-      host: 'localhost',
-      database: POSTGRES_DB,
-      password: POSTGRES_PASSWORD,
-      port: Number(POSTGRES_PORT),
-    });
-
-    await client.connect();
-
-    const res = await client.query('SELECT NOW()');
-    console.log('  ➜ 🎸 Connected to the database at:', res?.rows?.[0].now);
-    client.end();
-
-    return client;
-  } catch (e) {
-    console.error(e);
+    await sequelize.authenticate();
+    await sequelize.sync();
+    console.log('→ PostgreSQL подключено успешно');
+    return sequelize;
+  } catch (err) {
+    console.error('❌ Ошибка подключения к PostgreSQL:', err);
+    throw err; // чтобы приложение упало, если БД недоступна
   }
+}
 
-  return null;
-};
+function required(name: string, value?: string) {
+  if (!value) throw new Error(`Missing env ${name}`);
+  return value;
+}
+
+// Экспортируем готовый экземпляр (но используем после await initializeDatabase())
+export { sequelize };
