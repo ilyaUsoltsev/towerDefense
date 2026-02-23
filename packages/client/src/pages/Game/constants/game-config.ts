@@ -4,7 +4,6 @@ export const GameConfig = {
   initialMoney: 80,
   tileSize: 32,
   maxCannonLevel: 5,
-  lowHpThreshold: 3,
   healthBar: {
     width: 24,
     height: 3,
@@ -15,5 +14,5 @@ export const GameConfig = {
     color: 'orange',
   },
   sellValue: 0.7,
-  gameStartDelay: 5,
+  gameStartDelay: 5, // в секундах
 } as const;

@@ -1,0 +1,92 @@
+:root {
+  --size: 20vw;
+}
+
+.forum_body {
+  height: 79%;
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+  overflow: scroll;
+}
+.content::-webkit-scrollbar,
+.topic::-webkit-scrollbar,
+.comments_wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.discussion_img {
+  top: 0;
+}
+.discussion_img img {
+  width: 100%;
+  height: var(--size);
+  object-fit: cover;
+  border-radius: 1vh;
+  background: lightgray;
+  display: flex;
+}
+.topic {
+  overflow: scroll;
+  align-items: start;
+  margin-top: 4vh;
+  padding-top: 0.5vh;
+}
+.topic h1 {
+  margin-bottom: 1.6vh;
+}
+.topic p {
+  overflow: visible;
+}
+
+.comments {
+  width: 100%;
+  height: fit-content;
+  max-height: 71%;
+  margin: 6vh 0 2vh 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to top, transparent, black 15%);
+}
+.comments h2 {
+  margin-bottom: 1vh;
+}
+.comments_wrapper {
+  gap: 2vh;
+  overflow: scroll;
+  align-items: start;
+}
+.comments_section {
+  width: 70%;
+  padding-bottom: 6.8vh;
+}
+.comments_filler {
+  margin-top: 10vh;
+  color: var(--g-color-text-hint);
+  text-align: center;
+}
+
+.vertical_separator,
+.write_comment_section {
+  top: 0;
+  position: sticky;
+}
+.vertical_separator {
+  width: 0.1vw;
+  height: 45vh;
+  background: linear-gradient(
+    to top,
+    transparent,
+    var(--g-color-base-brand) 15% 85%,
+    transparent
+  );
+}
+
+.write_comment_section {
+  width: 30%;
+}
+.write_comment_section h3 {
+  font-weight: 400;
+  margin-bottom: 1.6vh;
+}
