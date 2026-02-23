@@ -26,7 +26,7 @@ class ProjectileManager {
 
     this.projectiles.push(projectile);
 
-    if (cannon.cannonType !== 'dumb') SoundLib(cannon.cannonType, 0.3);
+    if (cannon.cannonType !== 'dumb') SoundLib(cannon.cannonType);
   }
 
   update(enemies: Enemy[]): void {
