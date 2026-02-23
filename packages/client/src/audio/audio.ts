@@ -39,7 +39,8 @@ export function SoundLib(name: keyof typeof sounds) {
 
   if (name === 'backgroundMusic') audio.loop = true;
 
-  audio.volume = volume[name];
+  const vol = volume[name];
+  audio.volume = typeof vol === 'number' ? vol : 1;
 
   audio.currentTime = 0;
   audio.play();
