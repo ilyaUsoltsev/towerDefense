@@ -13,6 +13,8 @@ import {
 import { EffectsConfig } from './constants/effects-config';
 import { getFireFreq } from './utils/get-fire-freq';
 import { isUpgradable } from '../../slices/utils/is-upgradable';
+import { SoundLib } from '../../audio/audio';
+import { GameConfig } from './constants/game-config';
 
 const GameMenu = () => {
   const selectedEntity = useSelector(state => state.game.selectedEntity);
@@ -39,7 +41,10 @@ const GameMenu = () => {
           <span
             key={cannonType}
             className="cursor-pointer"
-            onClick={() => chooseCannon(cannonType)}>
+            onClick={() => {
+              chooseCannon(cannonType);
+              SoundLib('click');
+            }}>
             <img
               src={CannonsConfig[cannonType].imagePath}
               alt={cannonType}

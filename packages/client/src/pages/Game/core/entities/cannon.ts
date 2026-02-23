@@ -10,6 +10,7 @@ import {
 import { Effect, EffectsConfig } from '../../constants/effects-config';
 import { SelectedEntity } from '../../../../slices/gameSlice';
 import { assetsManager } from '../managers/assetsManager';
+import { SoundLib } from '../../../../audio/audio';
 
 class Cannon {
   id: string;
@@ -57,6 +58,7 @@ class Cannon {
     this.range = Math.floor(this.range * 1.1);
     this.fireRate = this.fireRate / 1.1;
     this.projectileSpeed = this.projectileSpeed * 1.1;
+    SoundLib('upgrade');
   }
 
   getSellValue(): number {
