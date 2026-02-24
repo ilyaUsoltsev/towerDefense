@@ -1,6 +1,5 @@
 import { NextFunction, Response } from 'express';
 import NodeCache from 'node-cache';
-import fetch from 'node-fetch';
 import { AuthRequest, UserData } from '../types/auth';
 import { config } from './config';
 
@@ -20,7 +19,6 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    console.log('AuthMiddleware', req);
     const cookies = req.cookies;
 
     if (!cookies || !cookies.authCookie) {
@@ -44,10 +42,8 @@ export const authMiddleware = async (
     req.user = userData;
     return next();
   } catch (error) {
-    return res
-      .status(401)
-      .json({
-        error: error ? JSON.stringify(error) : 'User not authenticated',
-      });
+    return res.status(401).json({
+      error: error ? JSON.stringify(error) : 'User not authenticated',
+    });
   }
 };
