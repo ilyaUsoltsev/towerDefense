@@ -5,11 +5,12 @@ import cors from 'cors';
 import express from 'express';
 import { sequelize, connectToDatabase } from './db';
 import apiRoutes from './routes';
+import { authMiddleware } from './middleware/auth';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use('/api', apiRoutes);
+app.use('/api', authMiddleware, apiRoutes);
 
 const PORT = Number(process.env.SERVER_PORT) || 3001;
 
