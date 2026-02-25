@@ -32,8 +32,16 @@ export type OauthServiceIdResponse = {
   service_id: string;
 };
 
+/** Данные одной записи лидерборда (контракт с бэкендом). */
+export interface LeaderboardEntryData {
+  towerDefenseScore: number;
+  login?: string;
+  display_name?: string;
+  isWin?: boolean;
+}
+
 export type LeaderboardAddRequest = {
-  data: Record<string, unknown>;
+  data: LeaderboardEntryData;
   ratingFieldName: string;
   teamName: string;
 };
@@ -45,5 +53,5 @@ export type LeaderboardGetRequest = {
 };
 
 export type LeaderboardEntry = {
-  data: Record<string, unknown>;
+  data: LeaderboardEntryData;
 };

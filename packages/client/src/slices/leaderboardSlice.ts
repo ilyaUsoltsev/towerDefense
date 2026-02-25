@@ -1,18 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import LeaderboardApi from '../api/leaderboard';
-import { HttpClient } from '../utils/httpClient';
-import type { APIError } from '../api/type';
-
-const isApiErrorResponse = (r: unknown): r is APIError =>
-  typeof r === 'object' && r !== null && 'status' in r;
-import { LEADERBOARD_RATING_FIELD_NAME } from '../constants/leaderboard';
+import { httpClient } from '../api/httpClientInstance';
 import { selectUser } from './userSlice';
 import type { LeaderboardEntry } from '../api/type';
 
-const httpClient = new HttpClient({
-  baseUrl: 'https://ya-praktikum.tech/api/v2',
-});
 const leaderboardApi = new LeaderboardApi(httpClient);
 
 export interface LeaderboardState {
@@ -27,45 +19,49 @@ const initialState: LeaderboardState = {
   error: null,
 };
 
+export type AddLeaderboardResultPayload = { score: number; isWin: boolean };
+export type FetchLeaderboardPayload = {
+  cursor?: number;
+  limit?: number;
+};
+
 // Отправить результат в лидерборд по окончанию игры. Перезапишется только если новыйсчёт больше
-export const addLeaderboardResultThunk = createAsyncThunk(
-  'leaderboard/addResult',
-  async (
-    payload: { score: number; isWin: boolean },
-    { getState, rejectWithValue }
-  ) => {
-    const state = getState() as RootState;
-    const user = selectUser(state);
-    const data: Record<string, unknown> = {
-      [LEADERBOARD_RATING_FIELD_NAME]: payload.score,
-      isWin: payload.isWin,
-    };
-    if (user?.login) {
-      data.login = user.login;
-    }
-    const result = await leaderboardApi.addResult(data);
-    if (result && isApiErrorResponse(result)) {
-      return rejectWithValue(result.reason ?? result.message ?? 'Ошибка');
-    }
+export const addLeaderboardResultThunk = createAsyncThunk<
+  void,
+  AddLeaderboardResultPayload,
+  { rejectValue: string }
+>('leaderboard/addResult', async (payload, { getState, rejectWithValue }) => {
+  const state = getState() as RootState;
+  const user = selectUser(state);
+  const data = leaderboardApi.mapUserToEntryData(
+    user ?? null,
+    payload.score,
+    payload.isWin
+  );
+  try {
+    await leaderboardApi.addResult(data);
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Ошибка отправки результата'
+    );
   }
-);
+});
 
 // Подтягивает лидерборд с бэкенда
-export const fetchLeaderboardThunk = createAsyncThunk(
-  'leaderboard/fetch',
-  async (
-    { cursor = 0, limit = 10 }: { cursor?: number; limit?: number } = {},
-    { rejectWithValue }
-  ) => {
-    const result = await leaderboardApi.getLeaderboard(cursor, limit);
-    if (result && isApiErrorResponse(result)) {
-      return rejectWithValue(
-        result.reason ?? result.message ?? 'Ошибка загрузки лидерборда'
-      );
-    }
-    return (result ?? []) as LeaderboardEntry[];
+export const fetchLeaderboardThunk = createAsyncThunk<
+  LeaderboardEntry[],
+  FetchLeaderboardPayload | void,
+  { rejectValue: string }
+>('leaderboard/fetch', async (arg = {}, { rejectWithValue }) => {
+  const { cursor = 0, limit = 10 } = arg ?? {};
+  try {
+    return await leaderboardApi.getLeaderboard(cursor, limit);
+  } catch (err) {
+    return rejectWithValue(
+      err instanceof Error ? err.message : 'Ошибка загрузки лидерборда'
+    );
   }
-);
+});
 
 const leaderboardSlice = createSlice({
   name: 'leaderboard',
@@ -88,7 +84,22 @@ const leaderboardSlice = createSlice({
       })
       .addCase(fetchLeaderboardThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error =
+          action.payload ??
+          action.error?.message ??
+          'Ошибка загрузки лидерборда';
+      })
+      .addCase(addLeaderboardResultThunk.pending, state => {
+        state.error = null;
+      })
+      .addCase(addLeaderboardResultThunk.fulfilled, state => {
+        state.error = null;
+      })
+      .addCase(addLeaderboardResultThunk.rejected, (state, action) => {
+        state.error =
+          action.payload ??
+          action.error?.message ??
+          'Ошибка отправки результата';
       });
   },
 });

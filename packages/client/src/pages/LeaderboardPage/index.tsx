@@ -11,7 +11,6 @@ import {
 } from '../../slices/leaderboardSlice';
 import { PageInitArgs } from '../../routes';
 import { usePage } from '../../hooks/usePage';
-import { LEADERBOARD_RATING_FIELD_NAME } from '../../constants/leaderboard';
 import styles from './LeaderboardPage.module.css';
 
 const getColumns = () => [
@@ -40,20 +39,11 @@ export const LeaderboardPage = () => {
   }
 
   const data = entries.map((entry, index) => {
-    const score = entry.data[LEADERBOARD_RATING_FIELD_NAME];
-    const scoreNum =
-      typeof score === 'number'
-        ? score
-        : typeof score === 'string'
-        ? Number(score)
-        : 0;
-    const username =
-      (entry.data.login as string) ??
-      (entry.data.display_name as string) ??
-      '—';
+    const scoreNum = entry.data.towerDefenseScore ?? 0;
+    const username = entry.data.login ?? entry.data.display_name ?? '—';
     return {
       position: (index + 1).toString(),
-      username: String(username),
+      username,
       score: Number.isFinite(scoreNum) ? scoreNum.toLocaleString('ru-RU') : '0',
     };
   });
