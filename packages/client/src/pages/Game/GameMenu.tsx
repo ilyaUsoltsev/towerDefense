@@ -52,14 +52,14 @@ const GameMenu = () => {
           </span>
         ))}
       </div>
-      {gameSelectedCannon && (
+      {!!gameSelectedCannon && (
         <Card className="p-2 flex-col gap-2">
           <p>{CannonsConfig[gameSelectedCannon].name}</p>
           <p>Урон: {CannonsConfig[gameSelectedCannon].damage}</p>
           <p>
             Эффект:{' '}
             {EffectsConfig[gameSelectedCannon]
-              ? EffectsConfig[gameSelectedCannon].name
+              ? EffectsConfig[gameSelectedCannon]?.name
               : 'Нет'}
           </p>
           <p>Дальность: {CannonsConfig[gameSelectedCannon].range}</p>
