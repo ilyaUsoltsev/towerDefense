@@ -14,7 +14,6 @@ import { EffectsConfig } from './constants/effects-config';
 import { getFireFreq } from './utils/get-fire-freq';
 import { isUpgradable } from '../../slices/utils/is-upgradable';
 import { SoundLib } from '../../audio/audio';
-import { GameConfig } from './constants/game-config';
 
 const GameMenu = () => {
   const selectedEntity = useSelector(state => state.game.selectedEntity);
@@ -53,14 +52,14 @@ const GameMenu = () => {
           </span>
         ))}
       </div>
-      {gameSelectedCannon && (
+      {!!gameSelectedCannon && (
         <Card className="p-2 flex-col gap-2">
           <p>{CannonsConfig[gameSelectedCannon].name}</p>
           <p>Урон: {CannonsConfig[gameSelectedCannon].damage}</p>
           <p>
             Эффект:{' '}
             {EffectsConfig[gameSelectedCannon]
-              ? EffectsConfig[gameSelectedCannon].name
+              ? EffectsConfig[gameSelectedCannon]?.name
               : 'Нет'}
           </p>
           <p>Дальность: {CannonsConfig[gameSelectedCannon].range}</p>
