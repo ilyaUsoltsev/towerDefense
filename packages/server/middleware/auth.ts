@@ -1,3 +1,4 @@
+import * as crypto from 'crypto';
 import { NextFunction, Response } from 'express';
 import NodeCache from 'node-cache';
 import { AuthRequest, UserData } from '../types/auth';
@@ -5,9 +6,20 @@ import { config } from './config';
 
 const sessionCache = new NodeCache({ stdTTL: config.CACHE_TTL_SECONDS });
 
+const createCacheKey = (cookies: string): string => {
+  const hash = crypto.createHash('sha256').update(cookies).digest('hex');
+  return `session:${hash}`;
+};
+
 // Проверяем сессию на бэкенде
-const verifyUser = async (): Promise<UserData> => {
-  const response = await fetch(`${config.AUTH_SERVICE_URL}/api/v2/auth/user`);
+const verifyUser = async (cookies: string): Promise<UserData> => {
+  const response = await fetch(`${config.AUTH_SERVICE_URL}/api/v2/auth/user`, {
+    method: 'GET',
+    headers: {
+      Cookie: cookies,
+      'Content-Type': 'application/json',
+    },
+  });
 
   if (!response.ok) throw new Error('Invalid session');
   return (await response.json()) as UserData;
@@ -19,19 +31,18 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const cookies = req.cookies;
+    const cookies = req.headers.cookie;
 
-    if (!cookies || !cookies.authCookie) {
+    if (!cookies) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
 
     let userData: UserData | null = null;
-    let cacheKey: string | null = null;
+    const cacheKey = createCacheKey(cookies);
 
-    cacheKey = `session:${cookies.uuid}`;
-    userData = sessionCache.get(cacheKey) || null;
+    userData = sessionCache.get<UserData>(cacheKey) || null;
     if (!userData) {
-      userData = await verifyUser();
+      userData = await verifyUser(cookies);
       sessionCache.set(cacheKey, userData, config.CACHE_TTL_SECONDS);
     }
 
@@ -42,8 +53,9 @@ export const authMiddleware = async (
     req.user = userData;
     return next();
   } catch (error) {
+    console.error('Auth middleware error:', error);
     return res.status(401).json({
-      error: error ? JSON.stringify(error) : 'User not authenticated',
+      error: 'User not authenticated',
     });
   }
 };

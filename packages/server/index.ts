@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
 
 import cors from 'cors';
 import express from 'express';
@@ -8,8 +7,8 @@ import apiRoutes from './routes';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 app.use('/api', authMiddleware, apiRoutes);
 
 const PORT = Number(process.env.SERVER_PORT) || 3001;
@@ -26,7 +25,7 @@ const PORT = Number(process.env.SERVER_PORT) || 3001;
       console.log(`  ➜ 🎸 Server запущен на порту: ${PORT}`);
     });
   } catch (err) {
-    console.error('Не удалось запустить сервер из-за проблем с БД');
+    console.error('Не удалось запустить сервер из-за проблем с БД: ', err);
     process.exit(1);
   }
 })();
