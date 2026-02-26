@@ -34,6 +34,15 @@
   border-radius: 4px;
 }
 
+.leaderboard__error {
+  color: var(--g-color-text-danger);
+  margin-bottom: 16px;
+}
+
+.leaderboard__error p {
+  margin: 0 0 8px 0;
+}
+
 .leaderboard__title {
   text-align: center;
   font-size: 32px;
