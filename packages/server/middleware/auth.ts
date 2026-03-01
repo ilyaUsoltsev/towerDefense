@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
-import { NextFunction, Response } from 'express';
+import type { NextFunction, Response } from 'express';
 import NodeCache from 'node-cache';
-import { AuthRequest, UserData } from '../types/auth';
+import type { AuthRequest, UserData } from '../types/auth';
 import { config } from './config';
 
 const sessionCache = new NodeCache({ stdTTL: config.CACHE_TTL_SECONDS });
@@ -23,6 +23,28 @@ const verifyUser = async (cookies: string): Promise<UserData> => {
 
   if (!response.ok) throw new Error('Invalid session');
   return (await response.json()) as UserData;
+};
+
+export const optionalAuthMiddleware = async (
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction
+) => {
+  try {
+    const cookies = req.headers.cookie;
+    if (cookies) {
+      const cacheKey = createCacheKey(cookies);
+      let userData = sessionCache.get<UserData>(cacheKey) || null;
+      if (!userData) {
+        userData = await verifyUser(cookies);
+        sessionCache.set(cacheKey, userData, config.CACHE_TTL_SECONDS);
+      }
+      if (userData) req.user = userData;
+    }
+  } catch {
+    // Неудача авторизации — нормально для опционального middleware
+  }
+  return next();
 };
 
 export const authMiddleware = async (
