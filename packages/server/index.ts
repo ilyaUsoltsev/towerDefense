@@ -1,4 +1,10 @@
-import 'dotenv/config';
+import path from 'path';
+import { config } from 'dotenv';
+import { existsSync } from 'fs';
+
+const envPath = path.resolve(__dirname, '../../.env');
+const envPathFromDist = path.resolve(__dirname, '../../../.env');
+config({ path: existsSync(envPath) ? envPath : envPathFromDist });
 
 import cors from 'cors';
 import express from 'express';
@@ -8,7 +14,13 @@ import { authMiddleware } from './middleware/auth';
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+const clientPort = process.env.CLIENT_PORT || '3000';
+app.use(
+  cors({
+    origin: `http://localhost:${clientPort}`,
+    credentials: true,
+  })
+);
 app.use('/api', authMiddleware, apiRoutes);
 
 const PORT = Number(process.env.SERVER_PORT) || 3001;

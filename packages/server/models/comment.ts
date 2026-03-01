@@ -8,6 +8,7 @@ interface CommentAttributes {
   content: string;
   userid: number;
   topicid: number;
+  author_login: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -25,6 +26,7 @@ class Comment
   declare content: string;
   declare userid: number;
   declare topicid: number;
+  declare author_login: string | null;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 
@@ -42,6 +44,7 @@ Comment.init(
     content: { type: DataTypes.TEXT, allowNull: false },
     userid: { type: DataTypes.INTEGER, allowNull: false },
     topicid: { type: DataTypes.INTEGER, allowNull: false },
+    author_login: { type: DataTypes.STRING(255), allowNull: true },
   },
   {
     sequelize,
