@@ -18,6 +18,15 @@ export interface ThemeState {
 
 const initialState: ThemeState = { theme: DEFAULT_THEME };
 
+export const fetchThemeThunk = createAsyncThunk(
+  'theme/fetch',
+  async (_, { rejectWithValue }) => {
+    const result = await themeApi.getTheme();
+    if (isApiError(result)) return rejectWithValue(result);
+    return (result as ThemeResponse).theme;
+  }
+);
+
 export const setThemeThunk = createAsyncThunk(
   'theme/set',
   async (theme: Theme, { rejectWithValue }) => {
@@ -40,6 +49,9 @@ export const themeSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      .addCase(fetchThemeThunk.fulfilled, (state, action) => {
+        state.theme = action.payload;
+      })
       .addCase(setThemeThunk.pending, (state, action) => {
         state.theme = action.meta.arg; // optimistic update
       })
