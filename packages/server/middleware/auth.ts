@@ -27,7 +27,7 @@ const verifyUser = async (cookies: string): Promise<UserData> => {
 
 export const optionalAuthMiddleware = async (
   req: AuthRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   try {

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { UserPreference } from '../models';
 import { THEME_VALUES, type Theme } from '../types/theme';
-import { AuthRequest } from '../types/auth';
+import type { AuthRequest } from '../types/auth';
 
 const DEFAULT_THEME: Theme = 'light';
 

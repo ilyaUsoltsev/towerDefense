@@ -1,4 +1,3 @@
-import { UserPreference } from './userPreference';
 import { Topic } from './topic';
 import { Comment } from './comment';
 import { Reply } from './reply';
