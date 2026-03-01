@@ -8,34 +8,21 @@ import { store } from './store';
 import { routes } from './routes';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import './index.css';
-import { FC, PropsWithChildren, useEffect, useRef } from 'react';
+import { FC, PropsWithChildren, useEffect } from 'react';
 import { useDispatch, useSelector } from './store';
-import { fetchThemeThunk, selectTheme, setTheme } from './slices/themeSlice';
-import { selectUser } from './slices/userSlice';
+import { selectTheme, setTheme } from './slices/themeSlice';
 import type { Theme } from './api/type';
 
 const ThemedApp: FC<PropsWithChildren> = ({ children }) => {
   const theme = useSelector(selectTheme);
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
 
-  // On mount: restore theme from localStorage for unauth users
+  // On mount: restore theme from localStorage (unauth users or non-SSR dev mode).
+  // Auth users in SSR get their theme from window.APP_INITIAL_STATE before hydration.
   useEffect(() => {
-    if (!user) {
-      const stored = localStorage.getItem('theme') as Theme | null;
-      if (stored) dispatch(setTheme(stored));
-    }
+    const stored = localStorage.getItem('theme') as Theme | null;
+    if (stored) dispatch(setTheme(stored));
   }, []);
-
-  // On login (client-side, without SSR): fetch theme from DB
-  const prevUserRef = useRef<typeof user>(user);
-  useEffect(() => {
-    const wasLoggedOut = prevUserRef.current === null;
-    prevUserRef.current = user;
-    if (user && wasLoggedOut) {
-      dispatch(fetchThemeThunk());
-    }
-  }, [user]);
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
