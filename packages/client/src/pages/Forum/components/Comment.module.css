@@ -71,7 +71,8 @@
   transition: inherit;
 }
 .reactions span:hover,
-.choices span:hover {
+.choices span:hover,
+.react img:hover {
   background: var(--g-color-private-blue-150-solid);
   cursor: pointer;
 }
@@ -89,21 +90,24 @@
   margin: auto 0;
   display: none;
 }
-.react:hover {
-  background: var(--g-color-private-blue-200-solid);
-  cursor: pointer;
-}
 .react img {
   width: var(--size);
   height: var(--size);
+  border-radius: 60%;
 }
 
 .choices {
   top: 0;
   right: 0;
   position: absolute;
-  border: none;
+  border: solid 1px var(--g-color-private-blue-200-solid);
   transform: translateY(-122%);
+  box-shadow: inset 0 0 0.5vh var(--g-color-private-blue-200-solid),
+    0 0 1vh var(--g-color-private-blue-200-solid);
   z-index: 10;
-  box-shadow: 0 0 2vh var(--g-color-text-dark-hint);
+}
+
+.reactions_overflow {
+  pointer-events: none;
+  background: none;
 }

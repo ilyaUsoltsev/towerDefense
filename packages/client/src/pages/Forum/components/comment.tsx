@@ -9,49 +9,82 @@ export interface CommentProps {
   reactions?: string[];
 }
 
-const reactionChoices = ['❤️', '🔥', '😂', '😍', '🤡', '☠️', '👍', '👊'];
+const fullReactionsList = ['❤️', '🔥', '😂', '😍', '🤡', '☠️', '👍', '👊'];
+const maxShownReaction = 3;
+
+function removeReaction(arr: typeof fullReactionsList, reaction: string) {
+  return arr.filter(el => el !== reaction);
+}
 
 export const Comment = ({
   avatar = '/default-user-icon.svg',
   userLogin = 'Anonymous',
   commentText,
-  reactions = [],
+  reactions = fullReactionsList,
 }: CommentProps) => {
   const [reactionsLocal, placeReaction] = useState(reactions);
-  const [userReaction, updateUserReaction] = useState(reactionChoices[4]);
+  const [userReaction, updateUserReaction] = useState(fullReactionsList[4]);
   const [areChoicesOpen, openChoices] = useState(false);
 
   function createChoiceUI(
-    reactionsList: typeof reactionChoices,
-    closeOnClick = false
+    reactionsList: typeof fullReactionsList,
+    fullReactionsListEnabled = false
   ) {
-    return reactionsList.map((reaction: string) => (
-      <span
-        className={`
-          ${comUx.reaction_box}
-          ${
-            closeOnClick
+    function createReactionsElements(reactionsList: typeof fullReactionsList) {
+      return reactionsList.map((reaction: string) => (
+        <span
+          className={`${comUx.reaction_box} ${
+            fullReactionsListEnabled
               ? ''
               : reaction === userReaction
               ? comUx.user_reaction
               : ''
-          }
-        `}
-        onClick={() => {
-          if (closeOnClick) {
-            if (!reactionsLocal.includes(reaction)) {
-              placeReaction([...reactionsLocal, reaction]);
+          }`}
+          onClick={() => {
+            if (fullReactionsListEnabled && !reactionsList.includes(reaction)) {
+              placeReaction([reaction, ...reactions]);
             }
-          }
-          updateUserReaction(reaction);
-        }}>
-        {reaction}
-      </span>
-    ));
+
+            if (!fullReactionsListEnabled) {
+              if (reaction === userReaction) {
+                if (reactionsList.includes(reaction)) {
+                  updateUserReaction(undefined as unknown as string);
+                  return;
+                }
+                placeReaction(removeReaction(reactionsList, reaction));
+                return;
+              }
+              placeReaction(current => [
+                reaction,
+                ...removeReaction(current, reaction),
+              ]);
+            }
+            updateUserReaction(reaction);
+          }}>
+          {reaction}
+        </span>
+      ));
+    }
+
+    if (reactionsList.length > maxShownReaction && !fullReactionsListEnabled) {
+      return (
+        <>
+          {createReactionsElements(
+            reactionsList.filter((_, idx) => idx < maxShownReaction)
+          )}
+          <span className={comUx.reactions_overflow}>
+            +{reactionsList.length - maxShownReaction}
+          </span>
+        </>
+      );
+    }
+    return createReactionsElements(reactionsList);
   }
 
   return (
-    <div className={comUx.comments_wrapper}>
+    <div
+      className={comUx.comments_wrapper}
+      onMouseLeave={() => openChoices(false)}>
       <div className={`${comUx.comment} ${ux.flex_row}`}>
         <img src={avatar} alt="user avatar" />
         <div>
@@ -72,7 +105,7 @@ export const Comment = ({
               }}>
               {areChoicesOpen ? (
                 <div className={`${comUx.reactions} ${comUx.choices}`}>
-                  {createChoiceUI(reactionChoices, true)}
+                  {createChoiceUI(fullReactionsList, true)}
                 </div>
               ) : (
                 <></>
@@ -88,7 +121,7 @@ export const Comment = ({
             }}>
             {areChoicesOpen ? (
               <div className={`${comUx.choices}`}>
-                {createChoiceUI(reactionChoices, true)}
+                {createChoiceUI(fullReactionsList, true)}
               </div>
             ) : (
               <></>
