@@ -11,7 +11,7 @@ export interface ForumTopic {
 }
 
 export const Topic = ({
-  image = '/topic-image.png',
+  image = '/topic-default-image.svg',
   title = 'Discussion Title',
   message,
   lastActivityMinutes = 0,
