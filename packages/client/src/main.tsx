@@ -22,7 +22,7 @@ const ThemedApp: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const stored = localStorage.getItem('theme') as Theme | null;
     if (stored) dispatch(setTheme(stored));
-  }, []);
+  }, [dispatch]);
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
