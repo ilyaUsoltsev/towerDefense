@@ -99,9 +99,6 @@
   background: var(--ld-theme);
   overflow: hidden;
   z-index: 1;
-  /* background: var(--g-color-private-yellow-200);
-    backdrop-filter: blur(var(--blur));
-    -webkit-backdrop-filter: blur(var(--blur)); */
 }
 .body_header {
   width: 100%;
