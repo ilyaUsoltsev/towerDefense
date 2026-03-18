@@ -25,6 +25,17 @@ const verifyUser = async (cookies: string): Promise<UserData> => {
   return (await response.json()) as UserData;
 };
 
+const DEV_MOCK_USER: UserData = {
+  id: 1,
+  login: 'dev-user',
+  first_name: 'Dev',
+  second_name: 'User',
+  display_name: 'Dev User',
+  avatar: '',
+  phone: '',
+  email: 'dev@local',
+};
+
 export const optionalAuthMiddleware = async (
   req: AuthRequest,
   _res: Response,
@@ -56,6 +67,10 @@ export const authMiddleware = async (
     const cookies = req.headers.cookie;
 
     if (!cookies) {
+      if (process.env.NODE_ENV === 'development') {
+        req.user = DEV_MOCK_USER;
+        return next();
+      }
       return res.status(401).json({ error: 'User not authenticated' });
     }
 
@@ -64,8 +79,16 @@ export const authMiddleware = async (
 
     userData = sessionCache.get<UserData>(cacheKey) || null;
     if (!userData) {
-      userData = await verifyUser(cookies);
-      sessionCache.set(cacheKey, userData, config.CACHE_TTL_SECONDS);
+      try {
+        userData = await verifyUser(cookies);
+        sessionCache.set(cacheKey, userData, config.CACHE_TTL_SECONDS);
+      } catch {
+        if (process.env.NODE_ENV === 'development') {
+          req.user = DEV_MOCK_USER;
+          return next();
+        }
+        throw new Error('Invalid session');
+      }
     }
 
     if (!userData) {

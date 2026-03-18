@@ -98,7 +98,7 @@ export const routes = [
     ),
   },
   {
-    path: ROUTE.FORUM_TOPIC,
+    path: `${ROUTE.FORUM_TOPIC}/:id`,
     element: (
       <ProtectedRoute>
         <ForumDiscussion />

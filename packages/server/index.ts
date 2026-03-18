@@ -1,5 +1,11 @@
-import dotenv from 'dotenv';
 import path from 'path';
+import { config } from 'dotenv';
+import { existsSync } from 'fs';
+
+const envPath = path.resolve(__dirname, '../../.env');
+const envPathFromDist = path.resolve(__dirname, '../../../.env');
+config({ path: existsSync(envPath) ? envPath : envPathFromDist });
+import dotenv from 'dotenv';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import cors from 'cors';
