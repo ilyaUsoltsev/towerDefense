@@ -95,6 +95,7 @@ export const ForumDiscussion = () => {
                       avatar={comment.avatar}
                       userLogin={comment.userLogin}
                       commentText={comment.commentText}
+                      reactions={comment.reactions}
                     />
                   ))
                 )}
