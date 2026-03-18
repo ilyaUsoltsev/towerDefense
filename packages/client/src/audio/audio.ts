@@ -48,10 +48,13 @@ class SoundManager {
     upgrade: 1,
   };
   private isClient: boolean;
+  private muted = false;
 
   constructor() {
     this.isClient = typeof window !== 'undefined';
-    if (this.isClient) this.initSounds();
+    if (this.isClient) {
+      this.initSounds();
+    }
   }
 
   private initSounds() {
@@ -69,6 +72,7 @@ class SoundManager {
       console.debug(`[SSR] Sound "${name}" would play on client`);
       return;
     }
+    if (this.muted) return;
 
     const audio = this.sounds[name];
     if (!audio) throw new Error(`Sound "${name}" not found`);
@@ -82,6 +86,23 @@ class SoundManager {
   stop(name: SoundName) {
     if (!this.isClient || !this.sounds[name]) return;
     this.sounds[name]?.pause();
+  }
+
+  toggleMute(): boolean {
+    this.muted = !this.muted;
+    if (this.muted) {
+      this.sounds['backgroundMusic']?.pause();
+    } else {
+      const bg = this.sounds['backgroundMusic'];
+      if (bg) {
+        bg.play().catch(err => console.error('Audio play error:', err));
+      }
+    }
+    return this.muted;
+  }
+
+  isMuted(): boolean {
+    return this.muted;
   }
 }
 
