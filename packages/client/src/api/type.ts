@@ -55,3 +55,6 @@ export type LeaderboardGetRequest = {
 export type LeaderboardEntry = {
   data: LeaderboardEntryData;
 };
+
+export type Theme = 'light' | 'dark';
+export type ThemeResponse = { theme: Theme };

@@ -1,33 +1,113 @@
-const lib: Record<string, HTMLAudioElement> = {
-  backgroundMusic: new Audio('/audio/music.mp3'),
-  click: new Audio('/audio/click.wav'),
-  win: new Audio('/audio/win.wav'),
-  lose: new Audio('/audio/lose.wav'),
+type SoundName =
+  | 'backgroundMusic'
+  | 'click'
+  | 'win'
+  | 'lose'
+  | 'enemy-death'
+  | 'spawn'
+  | 'despawn'
+  | 'place-cannon'
+  | 'basic'
+  | 'fast'
+  | 'rocket'
+  | 'sniper'
+  | 'freeze'
+  | 'upgrade';
 
-  enemyDeath: new Audio('/audio/enemy-death.wav'),
-  enemySpawn: new Audio('/audio/spawn.wav'),
-  enemyDespawn: new Audio('/audio/despawn.wav'),
-  placeCannon: new Audio('/audio/place-cannon.wav'),
-  basic: new Audio('/audio/basic-shot.wav'),
-  fast: new Audio('/audio/fast-shot.wav'),
-  rocket: new Audio('/audio/rocket-shot.wav'),
-  sniper: new Audio('/audio/sniper-shot.wav'),
-  freeze: new Audio('/audio/freeze-shot.wav'),
-  upgrade: new Audio('/audio/upgrade.wav'),
-};
+class SoundManager {
+  private sounds: Record<SoundName, HTMLAudioElement | null> = {
+    backgroundMusic: null,
+    click: null,
+    win: null,
+    lose: null,
+    'enemy-death': null,
+    spawn: null,
+    despawn: null,
+    'place-cannon': null,
+    basic: null,
+    fast: null,
+    rocket: null,
+    sniper: null,
+    freeze: null,
+    upgrade: null,
+  };
+  private volume: Record<SoundName, number> = {
+    backgroundMusic: 0.2,
+    click: 1,
+    win: 1,
+    lose: 1,
+    'enemy-death': 1,
+    spawn: 1,
+    despawn: 1,
+    'place-cannon': 0.3,
+    basic: 1,
+    fast: 1,
+    rocket: 1,
+    sniper: 1,
+    freeze: 1,
+    upgrade: 1,
+  };
+  private isClient: boolean;
+  private muted = false;
 
-export function SoundLib(name: string, vol?: number) {
-  const audio = lib[name];
-  if (!audio) throw new Error(`Sound "${name}" not found`);
+  constructor() {
+    this.isClient = typeof window !== 'undefined';
+    if (this.isClient) {
+      this.initSounds();
+    }
+  }
 
-  if (name === 'backgroundMusic') audio.loop = true;
+  private initSounds() {
+    (Object.keys(this.volume) as SoundName[]).forEach(name => {
+      if (name === 'backgroundMusic') {
+        this.sounds[name] = new Audio(`/audio/background-music.mp3`);
+      } else {
+        this.sounds[name] = new Audio(`/audio/${name}.wav`);
+      }
+    });
+  }
 
-  audio.volume = vol ? vol : 1;
+  play(name: SoundName) {
+    if (!this.isClient) {
+      console.debug(`[SSR] Sound "${name}" would play on client`);
+      return;
+    }
+    if (this.muted) return;
 
-  audio.currentTime = 0;
-  audio.play();
+    const audio = this.sounds[name];
+    if (!audio) throw new Error(`Sound "${name}" not found`);
+
+    if (name === 'backgroundMusic') audio.loop = true;
+    audio.volume = this.volume[name] ?? 1;
+    audio.currentTime = 0;
+    audio.play().catch(err => console.error('Audio play error:', err));
+  }
+
+  stop(name: SoundName) {
+    if (!this.isClient || !this.sounds[name]) return;
+    this.sounds[name]?.pause();
+  }
+
+  toggleMute(): boolean {
+    this.muted = !this.muted;
+    if (this.muted) {
+      this.sounds['backgroundMusic']?.pause();
+    } else {
+      const bg = this.sounds['backgroundMusic'];
+      if (bg) {
+        bg.play().catch(err => console.error('Audio play error:', err));
+      }
+    }
+    return this.muted;
+  }
+
+  isMuted(): boolean {
+    return this.muted;
+  }
 }
 
-export function StopSound(name: string) {
-  lib[name].pause();
-}
+export const soundManager = new SoundManager();
+
+// Экспорт функций для обратной совместимости
+export const SoundLib = soundManager.play.bind(soundManager);
+export const StopSound = soundManager.stop.bind(soundManager);

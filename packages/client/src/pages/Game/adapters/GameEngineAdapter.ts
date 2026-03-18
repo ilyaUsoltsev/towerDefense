@@ -29,6 +29,7 @@ import { NotificationService } from '../../../utils/NotificationService';
 export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
   private prevSelectedCannon: CannonType | null = null;
+  private prevWavesStarted = false;
   private isCleanedUp = false;
   constructor(private gameEngine: GameEngine, private store: AppStore) {}
 
@@ -128,6 +129,10 @@ export class GameEngineAdapter {
       this.gameEngine.mapManager.setPlacingCannonType(
         state.game.selectedCannon
       );
+    }
+
+    if (this.prevWavesStarted !== state.game.wavesStarted) {
+      this.gameEngine.setWavesStarted(state.game.wavesStarted);
     }
   }
 

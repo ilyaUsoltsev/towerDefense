@@ -1,15 +1,32 @@
+import path from 'path';
+import { config } from 'dotenv';
+import { existsSync } from 'fs';
+
+const envPath = path.resolve(__dirname, '../../.env');
+const envPathFromDist = path.resolve(__dirname, '../../../.env');
+config({ path: existsSync(envPath) ? envPath : envPathFromDist });
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import cors from 'cors';
 import express from 'express';
 import { sequelize, connectToDatabase } from './db';
 import apiRoutes from './routes';
+import themeRoutes from './routes/theme';
+import { authMiddleware, optionalAuthMiddleware } from './middleware/auth';
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use('/api', apiRoutes);
+app.use(
+  cors({
+    origin:
+      process.env.CLIENT_ORIGIN ||
+      `http://localhost:${process.env.CLIENT_PORT || 3000}`,
+    credentials: true,
+  })
+);
+app.use('/api', optionalAuthMiddleware, themeRoutes);
+app.use('/api', authMiddleware, apiRoutes);
 
 const PORT = Number(process.env.SERVER_PORT) || 3001;
 
@@ -25,7 +42,7 @@ const PORT = Number(process.env.SERVER_PORT) || 3001;
       console.log(`  ➜ 🎸 Server запущен на порту: ${PORT}`);
     });
   } catch (err) {
-    console.error('Не удалось запустить сервер из-за проблем с БД');
+    console.error('Не удалось запустить сервер из-за проблем с БД: ', err);
     process.exit(1);
   }
 })();

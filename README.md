@@ -1,6 +1,7 @@
 ## Видео с описанием задач и игры
 
-[Посмотреть видео](https://disk.yandex.ru/i/MYjitxRMnymmdw)
+[Посмотреть видео 5-6 спринты](https://disk.yandex.ru/i/MYjitxRMnymmdw)
+[Посмотреть видео 7-8 спринты](https://disk.yandex.ru/i/fBW_eEq5nGCfJQ)
 
 ### Описание игры
 

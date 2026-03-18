@@ -1,12 +1,12 @@
 import type { Request, Response } from 'express';
 import { Comment, Reply, Topic } from '../models';
 import { validateContent } from '../helpers/validateRequest';
-import { AuthRequest } from '../types/auth';
+import type { AuthRequest } from '../types/auth';
 
 export const commentController = {
   async create(req: Request, res: Response) {
     try {
-      const { topicid } = req.params;
+      const topicIdParam = req.params.topicId;
       const { content } = req.body;
 
       const userid = (req as AuthRequest).user?.id;
@@ -20,7 +20,7 @@ export const commentController = {
         return res.status(400).json({ error: validationResult.errorMessage });
       }
 
-      const topicidNum = Number(topicid);
+      const topicidNum = Number(topicIdParam);
       if (isNaN(topicidNum) || topicidNum <= 0) {
         return res
           .status(400)
@@ -35,10 +35,12 @@ export const commentController = {
         return res.status(404).json({ error: 'Топик не найден' });
       }
 
+      const authorLogin = (req as AuthRequest).user?.login ?? null;
       const comment = await Comment.create({
         content: content.trim(),
         userid: userid,
         topicid: topicidNum,
+        author_login: authorLogin,
       });
 
       return res.status(201).json(comment);
@@ -50,12 +52,12 @@ export const commentController = {
 
   async getByTopic(req: Request, res: Response) {
     try {
-      const { topicid } = req.params;
+      const topicIdParam = req.params.topicId;
 
       // TODO: middleware авторизации добавит req.user
       const userid = (req as AuthRequest).user?.id;
 
-      const topicidNum = Number(topicid);
+      const topicidNum = Number(topicIdParam);
       if (isNaN(topicidNum) || topicidNum <= 0) {
         return res.status(400).json({
           error: 'topicid должен быть положительным числом',
@@ -67,8 +69,8 @@ export const commentController = {
       }
 
       const comments = await Comment.findAll({
-        where: { topicid: Number(topicid) },
-        order: [['createdAt', 'ASC']],
+        where: { topicid: topicidNum },
+        order: [['createdAt', 'DESC']],
         include: [
           {
             association: Comment.associations.replies,

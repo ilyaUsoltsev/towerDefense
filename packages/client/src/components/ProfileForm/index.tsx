@@ -1,14 +1,14 @@
-import { Form } from 'react-final-form';
 import { Button, Card } from '@gravity-ui/uikit';
-import { FormField } from '../FormField';
+import { Form } from 'react-final-form';
+import { User } from '../../api/type';
 import {
   isNotEmpty,
   isValidEmail,
   isValidPhone,
   VALIDATION_MESSAGES,
 } from '../../utils/validation';
+import { FormField } from '../FormField';
 import styles from './ProfileForm.module.css';
-import { User } from '../../api/type';
 
 interface ProfileFormProps {
   user: User | null;

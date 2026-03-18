@@ -1,7 +1,7 @@
 export const GameConfig = {
   waveDelay: 10000,
   hp: 10,
-  initialMoney: 80,
+  initialMoney: 280,
   tileSize: 32,
   maxCannonLevel: 5,
   lowHpThreshold: 3,
