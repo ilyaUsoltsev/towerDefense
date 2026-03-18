@@ -11,7 +11,7 @@ import {
 import AuthApi from '../api/auth';
 import OauthApi from '../api/oauth';
 import { isApiError } from '../api/isApiError';
-import { HttpClient } from '../utils/httpClient';
+import { httpClient } from '../api/httpClientInstance';
 
 export interface UserState {
   data: User | null;
@@ -25,9 +25,6 @@ const initialState: UserState = {
   error: null,
 };
 
-const httpClient = new HttpClient({
-  baseUrl: 'https://ya-praktikum.tech/api/v2',
-});
 const authApi = new AuthApi(httpClient);
 const oauthApi = new OauthApi(httpClient);
 

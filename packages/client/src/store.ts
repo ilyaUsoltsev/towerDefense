@@ -11,6 +11,7 @@ import friendsReducer from './slices/friendsSlice';
 import ssrReducer from './slices/ssrSlice';
 import userReducer from './slices/userSlice';
 import gameReducer from './slices/gameSlice';
+import leaderboardReducer from './slices/leaderboardSlice';
 import themeReducer from './slices/themeSlice';
 
 // Глобально декларируем в window наш ключик
@@ -26,6 +27,7 @@ export const reducer = combineReducers({
   ssr: ssrReducer,
   user: userReducer,
   game: gameReducer,
+  leaderboard: leaderboardReducer,
   theme: themeReducer,
 });
 

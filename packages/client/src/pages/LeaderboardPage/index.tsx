@@ -1,25 +1,17 @@
-import { Table } from '@gravity-ui/uikit';
-import { useSelector } from '../../store';
+import { Table, Loader, Button } from '@gravity-ui/uikit';
+import { useDispatch, useSelector } from '../../store';
 import Header from '../../components/Header';
 import { PageHelmet } from '../../components/PageHelmet';
 import { fetchUserThunk, selectUser } from '../../slices/userSlice';
+import {
+  fetchLeaderboardThunk,
+  selectLeaderboardEntries,
+  selectLeaderboardLoading,
+  selectLeaderboardError,
+} from '../../slices/leaderboardSlice';
 import { PageInitArgs } from '../../routes';
 import { usePage } from '../../hooks/usePage';
 import styles from './LeaderboardPage.module.css';
-
-// Моковые данные для лидерборда
-const mockLeaderboard = [
-  { username: 'Игрок1', score: 15000 },
-  { username: 'Игрок2', score: 12000 },
-  { username: 'Игрок3', score: 10000 },
-  { username: 'Игрок4', score: 8500 },
-  { username: 'Игрок5', score: 7200 },
-  { username: 'Игрок6', score: 6000 },
-  { username: 'Игрок7', score: 5000 },
-  { username: 'Игрок8', score: 4500 },
-  { username: 'Игрок9', score: 4000 },
-  { username: 'Игрок10', score: 3500 },
-];
 
 const getColumns = () => [
   { id: 'position', name: 'Место', align: 'left' as const },
@@ -28,7 +20,11 @@ const getColumns = () => [
 ];
 
 export const LeaderboardPage = () => {
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const entries = useSelector(selectLeaderboardEntries);
+  const isLoading = useSelector(selectLeaderboardLoading);
+  const error = useSelector(selectLeaderboardError);
 
   usePage({ initPage: initLeaderboardPage });
 
@@ -42,11 +38,15 @@ export const LeaderboardPage = () => {
     );
   }
 
-  const data = mockLeaderboard.map((item, index) => ({
-    position: (index + 1).toString(),
-    username: item.username,
-    score: item.score.toLocaleString('ru-RU'),
-  }));
+  const data = entries.map((entry, index) => {
+    const scoreNum = entry.data.towerDefenseScore ?? 0;
+    const username = entry.data.login ?? entry.data.display_name ?? '—';
+    return {
+      position: (index + 1).toString(),
+      username,
+      score: Number.isFinite(scoreNum) ? scoreNum.toLocaleString('ru-RU') : '0',
+    };
+  });
 
   return (
     <div>
@@ -55,9 +55,24 @@ export const LeaderboardPage = () => {
       <div className={styles.leaderboard__container}>
         <div className={styles.leaderboard__board}>
           <h2 className={styles.leaderboard__title}>Таблица лидеров</h2>
-          <div className={styles.leaderboard__tableWrapper}>
-            <Table data={data} columns={getColumns()} />
-          </div>
+          {error && (
+            <div className={styles.leaderboard__error}>
+              <p>{error}</p>
+              <Button
+                view="outlined"
+                onClick={() =>
+                  dispatch(fetchLeaderboardThunk({ cursor: 0, limit: 10 }))
+                }>
+                Повторить
+              </Button>
+            </div>
+          )}
+          {isLoading && <Loader size="m" />}
+          {!isLoading && !error && (
+            <div className={styles.leaderboard__tableWrapper}>
+              <Table data={data} columns={getColumns()} />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -71,5 +86,5 @@ export const initLeaderboardPage = async ({
   if (!selectUser(state)) {
     return dispatch(fetchUserThunk());
   }
-  return Promise.resolve();
+  await dispatch(fetchLeaderboardThunk({ cursor: 0, limit: 10 }));
 };
