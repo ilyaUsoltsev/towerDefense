@@ -17,6 +17,7 @@ class EnemyManager {
   isSpawning: boolean;
   waveIndex = 0;
   currentWaveEnemiesSpawned = 0;
+  wavesStarted = false;
   private unsubscribe: (() => void) | null = null;
 
   constructor(
@@ -49,7 +50,7 @@ class EnemyManager {
       reward
     );
     this.enemies.push(enemy);
-    SoundLib('enemySpawn');
+    SoundLib('spawn');
   }
 
   startSpawning(): void {
@@ -125,6 +126,9 @@ class EnemyManager {
 
   // Часть логики update. Запускается каждый кадр для управления волнами врагов
   private handleWave(currentTime: number) {
+    if (!this.wavesStarted) {
+      return;
+    }
     const allWavesCompleted = this.waveIndex >= wavesConfig.length;
     if (allWavesCompleted) {
       // Остановка игры, все волны завершены
@@ -159,13 +163,13 @@ class EnemyManager {
   }
 
   private handleEnemyDestroyed(enemy: Enemy) {
-    SoundLib('enemyDeath');
+    SoundLib('enemy-death');
     this.player.addMoney(enemy.reward);
     this.player.addScore(enemy.maxHealth);
   }
 
   private handleEnemyReachedEnd() {
-    SoundLib('enemyDespawn');
+    SoundLib('despawn');
     this.player.takeDamage();
   }
 

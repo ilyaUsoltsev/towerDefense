@@ -14,7 +14,6 @@ import { EffectsConfig } from './constants/effects-config';
 import { getFireFreq } from './utils/get-fire-freq';
 import { isUpgradable } from '../../slices/utils/is-upgradable';
 import { SoundLib } from '../../audio/audio';
-import { GameConfig } from './constants/game-config';
 
 const GameMenu = () => {
   const selectedEntity = useSelector(state => state.game.selectedEntity);
@@ -53,14 +52,14 @@ const GameMenu = () => {
           </span>
         ))}
       </div>
-      {gameSelectedCannon && (
+      {!!gameSelectedCannon && (
         <Card className="p-2 flex-col gap-2">
           <p>{CannonsConfig[gameSelectedCannon].name}</p>
           <p>Урон: {CannonsConfig[gameSelectedCannon].damage}</p>
           <p>
             Эффект:{' '}
             {EffectsConfig[gameSelectedCannon]
-              ? EffectsConfig[gameSelectedCannon].name
+              ? EffectsConfig[gameSelectedCannon]?.name
               : 'Нет'}
           </p>
           <p>Дальность: {CannonsConfig[gameSelectedCannon].range}</p>
@@ -74,7 +73,7 @@ const GameMenu = () => {
 
       {selectedEntity && (
         <Card className="p-2 flex-col gap-2">
-          <p>ID: {selectedEntity.id}</p>
+          {/* <p>ID: {selectedEntity.id}</p> */}
           <p>Type: {selectedEntity.type}</p>
           <p>Level: {selectedEntity.level}</p>
           <p>Damage: {Math.round(selectedEntity.damage)}</p>
@@ -88,10 +87,10 @@ const GameMenu = () => {
             view="action"
             onClick={upgradeSelectedEntity}
             disabled={!isUpgradable(money, selectedEntity)}>
-            Апгрейд
+            Upgrade
           </Button>
           <Button view="outlined" onClick={sellSelectedEntity}>
-            Продать
+            Sell
           </Button>
         </Card>
       )}

@@ -23,6 +23,11 @@ body,
   --header-height: 70px;
 }
 
+body {
+  background-color: var(--g-color-base-background);
+  color: var(--g-color-text-primary);
+}
+
 /* Tailwind like unitility classes */
 
 .flex-col {
@@ -40,6 +45,10 @@ body,
 
 .justify-around {
   justify-content: space-around;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .gap-1 {
@@ -68,4 +77,8 @@ body,
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.w-full {
+  width: 100%;
 }

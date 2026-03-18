@@ -1,11 +1,11 @@
-import { useState, useRef } from 'react';
-import { Card, Avatar, User, Button } from '@gravity-ui/uikit';
-import { User as UserType } from '../../slices/userSlice';
+import { Avatar, Button, Card, User } from '@gravity-ui/uikit';
+import { useRef, useState } from 'react';
+import { User as UserType } from '../../api/type';
 import {
-  isAllowedImageType,
-  getAllowedImageTypesAccept,
   getAllowedImageFormatsText,
+  getAllowedImageTypesAccept,
   getInvalidFileTypeMessage,
+  isAllowedImageType,
 } from '../../constants/fileTypes';
 import styles from './AvatarUpload.module.css';
 

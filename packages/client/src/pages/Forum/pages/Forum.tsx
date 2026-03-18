@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@gravity-ui/uikit';
 import { ROUTE } from '../../../constants/ROUTE';
 import ux from '../main.module.css';
-import bodyUx from './forum.module.css';
+import bodyUx from './Forum.module.css';
 import { Link } from 'react-router-dom';
 import { ForumTopic, Topic } from '../components/topic';
 import { PageHelmet } from '../../../components/PageHelmet';

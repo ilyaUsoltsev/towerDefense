@@ -15,6 +15,8 @@ import {
 } from '../../../slices/gameSlice';
 import { eventBus } from '../core/utils/eventBus';
 import { CannonType } from '../constants/cannons-config';
+import { GameConfig } from '../constants/game-config';
+import { NotificationService } from '../../../utils/NotificationService';
 
 /**
  * Этот адаптер синхронизирует состояние между GameEngine и Redux store.
@@ -24,6 +26,7 @@ import { CannonType } from '../constants/cannons-config';
 export class GameEngineAdapter {
   private unsubSink: (() => void)[] = [];
   private prevSelectedCannon: CannonType | null = null;
+  private prevWavesStarted = false;
   private isCleanedUp = false;
   constructor(
     private gameEngine: GameEngine,
@@ -74,6 +77,20 @@ export class GameEngineAdapter {
       this.store.dispatch(gameOver({ isWin, score }));
     });
     this.unsubSink.push(unsubGameOver);
+
+    if (NotificationService.isSupported()) {
+      const unsubHpNotif = eventBus.on('redux:setPlayerHp', ({ hp }) => {
+        if (hp <= GameConfig.lowHpThreshold && hp > 0) {
+          NotificationService.notify({ type: 'low-hp', hp });
+        }
+      });
+      this.unsubSink.push(unsubHpNotif);
+
+      const unsubGameOverNotif = eventBus.on('redux:gameOver', ({ isWin }) => {
+        NotificationService.notify({ type: 'game-over', isWin });
+      });
+      this.unsubSink.push(unsubGameOverNotif);
+    }
   }
 
   // Этот метод обеспечивает синхронизацию от Redux к движку
@@ -111,6 +128,10 @@ export class GameEngineAdapter {
       this.gameEngine.mapManager.setPlacingCannonType(
         state.game.selectedCannon
       );
+    }
+
+    if (this.prevWavesStarted !== state.game.wavesStarted) {
+      this.gameEngine.setWavesStarted(state.game.wavesStarted);
     }
   }
 
