@@ -120,6 +120,7 @@ export const gameSlice = createSlice({
     gameSetStartWaves: (state, action: PayloadAction<boolean>) => {
       state.wavesStarted = action.payload;
     },
+    gameReset: () => initialState,
   },
 });
 
@@ -139,6 +140,7 @@ export const {
   gameOver,
   gameSetFullscreen,
   gameSetStartWaves,
+  gameReset,
 } = gameSlice.actions;
 
 export const selectIsFullscreen = (state: { game: UserState }) =>
