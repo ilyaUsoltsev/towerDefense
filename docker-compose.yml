@@ -29,6 +29,7 @@ services:
       dockerfile: Dockerfile.server
       args:
         SERVER_PORT: ${SERVER_PORT}
+        PROD_CLIENT_ORIGIN: ${PROD_CLIENT_ORIGIN:-https://towerdefense-56.ya-praktikum.tech}
     restart: always
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
@@ -39,6 +40,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:-}
+      PROD_CLIENT_ORIGIN: ${PROD_CLIENT_ORIGIN:-https://towerdefense-56.ya-praktikum.tech}
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,6 +56,8 @@ services:
       dockerfile: Dockerfile.client
       args:
         CLIENT_PORT: ${CLIENT_PORT}
+        EXTERNAL_SERVER_URL: ${EXTERNAL_SERVER_URL}
+        INTERNAL_SERVER_URL: ${INTERNAL_SERVER_URL}
     restart: always
     ports:
       - "${CLIENT_PORT}:80"
