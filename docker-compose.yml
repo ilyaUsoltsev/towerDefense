@@ -64,6 +64,7 @@ services:
     environment:
       - CLIENT_PORT=${CLIENT_PORT}
       - SERVER_PORT=${SERVER_PORT}
+      - INTERNAL_SERVER_URL=${INTERNAL_SERVER_URL}
     depends_on:
       - server
     networks:
