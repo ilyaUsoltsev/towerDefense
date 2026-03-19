@@ -17,6 +17,10 @@ jobs:
           echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
         env:
           OWNER: '${{ github.repository_owner }}'
+      - name: Set production URLs
+        run: |
+          echo "PROD_PUBLIC_URL=${{ vars.PROD_PUBLIC_URL || 'https://towerdefense-56.ya-praktikum.tech' }}" >>${GITHUB_ENV}
+          echo "PROD_INTERNAL_URL=${{ vars.PROD_INTERNAL_URL || 'http://server:3001' }}" >>${GITHUB_ENV}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -30,6 +34,9 @@ jobs:
           context: .
           file: Dockerfile.client
           push: true
+          build-args: |
+            EXTERNAL_SERVER_URL=${{ env.PROD_PUBLIC_URL }}
+            INTERNAL_SERVER_URL=${{ env.PROD_INTERNAL_URL }}
           tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/client:${{ github.sha }}
 
       - name: Build and push server image
@@ -38,4 +45,6 @@ jobs:
           context: .
           file: Dockerfile.server
           push: true
+          build-args: |
+            PROD_CLIENT_ORIGIN=${{ env.PROD_PUBLIC_URL }}
           tags: ghcr.io/${{ env.OWNER_LC }}/${{ github.event.repository.name }}/server:${{ github.sha }}

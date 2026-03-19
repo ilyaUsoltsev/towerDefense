@@ -16,12 +16,15 @@ import themeRoutes from './routes/theme';
 import { authMiddleware, optionalAuthMiddleware } from './middleware/auth';
 
 const app = express();
+const isProd = process.env.NODE_ENV === 'production';
+const defaultClientOrigin = isProd
+  ? process.env.PROD_CLIENT_ORIGIN || 'https://towerdefense-56.ya-praktikum.tech'
+  : `http://localhost:${process.env.CLIENT_PORT || 3000}`;
+
 app.use(express.json());
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_ORIGIN ||
-      `http://localhost:${process.env.CLIENT_PORT || 3000}`,
+    origin: process.env.CLIENT_ORIGIN || defaultClientOrigin,
     credentials: true,
   })
 );

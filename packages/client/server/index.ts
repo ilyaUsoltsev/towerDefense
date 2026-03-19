@@ -13,6 +13,8 @@ import cookieParser from 'cookie-parser';
 const port = process.env.PORT || 80;
 const clientPath = path.join(__dirname, '..');
 const isDev = process.env.NODE_ENV === 'development';
+const internalApiOrigin =
+  process.env.INTERNAL_SERVER_URL || 'http://server:3001';
 
 async function createServer() {
   const app = express();
@@ -32,6 +34,64 @@ async function createServer() {
       express.static(path.join(clientPath, 'dist/client'), { index: false })
     );
   }
+
+  app.use('/api', express.raw({ type: '*/*' }));
+  app.use('/api', async (req, res) => {
+    if (isDev) {
+      return res.status(502).json({ message: 'Use local API in development' });
+    }
+
+    try {
+      const targetUrl = new URL(req.originalUrl, internalApiOrigin);
+      const headers = new Headers();
+
+      Object.entries(req.headers).forEach(([key, value]) => {
+        if (key === 'host' || key === 'content-length') return;
+        if (Array.isArray(value)) {
+          headers.set(key, value.join(', '));
+          return;
+        }
+        if (typeof value === 'string') {
+          headers.set(key, value);
+        }
+      });
+
+      const init: RequestInit = {
+        method: req.method,
+        headers,
+        redirect: 'manual',
+      };
+
+      if (
+        req.method !== 'GET' &&
+        req.method !== 'HEAD' &&
+        Buffer.isBuffer(req.body) &&
+        req.body.length > 0
+      ) {
+        init.body = req.body;
+      }
+
+      const response = await fetch(targetUrl, init);
+
+      res.status(response.status);
+      response.headers.forEach((value, key) => {
+        if (
+          key === 'connection' ||
+          key === 'content-encoding' ||
+          key === 'transfer-encoding'
+        ) {
+          return;
+        }
+        res.setHeader(key, value);
+      });
+
+      const body = Buffer.from(await response.arrayBuffer());
+      return res.end(body);
+    } catch (error) {
+      console.error('Client API proxy error:', error);
+      return res.status(502).json({ message: 'Upstream API unavailable' });
+    }
+  });
 
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl;
