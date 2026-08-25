@@ -1,40 +1,39 @@
-# Отчёт об утечках памяти (Memory Leaks)
+# Memory Leaks Report
 
+## Status
+No memory leaks have been found in the project so far.
 
-## Статус
-На текущий момент в проекте не обнаружено утечек памяти.
+## Testing methodology
 
-## Методика проверки
-
-Для анализа использовались:
+The following was used for analysis:
 
 1. **Chrome DevTools → Memory**:
-   - `Allocation Timeline` — запись выделений памяти при навигации между страницами.
-   - `Heap Snapshot` — сравнение состояния памяти до и после размонтирования компонентов.
+   - `Allocation Timeline` — recording memory allocations while navigating between pages.
+   - `Heap Snapshot` — comparing memory state before and after unmounting components.
 
-## Подробное описание
+## Detailed description
 
-На графике Allocation Timeline видны два типа столбцов:
+The Allocation Timeline graph shows two types of bars:
 
-![График использования памяти](packages/client/public/memoryleaks.png)
+![Memory usage graph](packages/client/public/memoryleaks.png)
 
-Серые — это временные выделения памяти. Программа их использует, а потом система очистки (GC, Garbage Collector) благополучно удаляет. Это нормальное, здоровое поведение.
+Gray bars are temporary memory allocations. The program uses them, and then the cleanup system (GC, Garbage Collector) successfully removes them. This is normal, healthy behavior.
 
-Синие — это объекты, которые остались в памяти к концу записи. Именно они могут сигнализировать о возможной утечке.
+Blue bars are objects that remained in memory by the end of the recording. These are the ones that can signal a possible leak.
 
-В самом начале (при запуске приложения) синие столбцы есть — это нормально. Программа инициализируется, загружает нужные данные, создаёт объекты.
-Дальше синие столбцы почти не видны или очень малы — значит, новых «долгоживущих» объектов почти не появляется.
-Самое важное: при повторении одних и тех же действий синие столбцы не растут.
+At the very beginning (when the app starts), blue bars are present — this is normal. The program initializes, loads the necessary data, and creates objects.
+After that, blue bars are barely visible or very small — meaning almost no new "long-lived" objects are appearing.
+Most importantly: when the same actions are repeated, the blue bars do not grow.
 
-По снимку (Heap Snapshot) состояние памяти не увеличилось после размонтирования
+According to the snapshot (Heap Snapshot), memory usage did not increase after unmounting.
 
-Система очистки (GC) работает корректно — освобождает временную память.
-Поведение приложения здоровое: память не «забивается» при повторных действиях.
+The cleanup system (GC) works correctly — it frees temporary memory.
+The application behaves in a healthy way: memory does not get clogged up from repeated actions.
 
-## Какие повторные действия были выполнены
+## Which repeated actions were performed
 
-1. Запуск игры
-2. Авторизация
-3. Выход
-4. Переход по страницам
-5. Изменение информации пользователя
+1. Starting the game
+2. Logging in
+3. Logging out
+4. Navigating between pages
+5. Changing user information

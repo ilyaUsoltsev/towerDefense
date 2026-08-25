@@ -1,48 +1,48 @@
-## Видео с описанием задач и игры
+## Video with task and gameplay descriptions
 
-[Посмотреть видео 5-6 спринты](https://disk.yandex.ru/i/MYjitxRMnymmdw)
-[Посмотреть видео 7-8 спринты](https://disk.yandex.ru/i/fBW_eEq5nGCfJQ)
+[Watch video sprints 5-6](https://disk.yandex.ru/i/MYjitxRMnymmdw)
+[Watch video sprints 7-8](https://disk.yandex.ru/i/fBW_eEq5nGCfJQ)
 
-### Описание игры
+### Game description
 
-Подробное описание движка и логики Tower Defense игры: [Game Engine Documentation](packages/client/src/pages/Game/core/README.md)
+Detailed description of the Tower Defense game's engine and logic: [Game Engine Documentation](packages/client/src/pages/Game/core/README.md)
 
-### Как запускать?
+### How to run it?
 
-1. Убедитесь что у вас установлен `node` и `docker`
-2. Выполните команду `yarn bootstrap` - это обязательный шаг, без него ничего работать не будет :)
-3. Выполните команду `yarn dev`
-4. Выполните команду `yarn dev --scope=client` чтобы запустить только клиент
-5. Выполните команду `yarn dev --scope=server` чтобы запустить только server
+1. Make sure you have `node` and `docker` installed
+2. Run `yarn bootstrap` - this is a required step, nothing will work without it :)
+3. Run `yarn dev`
+4. Run `yarn dev --scope=client` to start only the client
+5. Run `yarn dev --scope=server` to start only the server
 
-### Как добавить зависимости?
+### How to add dependencies?
 
-В этом проекте используется `monorepo` на основе [`lerna`](https://github.com/lerna/lerna)
+This project uses a `monorepo` based on [`lerna`](https://github.com/lerna/lerna)
 
-Чтобы добавить зависимость для клиента
+To add a dependency for the client
 `yarn lerna add {your_dep} --scope client`
 
-Для сервера
+For the server
 `yarn lerna add {your_dep} --scope server`
 
-И для клиента и для сервера
+For both the client and the server
 `yarn lerna add {your_dep}`
 
-Если вы хотите добавить dev зависимость, проделайте то же самое, но с флагом `dev`
+If you want to add a dev dependency, do the same but with the `dev` flag
 `yarn lerna add {your_dep} --dev --scope server`
 
-### Тесты
+### Tests
 
-Для клиента используется [`react-testing-library`](https://testing-library.com/docs/react-testing-library/intro/)
+The client uses [`react-testing-library`](https://testing-library.com/docs/react-testing-library/intro/)
 
 `yarn test`
 
-### Линтинг
+### Linting
 
 `yarn lint`
 `yarn lintfix`
 
-### Форматирование prettier
+### Prettier formatting
 
 `yarn format`
 
@@ -50,38 +50,37 @@
 
 `yarn build`
 
-И чтобы посмотреть что получилось
+And to preview the result
 
 `yarn preview --scope client`
 `yarn preview --scope server`
 
-## Хуки
+## Hooks
 
-В проекте используется [lefthook](https://github.com/evilmartians/lefthook)
-Если очень-очень нужно пропустить проверки, используйте `--no-verify` (но не злоупотребляйте :)
+The project uses [lefthook](https://github.com/evilmartians/lefthook)
+If you really-really need to skip the checks, use `--no-verify` (but don't abuse it :)
 
-## Ой, ничего не работает :(
+## Oh, nothing works :(
 
-Откройте issue, я приду :)
+Open an issue, I'll come :)
 
-## Автодеплой статики на vercel
+## Auto-deploying static assets on vercel
 
-Зарегистрируйте аккаунт на [vercel](https://vercel.com/)
-Следуйте [инструкции](https://vitejs.dev/guide/static-deploy.html#vercel-for-git)
-В качестве `root directory` укажите `packages/client`
+Register an account on [vercel](https://vercel.com/)
+Follow the [instructions](https://vitejs.dev/guide/static-deploy.html#vercel-for-git)
+Specify `packages/client` as the `root directory`
 
-Все ваши PR будут автоматически деплоиться на vercel. URL вам предоставит деплоящий бот
+All your PRs will be automatically deployed to vercel. The deploying bot will provide you the URL
 
-## Production окружение в докере
+## Production environment in docker
 
-Перед первым запуском выполните `node init.js`
+Before the first run, execute `node init.js`
 
-`docker compose up` - запустит три сервиса
+`docker compose up` - will start three services
 
-1. nginx, раздающий клиентскую статику (client)
-2. node, ваш сервер (server)
-3. postgres, вашу базу данных (postgres)
+1. nginx, serving the client static files (client)
+2. node, your server (server)
+3. postgres, your database (postgres)
 
-Если вам понадобится только один сервис, просто уточните какой в команде
-`docker compose up {sevice_name}`, например `docker compose up server`
-
+If you only need one service, just specify which one in the command
+`docker compose up {sevice_name}`, for example `docker compose up server`

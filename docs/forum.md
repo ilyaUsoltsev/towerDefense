@@ -1,26 +1,26 @@
-# API — Форума (Топики, Комментарии, Ответы, Реакции)
+# Forum API (Topics, Comments, Replies, Reactions)
 
-**Базовый URL**: `http://localhost:3001/api` 
+**Base URL**: `http://localhost:3001/api` 
 
-Авторизация проверяется через middleware (поле `req.user.id`).
+Authorization is checked via middleware (the `req.user.id` field).
 
-**Общие коды ошибок**:
-- 403 — не авторизован или нет прав
-- 404 — сущность не найдена
-- 400 — неверные входные данные
-- 500 — ошибка сервера / базы данных
+**Common error codes**:
+- 403 — not authorized or insufficient permissions
+- 404 — entity not found
+- 400 — invalid input data
+- 500 — server / database error
 
-## 1. Топики (Topics)
+## 1. Topics
 
-| Метод   | Путь                  | Описание                              | Требуется авторизация | Тело запроса (JSON)                          | Пример curl                                                                 |
-|---------|-----------------------|---------------------------------------|------------------------|----------------------------------------------|-----------------------------------------------------------------------------|
-| GET     | `/topics`             | Список всех топиков (с пагинацией)    | Да                     | —                                            | `curl "http://localhost:3001/api/topics?page=1&limit=10"`                   |
-| GET     | `/topics/:id`         | Получить один топик + комментарии     | Да                     | —                                            | `curl "http://localhost:3001/api/topics/42"`                                |
-| POST    | `/topics`             | Создать новый топик                   | Да                     | `{ "title": "...", "content": "..." }`       | `curl -X POST .../topics -d '{"title":"Новый пост","content":"Текст"}'`     |
-| PUT     | `/topics/:id`         | Обновить топик (только автор)         | Да                     | `{ "title": "...", "content": "..." }`       | `curl -X PUT .../topics/42 -d '{"title":"Исправлено"}'`                     |
-| DELETE  | `/topics/:id`         | Удалить топик (только автор)          | Да                     | —                                            | `curl -X DELETE http://localhost:3001/api/topics/42`                        |
+| Method  | Path                  | Description                            | Auth required | Request body (JSON)                          | curl example                                                                 |
+|---------|-----------------------|-----------------------------------------|------------------------|----------------------------------------------|-----------------------------------------------------------------------------|
+| GET     | `/topics`             | List of all topics (paginated)          | Yes                     | —                                            | `curl "http://localhost:3001/api/topics?page=1&limit=10"`                   |
+| GET     | `/topics/:id`         | Get a single topic + comments           | Yes                     | —                                            | `curl "http://localhost:3001/api/topics/42"`                                |
+| POST    | `/topics`             | Create a new topic                      | Yes                     | `{ "title": "...", "content": "..." }`       | `curl -X POST .../topics -d '{"title":"New post","content":"Text"}'`     |
+| PUT     | `/topics/:id`         | Update a topic (author only)            | Yes                     | `{ "title": "...", "content": "..." }`       | `curl -X PUT .../topics/42 -d '{"title":"Fixed"}'`                     |
+| DELETE  | `/topics/:id`         | Delete a topic (author only)            | Yes                     | —                                            | `curl -X DELETE http://localhost:3001/api/topics/42`                        |
 
-**Ответ GET /topics** (пример):
+**Response for GET /topics** (example):
 ```json
 {
   "topics": [ { "id": 42, "title": "...", "content": "...", "userId": 5, ... } ],
@@ -30,22 +30,22 @@
 }
 ```
 
-## 2. Комментарии (Comments)
+## 2. Comments
 
-| Метод   | Путь                                      | Описание                                      | Требуется авторизация | Тело запроса (JSON)                          | Пример curl                                                                 |
+| Method  | Path                                      | Description                                      | Auth required | Request body (JSON)                          | curl example                                                                 |
 |---------|-------------------------------------------|-----------------------------------------------|------------------------|----------------------------------------------|-----------------------------------------------------------------------------|
-| GET     | `/topics/:topicId/comments`               | Получить все комментарии к топику (с ответами и реакциями) | Да                     | —                                            | `curl "http://localhost:3001/api/topics/42/comments" -H "Authorization: Bearer <токен>"` |
-| POST    | `/topics/:topicId/comments`               | Создать новый комментарий к топику            | Да                     | `{ "content": "Текст комментария" }`         | `curl -X POST http://localhost:3001/api/topics/42/comments -H "Content-Type: application/json" -H "Authorization: Bearer <токен>" -d '{"content":"Отличная статья!"}'` |
-| PUT     | `/topics/:topicId/comments/:id`           | Обновить текст своего комментария             | Да                     | `{ "content": "Новый текст..." }`            | `curl -X PUT http://localhost:3001/api/topics/42/comments/123 -H "Content-Type: application/json" -H "Authorization: Bearer <токен>" -d '{"content":"Исправил опечатку"}'` |
-| DELETE  | `/topics/:topicId/comments/:id`           | Удалить свой комментарий                      | Да                     | —                                            | `curl -X DELETE http://localhost:3001/api/topics/42/comments/123 -H "Authorization: Bearer <токен>"` |
+| GET     | `/topics/:topicId/comments`               | Get all comments for a topic (with replies and reactions) | Yes                     | —                                            | `curl "http://localhost:3001/api/topics/42/comments" -H "Authorization: Bearer <token>"` |
+| POST    | `/topics/:topicId/comments`               | Create a new comment on a topic            | Yes                     | `{ "content": "Comment text" }`         | `curl -X POST http://localhost:3001/api/topics/42/comments -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"content":"Great article!"}'` |
+| PUT     | `/topics/:topicId/comments/:id`           | Update the text of your own comment             | Yes                     | `{ "content": "New text..." }`            | `curl -X PUT http://localhost:3001/api/topics/42/comments/123 -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"content":"Fixed a typo"}'` |
+| DELETE  | `/topics/:topicId/comments/:id`           | Delete your own comment                      | Yes                     | —                                            | `curl -X DELETE http://localhost:3001/api/topics/42/comments/123 -H "Authorization: Bearer <token>"` |
 
-**Ответ GET /topics/:topicId/comments
+**Response for GET /topics/:topicId/comments
 ```json
 
 [
   {
     "id": 123,
-    "content": "Первый комментарий",
+    "content": "First comment",
     "userId": 5,
     "topicId": 42,
     "createdAt": "2026-02-16T14:35:22.123Z",
@@ -53,7 +53,7 @@
     "replies": [
       {
         "id": 124,
-        "content": "Ответ на комментарий",
+        "content": "Reply to comment",
         "userId": 7,
         "commentId": 123,
         "createdAt": "2026-02-16T14:40:10.456Z",
@@ -73,20 +73,20 @@
 ```
 
 
-## 3. Ответы на комментарии (Replies)
+## 3. Replies to comments
 
-| Метод   | Путь                               | Описание                                      | Требуется авторизация | Тело запроса (JSON)                          | Пример curl                                                                 |
+| Method  | Path                               | Description                                      | Auth required | Request body (JSON)                          | curl example                                                                 |
 |---------|------------------------------------|-----------------------------------------------|------------------------|----------------------------------------------|-----------------------------------------------------------------------------|
-| GET     | `/comments/:commentId/replies`     | Получить все ответы на конкретный комментарий | Да                     | —                                            | `curl "http://localhost:3001/api/comments/55/replies" -H "Authorization: Bearer <токен>"` |
-| POST    | `/comments/:commentId/replies`     | Создать ответ на существующий комментарий     | Да                     | `{ "content": "Текст ответа" }`              | `curl -X POST http://localhost:3001/api/comments/55/replies -H "Content-Type: application/json" -H "Authorization: Bearer <токен>" -d '{"content":"Полностью согласен!"}'` |
+| GET     | `/comments/:commentId/replies`     | Get all replies to a specific comment | Yes                     | —                                            | `curl "http://localhost:3001/api/comments/55/replies" -H "Authorization: Bearer <token>"` |
+| POST    | `/comments/:commentId/replies`     | Create a reply to an existing comment     | Yes                     | `{ "content": "Reply text" }`              | `curl -X POST http://localhost:3001/api/comments/55/replies -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"content":"Completely agree!"}'` |
 
-**Ответ GET /comments/:commentId/replies
+**Response for GET /comments/:commentId/replies
 ```json
 
 [
   {
     "id": 124,
-    "content": "Согласен, очень полезный разбор",
+    "content": "Agreed, a very useful breakdown",
     "userId": 7,
     "commentId": 55,
     "createdAt": "2026-02-16T15:12:45.678Z",
@@ -106,7 +106,7 @@
   },
   {
     "id": 125,
-    "content": "Спасибо за дополнение!",
+    "content": "Thanks for the addition!",
     "userId": 10,
     "commentId": 55,
     "createdAt": "2026-02-16T15:20:30.000Z",
@@ -115,16 +115,16 @@
 ]
 ```
 
-## 4. Реакции (Reactions)
+## 4. Reactions
 
-| Метод   | Путь                                           | Описание                                            | Требуется авторизация | Тело запроса (JSON)                          | Пример curl                                                                 |
+| Method  | Path                                           | Description                                            | Auth required | Request body (JSON)                          | curl example                                                                 |
 |---------|------------------------------------------------|-----------------------------------------------------|------------------------|----------------------------------------------|-----------------------------------------------------------------------------|
-| POST    | `/comments/:commentId/reactions`               | Поставить или убрать реакцию на комментарий (toggle) | Да                     | `{ "type": "like" }`                         | `curl -X POST http://localhost:3001/api/comments/123/reactions -H "Content-Type: application/json" -H "Authorization: Bearer <токен>" -d '{"type":"like"}'` |
-| POST    | `/replies/:replyId/reactions`                  | Поставить или убрать реакцию на ответ (toggle)      | Да                     | `{ "type": "heart" }`                        | `curl -X POST http://localhost:3001/api/replies/456/reactions -H "Content-Type: application/json" -H "Authorization: Bearer <токен>" -d '{"type":"heart"}'` |
-| GET     | `/comments/:commentId/reactions/count`         | Получить количество реакций по типам для комментария | Да                     | —                                            | `curl "http://localhost:3001/api/comments/123/reactions/count" -H "Authorization: Bearer <токен>"` |
-| GET     | `/replies/:replyId/reactions/count`            | Получить количество реакций по типам для ответа     | Да                     | —                                            | `curl "http://localhost:3001/api/replies/456/reactions/count" -H "Authorization: Bearer <токен>"` |
+| POST    | `/comments/:commentId/reactions`               | Add or remove a reaction on a comment (toggle) | Yes                     | `{ "type": "like" }`                         | `curl -X POST http://localhost:3001/api/comments/123/reactions -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"type":"like"}'` |
+| POST    | `/replies/:replyId/reactions`                  | Add or remove a reaction on a reply (toggle)      | Yes                     | `{ "type": "heart" }`                        | `curl -X POST http://localhost:3001/api/replies/456/reactions -H "Content-Type: application/json" -H "Authorization: Bearer <token>" -d '{"type":"heart"}'` |
+| GET     | `/comments/:commentId/reactions/count`         | Get reaction counts by type for a comment | Yes                     | —                                            | `curl "http://localhost:3001/api/comments/123/reactions/count" -H "Authorization: Bearer <token>"` |
+| GET     | `/replies/:replyId/reactions/count`            | Get reaction counts by type for a reply     | Yes                     | —                                            | `curl "http://localhost:3001/api/replies/456/reactions/count" -H "Authorization: Bearer <token>"` |
 
-**Ответ GET /.../reactions/count
+**Response for GET /.../reactions/count
 ```json
 
 [

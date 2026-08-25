@@ -31,18 +31,18 @@ export const routes = [
   {
     path: ROUTE.ROOT,
     element: (
-      <ProtectedRoute>
-        <MainPage />
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <MainPage />
+      // </ProtectedRoute>
     ),
     fetchData: initMainPage,
   },
   {
     path: ROUTE.GAME,
     element: (
-      <ProtectedRoute>
-        <GamePage />
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <GamePage />
+      // </ProtectedRoute>
     ),
     fetchData: initGamePage,
   },
@@ -84,25 +84,25 @@ export const routes = [
   {
     path: ROUTE.FORUM,
     element: (
-      <ProtectedRoute>
-        <Forum />
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <Forum />
+      // </ProtectedRoute>
     ),
   },
   {
     path: ROUTE.FORUM_NEW,
     element: (
-      <ProtectedRoute>
-        <ForumNew />
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <ForumNew />
+      // </ProtectedRoute>
     ),
   },
   {
     path: `${ROUTE.FORUM_TOPIC}/:id`,
     element: (
-      <ProtectedRoute>
-        <ForumDiscussion />
-      </ProtectedRoute>
+      // <ProtectedRoute>
+      <ForumDiscussion />
+      // </ProtectedRoute>
     ),
   },
 ];
