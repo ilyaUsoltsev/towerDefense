@@ -1,154 +1,154 @@
-# Логика Tower Defense игры
+# Tower Defense game logic
 
-## Обзор
+## Overview
 
-Это игра в жанре tower defense с системой волн, где враги появляются и движутся по пути от старта к финишу, а игрок размещает и улучшает пушки, чтобы уничтожить их до того, как они достигнут цели. Игра включает систему экономики (деньги/здоровье игрока), несколько типов пушек с возможностью улучшения, волны врагов различных типов и архитектуру на основе паттерна Стратегия для снарядов.
+This is a tower defense game with a wave system, where enemies appear and move along a path from start to finish, and the player places and upgrades cannons to destroy them before they reach the goal. The game includes an economy system (player money/health), several upgradeable cannon types, waves of different enemy types, and a Strategy-pattern-based architecture for projectiles.
 
-## Основные компоненты
+## Main components
 
-### Игровой движок ([managers/gameEngine.ts](managers/gameEngine.ts))
+### Game engine ([managers/gameEngine.ts](managers/gameEngine.ts))
 
-Главный класс, который связывает все системы воедино. Он управляет игровым циклом и координирует отрисовку:
+The main class that ties all the systems together. It manages the game loop and coordinates rendering:
 
-1. **Инициализация**: настраивает все менеджеры (Map, Path, Enemy, Cannon, Projectile) и создаёт объект Player
-2. **Игровой цикл**: работает с частотой 60 FPS с использованием `requestAnimationFrame` с пропуском кадров
-3. **Порядок отрисовки**:
-   - Слои карты (игровое поле, стены, старт, финиш)
-   - Обновление врагов (спавн, движение, удаление)
-   - Обновление пушек (наведение, стрельба)
-   - Обновление снарядов (движение, столкновения)
-   - Отрисовка пушек с индикаторами радиуса
-   - Отрисовка снарядов
-   - Отрисовка врагов с полосками здоровья
+1. **Initialization**: sets up all managers (Map, Path, Enemy, Cannon, Projectile) and creates the Player object
+2. **Game loop**: runs at 60 FPS using `requestAnimationFrame` with frame skipping
+3. **Render order**:
+   - Map layers (game field, walls, start, finish)
+   - Enemy updates (spawn, movement, removal)
+   - Cannon updates (targeting, firing)
+   - Projectile updates (movement, collisions)
+   - Cannon rendering with range indicators
+   - Projectile rendering
+   - Enemy rendering with health bars
 
-### Игрок ([entities/player.ts](entities/player.ts))
+### Player ([entities/player.ts](entities/player.ts))
 
-Управляет состоянием игрока:
+Manages player state:
 
-- **Здоровье**: начинается с 10 HP (настраивается через `GameConfig.hp`)
-- **Деньги**: начинается с 80 монет (настраивается через `GameConfig.initialMoney`)
-- **Методы**:
-  - `takeDamage()` — теряет 1 HP при достижении врагом конца пути
-  - `isDead()` — проверка окончания игры
-  - `addMoney(amount)` / `subtractMoney(amount)` — для покупки пушек и вознаграждений за убийство врагов
-  - `haveEnoughMoney(amount)` — валидация покупок
-  - `getMoney()` / `getHp()` — запросы состояния
+- **Health**: starts at 10 HP (configurable via `GameConfig.hp`)
+- **Money**: starts at 80 coins (configurable via `GameConfig.initialMoney`)
+- **Methods**:
+  - `takeDamage()` — loses 1 HP when an enemy reaches the end of the path
+  - `isDead()` — checks whether the game has ended
+  - `addMoney(amount)` / `subtractMoney(amount)` — for buying cannons and rewarding enemy kills
+  - `haveEnoughMoney(amount)` — purchase validation
+  - `getMoney()` / `getHp()` — state queries
 
-### Менеджер карты ([managers/mapManager.ts](managers/mapManager.ts))
+### Map manager ([managers/mapManager.ts](managers/mapManager.ts))
 
-Отвечает за игровую карту и взаимодействие с пользователем:
+Responsible for the game map and user interaction:
 
-- **Данные карты**: загружает макет карты из JSON с разными слоями (Game, Walls, Start, Finish)
-- **Сетка коллизий**: создаёт 2D-массив, помечающий проходимые (0) и заблокированные (1) тайлы
-- **Размещение пушек**: отслеживает клики по canvas и пытается разместить пушки на допустимых тайлах
-- **Выбор типа пушки**: отслеживает `placingCannonType` для размещения разных типов пушек
-- **Валидация**: запрещает размещение пушек на стартовом тайле, уже занятых тайлах или при недостатке денег
-- **Предпросмотр курсора**: отображает тайл под курсором при размещении пушки
+- **Map data**: loads the map layout from JSON with different layers (Game, Walls, Start, Finish)
+- **Collision grid**: builds a 2D array marking walkable (0) and blocked (1) tiles
+- **Cannon placement**: tracks clicks on the canvas and tries to place cannons on valid tiles
+- **Cannon type selection**: tracks `placingCannonType` for placing different cannon types
+- **Validation**: prevents placing cannons on the start tile, already occupied tiles, or with insufficient money
+- **Cursor preview**: displays the tile under the cursor while placing a cannon
 
-### Менеджер пути ([managers/pathManager.ts](managers/pathManager.ts))
+### Path manager ([managers/pathManager.ts](managers/pathManager.ts))
 
-Управляет поиском пути с использованием алгоритма A* (через EasyStar.js):
+Handles pathfinding using the A* algorithm (via EasyStar.js):
 
-- **Динамический поиск пути**: вычисляет оптимальный путь от стартового тайла до финишного
-- **Проверка пути**: при размещении пушки проверяет, что путь всё ещё существует
-- **Предотвращение блокировки пути**: отклоняет размещение пушек, которые полностью блокируют движение врагов
-- **Событийные обновления**: отправляет событие `pathManager:pathUpdated`, чтобы все враги пересчитали маршрут с текущей позиции
+- **Dynamic pathfinding**: computes the optimal path from the start tile to the finish tile
+- **Path validation**: when placing a cannon, checks that a path still exists
+- **Blocking prevention**: rejects cannon placements that would completely block enemy movement
+- **Event-driven updates**: emits the `pathManager:pathUpdated` event so all enemies recalculate their route from their current position
 
-### Система врагов
+### Enemy system
 
-#### Класс врага ([entities/enemy.ts](entities/enemy.ts))
+#### Enemy class ([entities/enemy.ts](entities/enemy.ts))
 
-Поведение отдельного врага:
+Behavior of an individual enemy:
 
-- **Типы врагов**: normal (розовый, скорость 1), fast (голубой, скорость 1.5), immune (зелёный, скорость 1, больший радиус 12px), normalBoss (красный, скорость 1, больший размер)
-- **Здоровье**: настраивается для каждой волны (от 20 до 500 HP для боссов)
-- **Движение**: следует по рассчитанному пути с переменной скоростью (1-1.5 пикселя/кадр в зависимости от типа)
-- **Поиск пути**: использует путь из PathManager и движется тайл за тайлом
-- **Динамическая перенастройка маршрута**: слушает события `pathManager:pathUpdated` и пересчитывает путь с текущей позиции
-- **Система урона**: получает урон от снарядов, уничтожается при 0 здоровья
-- **Вознаграждение**: даёт игроку деньги при уничтожении (5-50 монет в зависимости от типа)
-- **Отрисовка**: цветной круг с полоской здоровья, показывающей текущее/максимальное здоровье
+- **Enemy types**: normal (pink, speed 1), fast (light blue, speed 1.5), immune (green, speed 1, larger 12px radius), normalBoss (red, speed 1, larger size)
+- **Health**: configurable per wave (from 20 to 500 HP for bosses)
+- **Movement**: follows the computed path at variable speed (1-1.5 pixels/frame depending on type)
+- **Pathfinding**: uses the path from PathManager and moves tile by tile
+- **Dynamic rerouting**: listens for `pathManager:pathUpdated` events and recalculates the path from its current position
+- **Damage system**: takes damage from projectiles, is destroyed at 0 health
+- **Reward**: gives the player money when destroyed (5-50 coins depending on type)
+- **Rendering**: a colored circle with a health bar showing current/max health
 
-#### Менеджер врагов ([managers/enemyManager.ts](managers/enemyManager.ts))
+#### Enemy manager ([managers/enemyManager.ts](managers/enemyManager.ts))
 
-Управляет жизненным циклом врагов и системой волн:
+Manages the enemy lifecycle and wave system:
 
-- **Система волн**: загружает конфигурацию волн из `waves-config.ts` с настройками типа врага, количества, интервала спавна, здоровья и вознаграждения
-- **Спавн**: автоматически создаёт врагов на основе текущей волны с переменными интервалами (300-900 мс)
-- **Задержка между волнами**: 10 секунд (настраивается через `GameConfig.waveDelay`)
-- **Очистка**: удаляет врагов, которые уничтожены или достигли конца
-- **Обработка уничтожения**: даёт игроку деньги и удаляет врага при смерти
-- **Обработка достижения конца**: наносит урон игроку (1 HP) и удаляет врага
-- **Проверка окончания игры**: отслеживает завершение всех волн и отсутствие активных врагов
-- **События**: отправляет `redux:waveStarted` при начале новой волны
+- **Wave system**: loads wave configuration from `waves-config.ts` with settings for enemy type, count, spawn interval, health, and reward
+- **Spawning**: automatically creates enemies based on the current wave at variable intervals (300-900 ms)
+- **Delay between waves**: 10 seconds (configurable via `GameConfig.waveDelay`)
+- **Cleanup**: removes enemies that are destroyed or have reached the end
+- **Destruction handling**: rewards the player with money and removes the enemy on death
+- **End-of-path handling**: damages the player (1 HP) and removes the enemy
+- **Game-over check**: tracks completion of all waves and absence of active enemies
+- **Events**: emits `redux:waveStarted` when a new wave begins
 
-### Система пушек
+### Cannon system
 
-#### Класс пушки ([entities/cannon.ts](entities/cannon.ts))
+#### Cannon class ([entities/cannon.ts](entities/cannon.ts))
 
-Поведение отдельной пушки с системой улучшений:
+Behavior of an individual cannon with an upgrade system:
 
-- **Типы пушек** (из `cannons-config.ts`):
-  - **dumb** (стоимость 2) — стена/препятствие без боевых параметров
-  - **basic** (стоимость 5) — стандартная пушка, 60px радиус, 10 урона, 1500ms скорострельность
-  - **rocket** (стоимость 15) — зонный урон, 70px радиус, 50px радиус взрыва, 800ms скорострельность
-  - **sniper** (стоимость 50) — дальнобойная, 100px радиус, 50 урона, 4000ms скорострельность
-  - **freeze** (стоимость 50) — 80px радиус, 10 урона, 1500ms скорострельность
-- **Система улучшений**: максимальный уровень 5 (настраивается через `GameConfig.maxCannonLevel`)
-  - `upgrade()` увеличивает: урон ×1.1, радиус ×1.2, скорострельность ×0.9 (быстрее), скорость снаряда ×1.1, радиус взрыва ×1.2
-  - Стоимость улучшения растёт с каждым уровнем: `cost += upgradeCost * level`
-- **Наведение**: автоматически выбирает первого врага в радиусе
-- **Стрельба**: при выстреле создаёт снаряд с определённой стратегией через ProjectileManager
-- **Отрисовка**: квадрат на тайле с полупрозрачным кругом радиуса, цвет зависит от типа
+- **Cannon types** (from `cannons-config.ts`):
+  - **dumb** (cost 2) — a wall/obstacle with no combat stats
+  - **basic** (cost 5) — standard cannon, 60px range, 10 damage, 1500ms fire rate
+  - **rocket** (cost 15) — area damage, 70px range, 50px explosion radius, 800ms fire rate
+  - **sniper** (cost 50) — long range, 100px range, 50 damage, 4000ms fire rate
+  - **freeze** (cost 50) — 80px range, 10 damage, 1500ms fire rate
+- **Upgrade system**: max level 5 (configurable via `GameConfig.maxCannonLevel`)
+  - `upgrade()` increases: damage ×1.1, range ×1.2, fire rate ×0.9 (faster), projectile speed ×1.1, explosion radius ×1.2
+  - Upgrade cost grows with each level: `cost += upgradeCost * level`
+- **Targeting**: automatically selects the first enemy within range
+- **Firing**: creates a projectile with a specific strategy via ProjectileManager when it fires
+- **Rendering**: a square on the tile with a semi-transparent range circle, color depends on type
 
-#### Менеджер пушек ([managers/cannonManager.ts](managers/cannonManager.ts))
+#### Cannon manager ([managers/cannonManager.ts](managers/cannonManager.ts))
 
-Управляет всеми пушками:
+Manages all cannons:
 
-- **Размещение**: слушает события `mapManager:cannonPlaced` и создаёт новые пушки с проверкой денег игрока
-- **Улучшение**: `upgradeCannon(id)` улучшает пушку с валидацией стоимости и максимального уровня
-- **Продажа**: `sellCannon(id)` возвращает 70% от стоимости покупки и освобождает тайл
-- **Обновление**: обновляет все пушки каждый кадр с учётом текущих позиций врагов
-- **Координация**: передаёт живых врагов каждой пушке для наведения
-- **События**: слушает `redux:selectedCannon` для обработки выбора пушки
+- **Placement**: listens for `mapManager:cannonPlaced` events and creates new cannons after validating the player's money
+- **Upgrading**: `upgradeCannon(id)` upgrades a cannon, validating cost and max level
+- **Selling**: `sellCannon(id)` refunds 70% of the purchase cost and frees the tile
+- **Updates**: updates all cannons every frame based on current enemy positions
+- **Coordination**: passes the list of living enemies to each cannon for targeting
+- **Events**: listens for `redux:selectedCannon` to handle cannon selection
 
-### Система снарядов
+### Projectile system
 
-Использует **паттерн Стратегия** для расширяемой архитектуры с различными типами движения и столкновений.
+Uses the **Strategy pattern** for an extensible architecture with various movement and collision types.
 
-#### Класс снаряда ([entities/projectile/projectile.ts](entities/projectile/projectile.ts))
+#### Projectile class ([entities/projectile/projectile.ts](entities/projectile/projectile.ts))
 
-Поведение отдельного снаряда с композицией стратегий:
+Behavior of an individual projectile via strategy composition:
 
-- **Скорость**: зависит от пушки (улучшается при улучшении пушки)
-- **Урон**: зависит от пушки (10-50 базового урона)
-- **Движение**: определяется `MoveStrategy`
-- **Столкновение**: определяется `CollisionStrategy`
-- **Отрисовка**: оранжевый круг (настраивается через `GameConfig.projectile`)
+- **Speed**: depends on the cannon (improves with cannon upgrades)
+- **Damage**: depends on the cannon (10-50 base damage)
+- **Movement**: determined by `MoveStrategy`
+- **Collision**: determined by `CollisionStrategy`
+- **Rendering**: an orange circle (configurable via `GameConfig.projectile`)
 
-#### Стратегии движения (MoveStrategy)
+#### Move strategies (MoveStrategy)
 
-Абстрактный класс: [entities/projectile/MoveStrategy.ts](entities/projectile/MoveStrategy.ts)
+Abstract class: [entities/projectile/MoveStrategy.ts](entities/projectile/MoveStrategy.ts)
 
-Реализации:
+Implementations:
 
-- **StraightMove** ([StraightMove.ts](entities/projectile/StraightMove.ts)) — летит по прямой линии от начальной точки до достижения радиуса пушки
-- **AtTargetMove** ([AtTargetMove.ts](entities/projectile/AtTargetMove.ts)) — летит прямо к цели, взрывается при достижении (для ракет)
-- **NoMove** ([NoMove.ts](entities/projectile/NoMove.ts)) — неподвижный снаряд (не используется)
+- **StraightMove** ([StraightMove.ts](entities/projectile/StraightMove.ts)) — flies in a straight line from its start point until it reaches the cannon's range
+- **AtTargetMove** ([AtTargetMove.ts](entities/projectile/AtTargetMove.ts)) — flies straight to the target, explodes on arrival (used for rockets)
+- **NoMove** ([NoMove.ts](entities/projectile/NoMove.ts)) — a stationary projectile (unused)
 
-#### Стратегии столкновения (CollisionStrategy)
+#### Collision strategies (CollisionStrategy)
 
-Абстрактный класс: [entities/projectile/CollisionStrategy.ts](entities/projectile/CollisionStrategy.ts)
+Abstract class: [entities/projectile/CollisionStrategy.ts](entities/projectile/CollisionStrategy.ts)
 
-Реализации:
+Implementations:
 
-- **SingleHitCollision** ([SingleHitCollision.ts](entities/projectile/SingleHitCollision.ts)) — уничтожается при первом контакте с врагом, наносит урон одной цели
-- **ExplosionCollision** ([ExplosionCollision.ts](entities/projectile/ExplosionCollision.ts)) — зонный урон в радиусе взрыва, наносит урон всем врагам в области после взрыва снаряда
-- **NoCollisionStrategy** ([NoCollisionStrategy.ts](entities/projectile/NoCollisionStrategy.ts)) — без обнаружения столкновений (для dumb пушек)
+- **SingleHitCollision** ([SingleHitCollision.ts](entities/projectile/SingleHitCollision.ts)) — is destroyed on first contact with an enemy, dealing damage to a single target
+- **ExplosionCollision** ([ExplosionCollision.ts](entities/projectile/ExplosionCollision.ts)) — area damage within the explosion radius, damages all enemies in the area once the projectile explodes
+- **NoCollisionStrategy** ([NoCollisionStrategy.ts](entities/projectile/NoCollisionStrategy.ts)) — no collision detection (for dumb cannons)
 
-#### Конфигурация снарядов ([managers/constants/projectile-config.ts](managers/constants/projectile-config.ts))
+#### Projectile configuration ([managers/constants/projectile-config.ts](managers/constants/projectile-config.ts))
 
-Сопоставление типов пушек со стратегиями:
+Maps cannon types to strategies:
 
 ```typescript
 projectileConfig = {
@@ -161,182 +161,182 @@ projectileConfig = {
 }
 ```
 
-#### Менеджер снарядов ([managers/projectileManager.ts](managers/projectileManager.ts))
+#### Projectile manager ([managers/projectileManager.ts](managers/projectileManager.ts))
 
-Управляет жизненным циклом всех снарядов:
+Manages the lifecycle of all projectiles:
 
-- **Создание**: принимает запросы от пушек, создаёт снаряды с соответствующими стратегиями движения и столкновения на основе типа пушки
-- **Обновление**: обновляет позиции всех снарядов (вызывает `moveStrategy.move()`) и проверяет столкновения (вызывает `collisionStrategy.checkCollision()`)
-- **Очистка**: удаляет уничтоженные снаряды из списка
-- **Отрисовка**: отрисовывает все активные снаряды
+- **Creation**: accepts requests from cannons, creates projectiles with the appropriate move and collision strategies based on cannon type
+- **Update**: updates the positions of all projectiles (calls `moveStrategy.move()`) and checks collisions (calls `collisionStrategy.checkCollision()`)
+- **Cleanup**: removes destroyed projectiles from the list
+- **Rendering**: renders all active projectiles
 
-## Система событий ([utils/eventBus.ts](utils/eventBus.ts))
+## Event system ([utils/eventBus.ts](utils/eventBus.ts))
 
-Централизованная событийно-ориентированная коммуникация между компонентами (паттерн Singleton):
+Centralized event-driven communication between components (Singleton pattern):
 
-**Методы**:
+**Methods**:
 
-- `on(event, handler)` — подписка на событие, возвращает функцию отписки
-- `once(event, handler)` — одноразовый слушатель
-- `emit(event, payload)` — рассылка события
+- `on(event, handler)` — subscribe to an event, returns an unsubscribe function
+- `once(event, handler)` — one-time listener
+- `emit(event, payload)` — broadcast an event
 
-**События игровой логики**:
+**Game logic events**:
 
-- `pathManager:pathUpdated` — путь изменён, враги пересчитывают маршруты
-- `mapManager:cannonPlaced` — пушка успешно размещена
-- `mapManager:tryAddCannon` — клик пользователя для размещения пушки
+- `pathManager:pathUpdated` — the path has changed, enemies recalculate their routes
+- `mapManager:cannonPlaced` — a cannon was successfully placed
+- `mapManager:tryAddCannon` — a user click to place a cannon
 
-**События Redux (интеграция с UI)**:
+**Redux events (UI integration)**:
 
-- `redux:waveStarted` — начало новой волны
-- `redux:selectedCannon` — пушка выбрана для улучшения/продажи
-- `redux:setMoney` — обновление денег игрока
-- `redux:setPlayerHp` — обновление здоровья игрока
+- `redux:waveStarted` — a new wave has started
+- `redux:selectedCannon` — a cannon was selected for upgrade/sale
+- `redux:setMoney` — player money update
+- `redux:setPlayerHp` — player health update
 
-## Игровой процесс
+## Gameplay
 
-### Последовательность инициализации
+### Initialization sequence
 
-1. GameEngine создаёт Player с начальными деньгами (80) и здоровьем (10)
-2. MapManager загружает данные карты из JSON
-3. PathManager рассчитывает начальный путь от старта к финишу с использованием A*
-4. EnemyManager загружает конфигурацию волн и подготавливается к спавну
-5. Запускается автоспавн первой волны
-6. Враги начинают движение по пути
+1. GameEngine creates the Player with initial money (80) and health (10)
+2. MapManager loads map data from JSON
+3. PathManager computes the initial path from start to finish using A*
+4. EnemyManager loads the wave configuration and prepares to spawn
+5. Auto-spawn of the first wave starts
+6. Enemies begin moving along the path
 
-### Игровой цикл (каждый кадр @ 60 FPS)
+### Game loop (every frame @ 60 FPS)
 
-1. Очистка canvas
-2. Отрисовка слоёв карты (игровое поле, стены, старт, финиш)
-3. **Обновление врагов** (EnemyManager):
-   - Проверка задержки между волнами
-   - Автоспавн врагов текущей волны с интервалами из конфигурации
-   - Движение всех врагов по их путям с учётом скорости типа
-   - Обработка достижения конца (урон игроку -1 HP)
-   - Обработка уничтожения (награда игроку деньгами)
-   - Проверка окончания игры (все волны завершены или здоровье игрока = 0)
-4. **Обновление пушек** (CannonManager):
-   - Проверка врагов в радиусе каждой пушки
-   - Выстрел (создание снарядов с соответствующими стратегиями), если кулдаун завершён
-5. **Обновление снарядов** (ProjectileManager):
-   - Движение всех снарядов (вызов `moveStrategy.move()`)
-   - Проверка столкновений (вызов `collisionStrategy.checkCollision()`)
-   - Нанесение урона при попадании (одиночный или зонный в зависимости от стратегии)
-   - Удаление уничтоженных снарядов
-6. Отрисовка пушек (с кругами радиуса и цветом типа)
-7. Отрисовка снарядов
-8. Отрисовка врагов (с полосками здоровья и цветами типов)
+1. Clear the canvas
+2. Render map layers (game field, walls, start, finish)
+3. **Update enemies** (EnemyManager):
+   - Check the delay between waves
+   - Auto-spawn enemies for the current wave at configured intervals
+   - Move all enemies along their paths according to their type's speed
+   - Handle reaching the end (damages player -1 HP)
+   - Handle destruction (rewards player with money)
+   - Check for game over (all waves complete or player health = 0)
+4. **Update cannons** (CannonManager):
+   - Check for enemies within each cannon's range
+   - Fire (create projectiles with the appropriate strategies) if the cooldown is over
+5. **Update projectiles** (ProjectileManager):
+   - Move all projectiles (call `moveStrategy.move()`)
+   - Check collisions (call `collisionStrategy.checkCollision()`)
+   - Deal damage on hit (single-target or area depending on strategy)
+   - Remove destroyed projectiles
+6. Render cannons (with range circles and type color)
+7. Render projectiles
+8. Render enemies (with health bars and type colors)
 
-### Процесс размещения пушки
+### Cannon placement process
 
-1. Игрок выбирает тип пушки (MapManager отслеживает `placingCannonType`)
-2. Игрок кликает по canvas
-3. MapManager переводит клик в координаты тайла
-4. Проверяется валидность тайла (не стартовый, не занятый, достаточно денег у игрока)
-5. MapManager отправляет событие `tryAddCannon` с типом пушки
-6. PathManager проверяет размещение:
-   - Временно добавляет пушку в карту коллизий
-   - Пытается найти путь с новым препятствием с использованием A*
-   - Если путь существует — подтверждает размещение
-   - Если пути нет — показывает alert и отклоняет
-7. При успехе отправляется событие `cannonPlaced` с позицией и типом
+1. The player selects a cannon type (MapManager tracks `placingCannonType`)
+2. The player clicks on the canvas
+3. MapManager converts the click into tile coordinates
+4. The tile is validated (not the start tile, not occupied, player has enough money)
+5. MapManager emits the `tryAddCannon` event with the cannon type
+6. PathManager validates the placement:
+   - Temporarily adds the cannon to the collision map
+   - Tries to find a path with the new obstacle using A*
+   - If a path exists — confirms the placement
+   - If no path exists — shows an alert and rejects it
+7. On success, the `cannonPlaced` event is emitted with the position and type
 8. CannonManager:
-   - Вычитает стоимость пушки из денег игрока
-   - Создаёт новую пушку указанного типа в позиции
-   - Обновляет деньги игрока через событие `redux:setMoney`
-9. PathManager отправляет событие `pathUpdated`
-10. Все враги пересчитывают маршруты с текущих позиций до финиша
+   - Deducts the cannon's cost from the player's money
+   - Creates a new cannon of the specified type at the position
+   - Updates the player's money via the `redux:setMoney` event
+9. PathManager emits the `pathUpdated` event
+10. All enemies recalculate their routes from their current positions to the finish
 
-### Боевая механика
+### Combat mechanics
 
-1. Каждый кадр пушки проверяют всех живых врагов
-2. Если враг в радиусе И кулдаун завершён:
-   - Пушка создаёт снаряд через ProjectileManager с типом пушки
-   - ProjectileManager выбирает соответствующие стратегии движения и столкновения из конфигурации
-   - Снаряд создаётся с композицией стратегий и нацелен на текущую позицию врага
-   - Запускается таймер кулдауна пушки
-3. ProjectileManager обновляет все активные снаряды:
-   - Вызывает `moveStrategy.move()` для перемещения снаряда
-   - Вызывает `collisionStrategy.checkCollision()` для проверки попаданий
-4. При столкновении с врагом (зависит от стратегии):
-   - **SingleHitCollision**: наносит урон одному врагу, снаряд уничтожается
-   - **ExplosionCollision**: когда снаряд достигает цели, наносит зонный урон всем врагам в радиусе взрыва
-   - **NoCollisionStrategy**: не проверяет столкновения (для dumb пушек)
-5. Если здоровье врага достигает 0:
-   - Враг помечается как уничтоженный
-   - EnemyManager награждает игрока деньгами (из конфигурации волны)
-6. Уничтоженные враги удаляются на следующем кадре EnemyManager'ом
-7. Уничтоженные снаряды удаляются ProjectileManager'ом
+1. Every frame, cannons check all living enemies
+2. If an enemy is within range AND the cooldown is over:
+   - The cannon creates a projectile via ProjectileManager with the cannon's type
+   - ProjectileManager selects the corresponding move and collision strategies from the configuration
+   - The projectile is created with the composed strategies and aimed at the enemy's current position
+   - The cannon's cooldown timer starts
+3. ProjectileManager updates all active projectiles:
+   - Calls `moveStrategy.move()` to move the projectile
+   - Calls `collisionStrategy.checkCollision()` to check for hits
+4. On collision with an enemy (depends on strategy):
+   - **SingleHitCollision**: deals damage to a single enemy, the projectile is destroyed
+   - **ExplosionCollision**: when the projectile reaches its target, deals area damage to all enemies within the explosion radius
+   - **NoCollisionStrategy**: no collision checks (for dumb cannons)
+5. If an enemy's health reaches 0:
+   - The enemy is marked as destroyed
+   - EnemyManager rewards the player with money (from the wave configuration)
+6. Destroyed enemies are removed on the next frame by EnemyManager
+7. Destroyed projectiles are removed by ProjectileManager
 
-### Процесс улучшения пушки
+### Cannon upgrade process
 
-1. Игрок кликает по пушке на карте
-2. MapManager отправляет событие `redux:selectedCannon` с данными пушки
-3. UI отображает информацию о пушке (уровень, урон, радиус, стоимость улучшения)
-4. Игрок нажимает кнопку "Улучшить"
+1. The player clicks on a cannon on the map
+2. MapManager emits the `redux:selectedCannon` event with the cannon's data
+3. The UI displays cannon information (level, damage, range, upgrade cost)
+4. The player clicks the "Upgrade" button
 5. CannonManager.upgradeCannon(id):
-   - Проверяет, что пушка не достигла максимального уровня (5)
-   - Проверяет, что у игрока достаточно денег
-   - Вычитает стоимость улучшения
-   - Вызывает `cannon.upgrade()` — увеличивает характеристики (урон, радиус, скорострельность и т.д.)
-   - Обновляет деньги игрока через событие `redux:setMoney`
+   - Checks that the cannon hasn't reached the max level (5)
+   - Checks that the player has enough money
+   - Deducts the upgrade cost
+   - Calls `cannon.upgrade()` — increases stats (damage, range, fire rate, etc.)
+   - Updates the player's money via the `redux:setMoney` event
 
-### Процесс продажи пушки
+### Cannon selling process
 
-1. Игрок кликает по пушке на карте
-2. UI отображает кнопку "Продать"
+1. The player clicks on a cannon on the map
+2. The UI displays a "Sell" button
 3. CannonManager.sellCannon(id):
-   - Вычисляет возврат денег: 70% от полной стоимости (начальная + все улучшения)
-   - Добавляет деньги игроку
-   - Освобождает тайл в MapManager (устанавливает collision = 0)
-   - Удаляет пушку из массива
-   - Пересчитывает путь через PathManager
-   - Обновляет деньги игрока через событие `redux:setMoney`
+   - Calculates the money refund: 70% of the total cost (initial + all upgrades)
+   - Adds the money to the player
+   - Frees the tile in MapManager (sets collision = 0)
+   - Removes the cannon from the array
+   - Recalculates the path via PathManager
+   - Updates the player's money via the `redux:setMoney` event
 
-### Система волн
+### Wave system
 
-1. EnemyManager загружает `wavesConfig` при инициализации
-2. Каждая волна определяет:
-   - Тип врага (normal, fast, immune, normalBoss)
-   - Количество врагов
-   - Интервал спавна (мс)
-   - Здоровье врага (переопределяет базовое из `enemies-config.ts`)
-   - Вознаграждение за убийство
-3. Процесс волны:
-   - Задержка 10 секунд перед началом следующей волны
-   - Отправка события `redux:waveStarted` в UI
-   - Спавн врагов с указанным интервалом до достижения количества
-   - Переход к следующей волне после уничтожения/достижения конца всех врагов
-4. Окончание игры:
-   - **Победа**: все волны завершены и все враги уничтожены
-   - **Поражение**: здоровье игрока достигло 0
+1. EnemyManager loads `wavesConfig` on initialization
+2. Each wave defines:
+   - Enemy type (normal, fast, immune, normalBoss)
+   - Number of enemies
+   - Spawn interval (ms)
+   - Enemy health (overrides the base value from `enemies-config.ts`)
+   - Kill reward
+3. Wave process:
+   - 10-second delay before the next wave starts
+   - Sends the `redux:waveStarted` event to the UI
+   - Spawns enemies at the specified interval until the count is reached
+   - Moves to the next wave once all enemies are destroyed/reach the end
+4. Game over:
+   - **Victory**: all waves complete and all enemies destroyed
+   - **Defeat**: player health reaches 0
 
-## Конфигурация
+## Configuration
 
-Все параметры игры вынесены в отдельные файлы конфигурации в `../constants/`:
+All game parameters are extracted into separate configuration files in `../constants/`:
 
-### Игровые параметры ([constants/game-config.ts](../constants/game-config.ts))
+### Game parameters ([constants/game-config.ts](../constants/game-config.ts))
 
 ```typescript
 {
-  waveDelay: 10000,           // Задержка между волнами (мс)
-  hp: 10,                     // Начальное здоровье игрока
-  initialMoney: 80,           // Начальные деньги игрока
-  tileSize: 32,               // Размер тайла (пикселей)
-  maxCannonLevel: 5,          // Максимальный уровень улучшения пушки
+  waveDelay: 10000,           // Delay between waves (ms)
+  hp: 10,                     // Initial player health
+  initialMoney: 80,           // Initial player money
+  tileSize: 32,               // Tile size (pixels)
+  maxCannonLevel: 5,          // Max cannon upgrade level
   healthBar: {
-    width: 24,                // Ширина полоски здоровья
-    height: 3,                // Высота полоски здоровья
-    offset: 18                // Смещение над врагом
+    width: 24,                // Health bar width
+    height: 3,                // Health bar height
+    offset: 18                // Offset above the enemy
   },
   projectile: {
-    radius: 3,                // Радиус снаряда
-    color: 'orange'           // Цвет снаряда
+    radius: 3,                // Projectile radius
+    color: 'orange'           // Projectile color
   }
 }
 ```
 
-### Типы пушек ([constants/cannons-config.ts](../constants/cannons-config.ts))
+### Cannon types ([constants/cannons-config.ts](../constants/cannons-config.ts))
 
 ```typescript
 {
@@ -349,7 +349,7 @@ projectileConfig = {
 }
 ```
 
-### Типы эффектов ([constants/effects-config.ts](../constants/effects-config.ts))
+### Effect types ([constants/effects-config.ts](../constants/effects-config.ts))
 
 ```typescript
 {
@@ -362,7 +362,7 @@ projectileConfig = {
 }
 ```
 
-### Типы врагов ([constants/enemies-config.ts](../constants/enemies-config.ts))
+### Enemy types ([constants/enemies-config.ts](../constants/enemies-config.ts))
 
 ```typescript
 {
@@ -373,9 +373,9 @@ projectileConfig = {
 }
 ```
 
-### Волны ([constants/waves-config.ts](../constants/waves-config.ts))
+### Waves ([constants/waves-config.ts](../constants/waves-config.ts))
 
-Массив из 4+ волн с возрастающей сложностью:
+An array of 4+ waves with increasing difficulty:
 
 ```typescript
 [
@@ -387,15 +387,15 @@ projectileConfig = {
 ]
 ```
 
-## Ключевые паттерны
+## Key patterns
 
-- **Manager Pattern**: отдельные менеджеры для Map, Path, Enemy, Cannon, Projectile — чёткое разделение ответственности
-- **Strategy Pattern**: снаряды используют композицию стратегий движения (MoveStrategy) и столкновения (CollisionStrategy) для гибкого поведения
-- **Event-Driven Architecture**: слабосвязанное взаимодействие через EventBus (Singleton)
-- **Entity-Component**: каждый враг, пушка и снаряд — независимая сущность с собственным состоянием
-- **Centralized Management**: снаряды управляются централизованно через ProjectileManager, а не каждой пушкой отдельно
-- **Reactive Pathfinding**: путь пересчитывается при изменении карты (A* через EasyStar.js), враги автоматически обновляют маршруты
-- **Validation Before State Change**: путь должен существовать до подтверждения размещения пушки, деньги проверяются перед покупкой
-- **Configuration-Driven**: все параметры игры, типы сущностей и волны вынесены в отдельные файлы конфигурации для лёгкой настройки
-- **Progressive Difficulty**: система волн с возрастающей сложностью (здоровье врагов, скорость спавна, типы)
-- **Economy System**: игрок управляет двумя ресурсами (деньги и здоровье), требующими стратегического баланса
+- **Manager Pattern**: separate managers for Map, Path, Enemy, Cannon, Projectile — clear separation of responsibilities
+- **Strategy Pattern**: projectiles use composition of movement strategies (MoveStrategy) and collision strategies (CollisionStrategy) for flexible behavior
+- **Event-Driven Architecture**: loosely coupled interaction via EventBus (Singleton)
+- **Entity-Component**: each enemy, cannon, and projectile is an independent entity with its own state
+- **Centralized Management**: projectiles are managed centrally through ProjectileManager rather than by each cannon individually
+- **Reactive Pathfinding**: the path is recalculated when the map changes (A* via EasyStar.js), enemies automatically update their routes
+- **Validation Before State Change**: a path must exist before confirming cannon placement, money is checked before purchase
+- **Configuration-Driven**: all game parameters, entity types, and waves are extracted into separate configuration files for easy tuning
+- **Progressive Difficulty**: a wave system with increasing difficulty (enemy health, spawn rate, types)
+- **Economy System**: the player manages two resources (money and health) that require strategic balancing
